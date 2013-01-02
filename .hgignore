@@ -1,0 +1,10 @@
+syntax: glob
+
+*.egg-info
+*.pyc
+.installed.cfg
+.mr.developer.cfg
+bin
+develop-eggs
+my-buildout.cfg
+parts

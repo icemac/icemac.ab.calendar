@@ -1,0 +1,29 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope">
+
+  <include package="zope.security" file="meta.zcml" />
+  <include package="zope.component" file="meta.zcml" />
+
+  <permission
+     id="icemac.addressbook.EditCalendar"
+     title="EditCalendar"
+     />
+
+  <!-- Calendar -->
+  <class class=".calendar.Calendar">
+    <require
+       permission="icemac.addressbook.EditCalendar"
+       interface=".interfaces.ICalendar"
+       />
+    <require
+       permission="icemac.addressbook.EditCalendar"
+       interface="zope.container.interfaces.IContainer"
+       />
+  </class>
+
+  <subscriber handler=".install.install_calendar" />
+
+  <include package=".browser" />
+  <include package=".generations" />
+
+</configure>
