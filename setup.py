@@ -44,7 +44,7 @@ setuptools.setup(
     zip_safe=False,
     install_requires=[
         # 'icemac.ab.locales > 0.11',
-        'icemac.addressbook >= 1.9.0',
+        'icemac.addressbook >= 1.9.1.dev0',
         'setuptools',
         ],
     extras_require = dict(

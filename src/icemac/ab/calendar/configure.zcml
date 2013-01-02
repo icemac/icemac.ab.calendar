@@ -21,6 +21,17 @@
        />
   </class>
 
+  <!-- CalendarProvider -->
+  <class class="icemac.addressbook.addressbook.AddressBook">
+    <implements
+       interface=".interfaces.ICalendarProvider"
+       />
+    <require
+       permission="icemac.addressbook.EditCalendar"
+       interface=".interfaces.ICalendarProvider"
+       />
+  </class>
+
   <subscriber handler=".install.install_calendar" />
 
   <include package=".browser" />
