@@ -1,0 +1,44 @@
+table.calendar {
+    width: 100%;
+}
+
+table.calendar th,
+table.calendar td {
+    border: 1px solid #000;
+    width: 14%;
+    max-width: 14%;
+}
+
+table.calendar .Sonntag {
+    background-color: #F8E286;
+}
+
+
+table.calendar th {
+    font-weight: bold;
+    text-align: center;
+    padding: 2px;
+}
+
+table.calendar td {
+    vertical-align: top;
+    padding: 2px;
+    height: 70px;
+}
+
+table.calendar td span {
+    float: right;
+    font-weight: bold;
+}
+
+table.calendar td dl {
+    clear: right;
+}
+
+table.calendar td dl dd.red {
+    color: #FF0000;
+}
+
+table.calendar td dl dd.gray {
+    color: #444444;
+}

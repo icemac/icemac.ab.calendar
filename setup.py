@@ -52,4 +52,8 @@ setuptools.setup(
             'icemac.addressbook [test]',
             'zope.testing >= 3.8.0',
             ]),
+    entry_points = """
+      [fanstatic.libraries]
+      calendar_css = icemac.ab.calendar.browser.resource:css_lib
+      """,
     )

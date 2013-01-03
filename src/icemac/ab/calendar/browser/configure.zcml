@@ -10,7 +10,7 @@
      for="icemac.ab.calendar.interfaces.ICalendar"
      permission="icemac.addressbook.EditCalendar"
      layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
-     class=".calendar.Overview"
+     class=".calendar.Calendar"
      />
 
   <browser:defaultView
@@ -18,5 +18,17 @@
      layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
      for="icemac.ab.calendar.interfaces.ICalendar"
      />
+
+  <z3c:siteMenuItem
+     manager="icemac.addressbook.browser.menus.interfaces.IMainMenu"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="Calendar"
+     title="Calendar"
+     permission="icemac.addressbook.EditCalendar"
+     viewName="++attribute++calendar"
+     weight="30"
+     />
+
+
 
 </configure>
