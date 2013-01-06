@@ -9,7 +9,8 @@ table.calendar td {
     max-width: 14%;
 }
 
-table.calendar .Sonntag {
+table.calendar .Sonntag,
+table.calendar .Sunday {
     background-color: #F8E286;
 }
 
