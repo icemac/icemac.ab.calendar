@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2013 Michael Howitz
 # See also LICENSE.txt
 
 import icemac.ab.calendar.calendar
+import icemac.ab.calendar.category
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.addressbook
 import zope.component
@@ -16,3 +16,7 @@ def install_calendar(event):
     icemac.addressbook.addressbook.create_and_register(
         address_book, 'calendar', icemac.ab.calendar.calendar.Calendar,
         icemac.ab.calendar.interfaces.ICalendar)
+    icemac.addressbook.addressbook.create_and_register(
+        address_book, 'calendar_categories',
+        icemac.ab.calendar.category.CategoryContainer,
+        icemac.ab.calendar.interfaces.ICategories)

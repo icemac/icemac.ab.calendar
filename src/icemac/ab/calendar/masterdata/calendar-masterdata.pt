@@ -1,0 +1,4 @@
+<tal:masterdata i18n:domain="icemac.addressbook">
+  <h2 i18n:translate="">Edit calendar master data</h2>
+  <tal:block replace="structure provider:calendar-master-data" />
+</tal:masterdata>

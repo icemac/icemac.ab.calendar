@@ -1,0 +1,70 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <!-- Calendar -->
+  <class class=".calendar.Calendar">
+    <require
+       permission="icemac.ab.calendar.ViewCalendar"
+       interface=".interfaces.ICalendar
+                  zope.container.interfaces.IReadContainer"
+       attributes="__annotations__"
+       />
+    <require
+      permission="icemac.ab.calendar.EditCalendar"
+      set_schema=".interfaces.ICalendar"
+      interface="zope.container.interfaces.IWriteContainer"
+      set_attributes="__annotations__"
+      />
+  </class>
+
+  <!-- CalendarProvider for Addressbook -->
+  <class class="icemac.addressbook.addressbook.AddressBook">
+    <implements interface=".interfaces.ICalendarProvider" />
+    <require
+       permission="icemac.ab.calendar.EditCalendar"
+       interface=".interfaces.ICalendarProvider"
+       />
+  </class>
+
+  <!-- CalendarMasterData for Addressbook -->
+  <class class="icemac.addressbook.addressbook.AddressBook">
+    <implements interface=".interfaces.ICalendarMasterData" />
+    <require
+       permission="icemac.ab.calendar.ViewCalendar"
+       interface=".interfaces.ICalendarMasterData"
+       />
+  </class>
+
+  <!-- CategoriesContainer -->
+  <class class=".category.CategoryContainer">
+    <implements interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+    <require
+       permission="icemac.ab.calendar.ViewCategoryContainer"
+       interface=".interfaces.ICategories
+                  zope.container.interfaces.IReadContainer"
+       attributes="__annotations__"
+       />
+    <require
+       permission="icemac.ab.calendar.EditCategoryContainer"
+       interface="zope.container.interfaces.IWriteContainer"
+       set_schema=".interfaces.ICategories"
+       set_attributes="__annotations__"
+      />
+  </class>
+
+  <!-- Category -->
+  <class class=".category.Category">
+    <implements interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+    <require
+       permission="icemac.ab.calendar.ViewCategory"
+       interface=".interfaces.ICategory"
+       attributes="__annotations__"
+       />
+    <require
+      permission="icemac.ab.calendar.EditCategory"
+      set_schema=".interfaces.ICategory"
+      set_attributes="__annotations__"
+      />
+  </class>
+
+
+</configure>

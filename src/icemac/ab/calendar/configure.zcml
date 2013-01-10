@@ -4,37 +4,17 @@
   <include package="zope.security" file="meta.zcml" />
   <include package="zope.component" file="meta.zcml" />
 
-  <permission
-     id="icemac.addressbook.EditCalendar"
-     title="EditCalendar"
-     />
-
-  <!-- Calendar -->
-  <class class=".calendar.Calendar">
-    <require
-       permission="icemac.addressbook.EditCalendar"
-       interface=".interfaces.ICalendar"
-       />
-    <require
-       permission="icemac.addressbook.EditCalendar"
-       interface="zope.container.interfaces.IContainer"
-       />
-  </class>
-
-  <!-- CalendarProvider -->
-  <class class="icemac.addressbook.addressbook.AddressBook">
-    <implements
-       interface=".interfaces.ICalendarProvider"
-       />
-    <require
-       permission="icemac.addressbook.EditCalendar"
-       interface=".interfaces.ICalendarProvider"
-       />
-  </class>
+  <include file="permissions.zcml" />
+  <include file="classes.zcml" />
 
   <subscriber handler=".install.install_calendar" />
 
+  <adapter
+      for=".interfaces.ICategory"
+      factory="icemac.addressbook.adapter.obj_dot_title" />
+
   <include package=".browser" />
   <include package=".generations" />
+  <include package=".masterdata" />
 
 </configure>

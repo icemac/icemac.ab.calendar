@@ -1,0 +1,41 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <!-- Calendar -->
+  <permission
+     id="icemac.ab.calendar.EditCalendar"
+     title="EditCalendar"
+     />
+
+  <permission
+     id="icemac.ab.calendar.ViewCalendar"
+     title="ViewCalendar"
+     />
+
+  <!-- CategoryContainer -->
+  <permission
+     id="icemac.ab.calendar.EditCategoryContainer"
+     title="EditCategoryContainer"
+     />
+
+  <permission
+     id="icemac.ab.calendar.ViewCategoryContainer"
+     title="ViewCategoryContainer"
+     />
+
+  <!-- Category -->
+  <permission
+     id="icemac.ab.calendar.AddCategory"
+     title="AddEventCategory"
+     />
+
+  <permission
+     id="icemac.ab.calendar.ViewCategory"
+     title="ViewEventCategory"
+     />
+
+  <permission
+     id="icemac.ab.calendar.EditCategory"
+     title="EditEventCategory"
+     />
+
+</configure>

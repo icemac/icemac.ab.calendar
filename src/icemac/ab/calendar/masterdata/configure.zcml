@@ -1,0 +1,38 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   xmlns:z3c="http://namespaces.zope.org/z3c"
+   xmlns:gocept="http://namespaces.gocept.com/zcml"
+   i18n_domain="icemac.addressbook">
+
+  <z3c:siteMenuItem
+     manager="icemac.addressbook.browser.masterdata.manager.IMasterData"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="Calendar"
+     title="Calendar"
+     permission="icemac.ab.calendar.ViewCalendar"
+     viewName="@@calendar-masterdata.html"
+     weight="50"
+     />
+
+  <gocept:pagelet
+      for="icemac.addressbook.interfaces.IAddressBook"
+      layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+      name="calendar-masterdata.html"
+      template="calendar-masterdata.pt"
+      permission="icemac.ab.calendar.ViewCalendar" />
+
+  <!-- viewlet manager for calendar master data page contents -->
+  <configure package="icemac.addressbook.browser">
+    <browser:viewletManager
+        layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+        name="calendar-master-data"
+        class="icemac.ab.calendar.masterdata.manager.CalendarMasterDataManager"
+        permission="zope.Public"
+        template="bullet-menu.pt"
+     />
+  </configure>
+
+  <include package=".category" />
+
+</configure>
