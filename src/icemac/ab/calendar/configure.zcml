@@ -9,9 +9,20 @@
 
   <subscriber handler=".install.install_calendar" />
 
+
+  <!-- Category -->
   <adapter
       for=".interfaces.ICategory"
       factory="icemac.addressbook.adapter.obj_dot_title" />
+  <subscriber
+      for=".interfaces.ICategory
+           zope.container.interfaces.IObjectAddedEvent"
+      handler=".category.unique_titles" />
+  <subscriber
+      for=".interfaces.ICategory
+           zope.lifecycleevent.IObjectModifiedEvent"
+      handler=".category.unique_titles" />
+
 
   <include package=".browser" />
   <include package=".generations" />

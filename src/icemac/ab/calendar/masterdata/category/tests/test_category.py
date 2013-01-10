@@ -38,6 +38,7 @@ class CategoryCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertIn('birthday', self.browser.contents)
 
     def test_category_can_be_edited(self):
+        from icemac.addressbook.testing import get_messages
         self.create_category(u'birthday')
         self.browser.reload()
         self.browser.getLink('birthday').click()
@@ -45,17 +46,29 @@ class CategoryCRUD(icemac.ab.calendar.testing.BrowserTestCase):
             'birthday', self.browser.getControl('event category').value)
         self.browser.getControl('event category').value = 'wedding day'
         self.browser.getControl('Apply').click()
-        from icemac.addressbook.testing import get_messages
         self.assertEqual(
             ['Data successfully updated.'], get_messages(self.browser))
         # Changed category name show up in list:
         self.assertIn('wedding day', self.browser.contents)
 
-    # def test_new_category_with_existing_title_cannot_be_added(self):
-    #     self.fail('nyi')
+    def test_new_category_with_existing_title_cannot_be_added(self):
+        self.create_category(u'birthday')
+        self.browser.getLink('event category').click()
+        self.browser.getControl('event category').value = 'birthday'
+        self.browser.getControl('Add').click()
+        self.assertIn('There were some errors.', self.browser.contents)
+        self.assertIn('This category already exists.', self.browser.contents)
 
-    # def test_new_category_title_cannot_be_changed_to_existing_one(self):
-    #     self.fail('nyi')
+    def test_category_title_cannot_be_changed_to_existing_one(self):
+        self.create_category(u'birthday')
+        self.create_category(u'wedding day')
+        self.browser.reload()
+        self.browser.getLink('birthday').click()
+        self.browser.getControl('event category').value = 'wedding day'
+        self.browser.getControl('Apply').click()
+        file('response.html', 'w').write(self.browser.contents)
+        self.assertIn('There were some errors.', self.browser.contents)
+        self.assertIn('This category already exists.', self.browser.contents)
 
     # def test_category_can_be_deleted(self):
     #     self.fail('nyi')

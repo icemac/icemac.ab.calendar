@@ -43,3 +43,11 @@ class Edit(icemac.addressbook.browser.base.GroupEditForm):
     next_url = 'parent'
     z3c.form.form.extends(icemac.addressbook.browser.base.GroupEditForm,
                           ignoreFields=True)
+
+    def applyChanges(self, data):
+        # GroupForm has its own applyChanges but we need the one from
+        # _AbstractEditForm here as inside the goups no changes are made but
+        # there is a subscriber which raises an error which is handled by
+        # _AbstractEditForm.
+        return icemac.addressbook.browser.base._AbstractEditForm.applyChanges(
+            self, data)
