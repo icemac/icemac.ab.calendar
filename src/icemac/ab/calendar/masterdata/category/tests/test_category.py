@@ -4,10 +4,8 @@ import icemac.ab.calendar.testing
 import unittest2 as unittest
 
 
-class CategoryCRUD(unittest.TestCase):
+class CategoryCRUD(icemac.ab.calendar.testing.BrowserTestCase):
     """CRUD testing for ..category.*"""
-
-    layer = icemac.ab.calendar.testing.TEST_BROWSER_LAYER
 
     def setUp(self):
         from icemac.addressbook.testing import Browser
@@ -30,19 +28,28 @@ class CategoryCRUD(unittest.TestCase):
             self.browser.url)
         self.assertIn('No event categories defined yet.', self.browser.contents)
 
-    def test_category_can_be_added(self):
+    def test_category_can_be_added_and_is_shown_in_list(self):
         from icemac.addressbook.testing import get_messages
         self.browser.getLink('event category').click()
         self.browser.getControl('event category').value = 'birthday'
         self.browser.getControl('Add').click()
         self.assertEqual(['"birthday" added.'], get_messages(self.browser))
+        # New category show up in list:
         self.assertIn('birthday', self.browser.contents)
 
-    # def test_existing_catagory_is_listed(self):
-    #     self.fail('nyi')
-
-    # def test_category_can_be_edited(self):
-    #     self.fail('nyi')
+    def test_category_can_be_edited(self):
+        self.create_category(u'birthday')
+        self.browser.reload()
+        self.browser.getLink('birthday').click()
+        self.assertEqual(
+            'birthday', self.browser.getControl('event category').value)
+        self.browser.getControl('event category').value = 'wedding day'
+        self.browser.getControl('Apply').click()
+        from icemac.addressbook.testing import get_messages
+        self.assertEqual(
+            ['Data successfully updated.'], get_messages(self.browser))
+        # Changed category name show up in list:
+        self.assertIn('wedding day', self.browser.contents)
 
     # def test_new_category_with_existing_title_cannot_be_added(self):
     #     self.fail('nyi')

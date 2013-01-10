@@ -3,6 +3,7 @@
 from icemac.addressbook.i18n import _
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.browser.base
+import icemac.addressbook.browser.metadata
 import icemac.addressbook.browser.table
 import z3c.table.column
 
@@ -31,3 +32,14 @@ class Add(icemac.addressbook.browser.base.BaseAddForm):
     interface = icemac.ab.calendar.interfaces.ICategory
     class_ = icemac.ab.calendar.category.Category
     next_url = 'parent'
+
+
+class Edit(icemac.addressbook.browser.base.GroupEditForm):
+    """Edit form for event category."""
+
+    groups = (icemac.addressbook.browser.metadata.MetadataGroup,)
+    label = _(u'Edit event category')
+    interface = icemac.ab.calendar.interfaces.ICategory
+    next_url = 'parent'
+    z3c.form.form.extends(icemac.addressbook.browser.base.GroupEditForm,
+                          ignoreFields=True)

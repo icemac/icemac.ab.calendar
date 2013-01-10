@@ -5,6 +5,7 @@
    xmlns:gocept="http://namespaces.gocept.com/zcml"
    i18n_domain="icemac.addressbook">
 
+  <!-- CategoryContainer -->
   <z3c:siteMenuItem
      manager="icemac.ab.calendar.masterdata.manager.ICalendarMasterData"
      layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
@@ -35,11 +36,20 @@
      />
 
   <z3c:pagelet
-     name="addEventCategory.html"
      for="icemac.ab.calendar.interfaces.ICategories"
-     permission="icemac.ab.calendar.AddCategory"
      layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="addEventCategory.html"
      class=".category.Add"
+     permission="icemac.ab.calendar.AddCategory"
+     />
+
+  <!-- Category -->
+  <z3c:pagelet
+     for="icemac.ab.calendar.interfaces.ICategory"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="index.html"
+     class=".category.Edit"
+     permission="icemac.ab.calendar.EditCategory"
      />
 
 

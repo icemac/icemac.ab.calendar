@@ -1,7 +1,7 @@
 # Copyright (c) 2013 Michael Howitz
 # See also LICENSE.txt
-
 from icemac.addressbook.i18n import _
+import icemac.ab.calendar.interfaces
 import icemac.addressbook.interfaces
 import icemac.addressbook.utils
 import persistent
