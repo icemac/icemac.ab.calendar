@@ -70,8 +70,14 @@ class CategoryCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertIn('There were some errors.', self.browser.contents)
         self.assertIn('This category already exists.', self.browser.contents)
 
-    # def test_category_can_be_deleted(self):
-    #     self.fail('nyi')
+    def test_category_can_be_deleted(self):
+        self.create_category(u'birthday')
+        self.browser.reload()
+        self.browser.getLink('birthday').click()
+        self.browser.getControl('Delete').click()
 
-    # def test_used_category_cannot_be_deleted(self):
-    #     self.fail('nyi')
+    def test_used_category_cannot_be_deleted(self):
+        self.fail('nyi')
+
+
+#Test Security!

@@ -34,6 +34,11 @@ class Add(icemac.addressbook.browser.base.BaseAddForm):
     next_url = 'parent'
 
 
+def can_delete_category(form):
+    """Button condition telling if the displayed category can be deleted."""
+    return True
+
+
 class Edit(icemac.addressbook.browser.base.GroupEditForm):
     """Edit form for event category."""
 
@@ -51,3 +56,14 @@ class Edit(icemac.addressbook.browser.base.GroupEditForm):
         # _AbstractEditForm.
         return icemac.addressbook.browser.base._AbstractEditForm.applyChanges(
             self, data)
+
+    @z3c.form.button.buttonAndHandler(
+        _(u'Delete'), name='delete', condition=can_delete_category)
+    def handleDelete(self, action):
+        self.redirect_to_next_url('object', '@@delete.html')
+
+
+class Delete(icemac.addressbook.browser.base.BaseDeleteForm):
+    label = _(u'Do you really want to delete this event category?')
+    interface = icemac.ab.calendar.interfaces.ICategory
+    field_names = ('title', )
