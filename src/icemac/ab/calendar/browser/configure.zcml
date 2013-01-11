@@ -13,12 +13,6 @@
      class=".calendar.Calendar"
      />
 
-  <browser:defaultView
-     name="index.html"
-     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
-     for="icemac.ab.calendar.interfaces.ICalendar"
-     />
-
   <z3c:siteMenuItem
      manager="icemac.addressbook.browser.menus.interfaces.IMainMenu"
      layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
