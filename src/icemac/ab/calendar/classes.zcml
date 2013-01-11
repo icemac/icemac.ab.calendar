@@ -20,7 +20,7 @@
   <class class="icemac.addressbook.addressbook.AddressBook">
     <implements interface=".interfaces.ICalendarProvider" />
     <require
-       permission="icemac.ab.calendar.EditCalendar"
+       permission="icemac.ab.calendar.ViewCalendar"
        interface=".interfaces.ICalendarProvider"
        />
   </class>

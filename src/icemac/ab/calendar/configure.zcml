@@ -5,6 +5,7 @@
   <include package="zope.component" file="meta.zcml" />
 
   <include file="permissions.zcml" />
+  <include file="roles.zcml" />
   <include file="classes.zcml" />
 
   <subscriber handler=".install.install_calendar" />

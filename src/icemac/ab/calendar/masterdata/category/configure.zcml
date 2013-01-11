@@ -49,7 +49,7 @@
      layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
      name="index.html"
      class=".category.Edit"
-     permission="icemac.ab.calendar.EditCategory"
+     permission="icemac.ab.calendar.ViewCategory"
      />
 
   <z3c:pagelet

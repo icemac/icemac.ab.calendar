@@ -1,0 +1,86 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           i18n_domain="icemac.addressbook">
+
+  <!-- Editor -->
+  <role
+      id="icemac.ab.calendar.Editor"
+      title="Calendar editor"
+      description="Role which allows to edit the calendar."
+      />
+
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="zope.dublincore.view"
+     />
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="zope.View"
+     />
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="icemac.addressbook.ViewAddressBook"
+     />
+
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="icemac.ab.calendar.EditCalendar"
+     />
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="icemac.ab.calendar.ViewCalendar"
+     />
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="icemac.ab.calendar.EditCategoryContainer"
+     />
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="icemac.ab.calendar.ViewCategoryContainer"
+     />
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="icemac.ab.calendar.AddCategory"
+     />
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="icemac.ab.calendar.ViewCategory"
+     />
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="icemac.ab.calendar.EditCategory"
+     />
+
+  <!-- Visitor -->
+  <role
+      id="icemac.ab.calendar.Visitor"
+      title="Calendar visitor"
+      description="Role which allows to visit the calendar."
+      />
+
+  <grant
+     role="icemac.ab.calendar.Visitor"
+     permission="zope.dublincore.view"
+     />
+  <grant
+     role="icemac.ab.calendar.Visitor"
+     permission="zope.View"
+     />
+  <grant
+     role="icemac.ab.calendar.Visitor"
+     permission="icemac.addressbook.ViewAddressBook"
+     />
+
+  <grant
+     role="icemac.ab.calendar.Visitor"
+     permission="icemac.ab.calendar.ViewCalendar"
+     />
+  <grant
+     role="icemac.ab.calendar.Visitor"
+     permission="icemac.ab.calendar.ViewCategoryContainer"
+     />
+  <grant
+     role="icemac.ab.calendar.Visitor"
+     permission="icemac.ab.calendar.ViewCategory"
+     />
+
+</configure>
