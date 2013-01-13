@@ -1,8 +1,26 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <!-- <include package="zope.securitypolicy" file="meta.zcml" /> -->
-
   <include package="icemac.ab.calendar" />
   <grantAll role="zope.Manager" />
+
+  <!-- Principal who is able to make changes in the calendar -->
+  <principal
+      id="icemac.ab.calendar.Editor"
+      title="calendar editor"
+      login="cal-editor"
+      password="cal-editor"
+      />
+  <grant role="icemac.ab.calendar.Editor"
+         principal="icemac.ab.calendar.Editor" />
+
+  <!-- Principal who is able to view the calendar -->
+  <principal
+      id="icemac.ab.calendar.Visitor"
+      title="calendar vistor"
+      login="cal-visitor"
+      password="cal-visitor"
+      />
+  <grant role="icemac.ab.calendar.Visitor"
+         principal="icemac.ab.calendar.Visitor" />
 
 </configure>

@@ -11,7 +11,7 @@ class CategoryCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         from icemac.addressbook.testing import Browser
         super(CategoryCRUD, self).setUp()
         self.browser = Browser()
-        self.browser.login('mgr')
+        self.browser.login('cal-editor')
         self.browser.handleErrors = False
         self.browser.open(
             'http://localhost/ab/++attribute++calendar_categories')
@@ -66,7 +66,6 @@ class CategoryCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.browser.getLink('birthday').click()
         self.browser.getControl('event category').value = 'wedding day'
         self.browser.getControl('Apply').click()
-        file('response.html', 'w').write(self.browser.contents)
         self.assertIn('There were some errors.', self.browser.contents)
         self.assertIn('This category already exists.', self.browser.contents)
 
