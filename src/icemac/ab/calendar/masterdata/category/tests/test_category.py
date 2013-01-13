@@ -12,7 +12,6 @@ class CategoryCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         super(CategoryCRUD, self).setUp()
         self.browser = Browser()
         self.browser.login('cal-editor')
-        self.browser.handleErrors = False
         self.browser.open(
             'http://localhost/ab/++attribute++calendar_categories')
 
@@ -79,4 +78,34 @@ class CategoryCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.fail('nyi')
 
 
-#Test Security!
+class CategorySecurity(icemac.ab.calendar.testing.BrowserTestCase):
+    """Security tests for categories."""
+
+    def test_visitor_is_able_to_see_categories_but_cannot_change_them(self):
+        from icemac.addressbook.testing import Browser
+        from mechanize import LinkNotFoundError
+
+        self.create_category(u'birthday')
+        browser = Browser()
+        browser.login('cal-visitor')
+        browser.open('http://localhost/ab/@@calendar-masterdata.html')
+        browser.getLink('Event categories').click()
+        self.assertEqual(
+            'http://localhost/ab/++attribute++calendar_categories',
+            browser.url)
+        # There is no add link:
+        with self.assertRaises(LinkNotFoundError):
+            browser.getLink('event category').click()
+        browser.getLink('birthday').click()
+        # There are no fields and no delete button:
+        self.assertEqual(['form.buttons.apply', 'form.buttons.cancel'],
+                         browser.get_all_control_names())
+
+    def test_anonymous_is_not_able_to_access_categories(self):
+        from icemac.addressbook.testing import Browser
+        from zope.security.interfaces import Unauthorized
+        browser = Browser()
+        browser.handleErrors = False  # needed to catch exception
+        with self.assertRaises(Unauthorized):
+            browser.open(
+                'http://localhost/ab/++attribute++calendar_categories')

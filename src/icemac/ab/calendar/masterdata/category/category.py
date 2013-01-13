@@ -36,7 +36,7 @@ class Add(icemac.addressbook.browser.base.BaseAddForm):
 
 def can_delete_category(form):
     """Button condition telling if the displayed category can be deleted."""
-    return True
+    return icemac.addressbook.browser.base.can_access('@@delete.html')(form)
 
 
 class Edit(icemac.addressbook.browser.base.GroupEditForm):
