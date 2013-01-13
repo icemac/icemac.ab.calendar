@@ -10,7 +10,7 @@ def read(*path_elements):
 
 version = '0.1.dev0'
 long_description = '\n\n'.join([
-    read('README.txt'),
+    read('README.rst'),
     read('CHANGES.txt'),
     ])
 
