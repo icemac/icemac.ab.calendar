@@ -33,6 +33,6 @@
      />
   </configure>
 
-  <include package=".category" />
+  <include file="category.zcml" />
 
 </configure>
