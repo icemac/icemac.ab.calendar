@@ -1,0 +1,27 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   xmlns:z3c="http://namespaces.zope.org/z3c"
+   xmlns:gocept="http://namespaces.gocept.com/zcml"
+   i18n_domain="icemac.addressbook">
+
+  <z3c:addMenuItem
+     manager="icemac.addressbook.browser.menus.interfaces.IAddMenu"
+     for="icemac.ab.calendar.interfaces.ICalendar"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="event"
+     title="event"
+     viewName="@@addEvent.html"
+     permission="icemac.ab.calendar.AddEvent"
+     weight="1"
+     />
+
+  <z3c:pagelet
+     for="icemac.ab.calendar.interfaces.ICalendar"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="addEvent.html"
+     class=".event.Add"
+     permission="icemac.ab.calendar.AddEvent"
+     />
+
+</configure>

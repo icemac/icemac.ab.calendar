@@ -24,6 +24,9 @@
            zope.lifecycleevent.IObjectModifiedEvent"
       handler=".category.unique_titles" />
 
+  <!-- Event -->
+
+
 
   <include package=".browser" />
   <include package=".generations" />

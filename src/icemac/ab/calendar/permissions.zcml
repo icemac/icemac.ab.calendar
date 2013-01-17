@@ -15,28 +15,44 @@
   <!-- CategoryContainer -->
   <permission
      id="icemac.ab.calendar.EditCategoryContainer"
-     title="EditCategoryContainer"
+     title="calendar:EditCategoryContainer"
      />
 
   <permission
      id="icemac.ab.calendar.ViewCategoryContainer"
-     title="ViewCategoryContainer"
+     title="calendar:ViewCategoryContainer"
      />
 
   <!-- Category -->
   <permission
      id="icemac.ab.calendar.AddCategory"
-     title="AddEventCategory"
+     title="calendar:AddEventCategory"
      />
 
   <permission
      id="icemac.ab.calendar.ViewCategory"
-     title="ViewEventCategory"
+     title="calendar:ViewEventCategory"
      />
 
   <permission
      id="icemac.ab.calendar.EditCategory"
-     title="EditEventCategory"
+     title="calendar:EditEventCategory"
+     />
+
+  <!-- Event -->
+  <permission
+     id="icemac.ab.calendar.AddEvent"
+     title="calendar:AddEvent"
+     />
+
+  <permission
+     id="icemac.ab.calendar.ViewEvent"
+     title="calendar:ViewEvent"
+     />
+
+  <permission
+     id="icemac.ab.calendar.EditEvent"
+     title="calendar:EditEvent"
      />
 
 </configure>

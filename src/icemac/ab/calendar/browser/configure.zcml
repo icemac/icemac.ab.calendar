@@ -23,4 +23,6 @@
      weight="30"
      />
 
+  <include file="event.zcml" />
+
 </configure>

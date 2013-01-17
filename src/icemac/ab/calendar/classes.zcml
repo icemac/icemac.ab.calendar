@@ -66,5 +66,20 @@
       />
   </class>
 
+  <!-- Event -->
+  <class class=".event.Event">
+    <implements interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+    <require
+       permission="icemac.ab.calendar.ViewEvent"
+       interface=".interfaces.IEvent"
+       attributes="__annotations__"
+       />
+    <require
+      permission="icemac.ab.calendar.EditEvent"
+      set_schema=".interfaces.IEvent"
+      set_attributes="__annotations__"
+      />
+  </class>
+
 
 </configure>

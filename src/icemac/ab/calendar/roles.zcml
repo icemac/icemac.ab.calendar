@@ -29,6 +29,7 @@
      role="icemac.ab.calendar.Editor"
      permission="icemac.ab.calendar.ViewCalendar"
      />
+
   <grant
      role="icemac.ab.calendar.Editor"
      permission="icemac.ab.calendar.EditCategoryContainer"
@@ -37,6 +38,7 @@
      role="icemac.ab.calendar.Editor"
      permission="icemac.ab.calendar.ViewCategoryContainer"
      />
+
   <grant
      role="icemac.ab.calendar.Editor"
      permission="icemac.ab.calendar.AddCategory"
@@ -48,6 +50,19 @@
   <grant
      role="icemac.ab.calendar.Editor"
      permission="icemac.ab.calendar.EditCategory"
+     />
+
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="icemac.ab.calendar.AddEvent"
+     />
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="icemac.ab.calendar.ViewEvent"
+     />
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="icemac.ab.calendar.EditEvent"
      />
 
   <!-- Visitor -->
