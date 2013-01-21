@@ -23,8 +23,9 @@ class TestMixIn(object):
         """Create a new event category."""
         ab = self.layer['addressbook']
         parent = ab.calendar_categories
-        return icemac.addressbook.utils.create_and_add(
+        name = icemac.addressbook.utils.create_and_add(
             parent, icemac.ab.calendar.category.Category, title=title)
+        return parent[name]
 
 
 class ZCMLTestCase(unittest.TestCase, TestMixIn):
