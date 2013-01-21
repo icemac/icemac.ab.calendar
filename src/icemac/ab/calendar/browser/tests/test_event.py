@@ -26,7 +26,8 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.browser.getControl('date and time').value = '12/01/17 16:32'
         self.browser.getControl('event category').displayValue = ['wedding day']
         self.browser.getControl('Add', index=1).click()
-        self.assertEqual(['added.'], get_messages(self.browser))
+        self.assertEqual(
+            ['"wedding day" added.'], get_messages(self.browser))
         # New event shows up in calendar:
         self.assertIn('birthday', self.browser.contents)
 
