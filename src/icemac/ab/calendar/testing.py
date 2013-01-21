@@ -16,12 +16,22 @@ TEST_BROWSER_LAYER = icemac.addressbook.testing.TestBrowserLayer(
     'Calendar', ZODB_LAYER)
 
 
-class BrowserTestCase(unittest.TestCase):
-    """Test case for browser tests."""
-    layer = TEST_BROWSER_LAYER
+class TestMixIn(object):
+    """Mix-in methods for test cases."""
 
     def create_category(self, title):
+        """Create a new event category."""
         ab = self.layer['addressbook']
         parent = ab.calendar_categories
         return icemac.addressbook.utils.create_and_add(
             parent, icemac.ab.calendar.category.Category, title=title)
+
+
+class ZCMLTestCase(unittest.TestCase, TestMixIn):
+    """Test case for test which only need the ZCML registrations."""
+    layer = ZCML_LAYER
+
+
+class BrowserTestCase(unittest.TestCase, TestMixIn):
+    """Test case for browser tests."""
+    layer = TEST_BROWSER_LAYER
