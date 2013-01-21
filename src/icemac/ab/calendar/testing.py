@@ -32,6 +32,11 @@ class ZCMLTestCase(unittest.TestCase, TestMixIn):
     layer = ZCML_LAYER
 
 
+class ZODBTestCase(unittest.TestCase, TestMixIn):
+    """Test case for test which need the ZODB."""
+    layer = ZODB_LAYER
+
+
 class BrowserTestCase(unittest.TestCase, TestMixIn):
     """Test case for browser tests."""
     layer = TEST_BROWSER_LAYER
