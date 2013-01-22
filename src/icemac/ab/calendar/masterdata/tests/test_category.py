@@ -71,6 +71,10 @@ class CategoryCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.browser.reload()
         self.browser.getLink('birthday').click()
         self.browser.getControl('Delete').click()
+        self.assertIn('Do you really want to delete this event category?',
+                      self.browser.contents)
+        self.browser.getControl('Yes, delete').click()
+        self.assertEqual(['"birthday" deleted.'], self.browser.get_messages())
 
     def test_used_category_cannot_be_deleted(self):
         self.fail('nyi')
