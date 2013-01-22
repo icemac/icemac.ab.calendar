@@ -77,7 +77,14 @@ class CategoryCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertEqual(['"birthday" deleted.'], self.browser.get_messages())
 
     def test_used_category_cannot_be_deleted(self):
-        self.fail('nyi')
+        from icemac.addressbook.utils import site
+        with site(self.layer['addressbook']):
+            category = self.create_category(u'birthday')
+            self.create_event(category=category)
+        self.browser.reload()
+        self.browser.getLink('birthday').click()
+        with self.assertRaises(LookupError):
+            self.browser.getControl('Delete').click()
 
 
 class CategorySecurity(icemac.ab.calendar.testing.BrowserTestCase):

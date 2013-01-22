@@ -1,6 +1,7 @@
 # Copyright (c) 2013 Michael Howitz
 # See also LICENSE.txt
 from icemac.addressbook.i18n import _
+import gocept.reference.interfaces
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.browser.base
 import icemac.addressbook.browser.metadata
@@ -36,7 +37,12 @@ class Add(icemac.addressbook.browser.base.BaseAddForm):
 
 def can_delete_category(form):
     """Button condition telling if the displayed category can be deleted."""
-    return icemac.addressbook.browser.base.can_access('@@delete.html')(form)
+    return (
+        icemac.addressbook.browser.base.can_access('@@delete.html')(form)
+        and
+        not gocept.reference.interfaces.IReferenceTarget(
+            form.context).is_referenced()
+        )
 
 
 class Edit(icemac.addressbook.browser.base.GroupEditForm):
