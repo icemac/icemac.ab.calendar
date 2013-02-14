@@ -1,3 +1,4 @@
 <tal:trans i18n:domain="icemac.addressbook">
+  <div tal:replace="structure view/render_form" />
   <div tal:replace="structure view/render_calendar" />
 </tal:trans>
