@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2010-2013 Michael Howitz
 # See also LICENSE.txt
-from .base import Calendar, last_of_month
+from .base import Calendar
 from .interfaces import AUSFALL, INTERN
 import datetime
 
@@ -35,12 +35,14 @@ class Table(Calendar):
 
     def __init__(self, *args, **kw):
         super(Table, self).__init__(*args, **kw)
-        if self.month.isoweekday() == 7:
-            self.first_table_day = self.month
+        first_of_month = self.month.firstOfMonth()
+        if first_of_month.isoweekday() == 7:
+            self.first_table_day = first_of_month
         else:
             self.first_table_day = (
-                self.month - datetime.timedelta(self.month.isoweekday()))
-        end_of_month = last_of_month(self.month)
+                first_of_month - datetime.timedelta(
+                    first_of_month.isoweekday()))
+        end_of_month = self.month.lastOfMonth()
         self.num_of_days = (end_of_month - self.first_table_day).days + 1
         if end_of_month.isoweekday() == 7:
             self.num_of_days += 6
@@ -48,7 +50,7 @@ class Table(Calendar):
             self.num_of_days += 6 - end_of_month.isoweekday()
 
     def table_head(self):
-        self.write('<h2>%s</h2>', self.month.strftime('%B %Y'))
+        self.write('<h2>%s</h2>', self.month.firstOfMonth().strftime('%B %Y'))
         self.write('<table class="calendar">')
         self.write('  <thead>')
         self.write('    <tr>')
@@ -73,7 +75,7 @@ class Table(Calendar):
             day = self.first_table_day + datetime.timedelta(delta)
             prev_datetime = None
             self.write('<td class="%s">', day.strftime('%A'))
-            if day.month == self.month.month:
+            if day in self.month:
                 self.write('<span>%s</span>', day.day)
                 found_events_for_day = False
                 for ev in events[:]:

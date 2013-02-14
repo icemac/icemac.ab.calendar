@@ -51,8 +51,8 @@ class Calendar(object):
     def clean_events(self, events):
         result = []
         for event in events[:]:
-            if not (event.datetime.month == self.month.month and
-                    event.datetime.year == self.month.year):
+            if gocept.month.Month(event.datetime.year,
+                                  event.datetime.year) != self.month:
                 continue
             competitor_events = [ev for ev in events
                                  if (ev != event and

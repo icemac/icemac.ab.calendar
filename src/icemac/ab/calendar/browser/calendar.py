@@ -41,7 +41,7 @@ class Calendar(object):
         self.form.update()
         events = []
         self.calendar = icemac.ab.calendar.browser.renderer.table.Table(
-            self.month.firstOfMonth(), events)
+            self.month, events)
 
     def render_calendar(self):
         return self.calendar.render()
