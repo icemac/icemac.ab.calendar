@@ -6,11 +6,12 @@
    i18n_domain="icemac.addressbook">
 
   <gocept:pagelet
-     name="index.html"
      for="icemac.ab.calendar.interfaces.ICalendar"
-     permission="icemac.ab.calendar.ViewCalendar"
      layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="index.html"
+     template="calendar.pt"
      class=".calendar.Calendar"
+     permission="icemac.ab.calendar.ViewCalendar"
      />
 
   <z3c:siteMenuItem

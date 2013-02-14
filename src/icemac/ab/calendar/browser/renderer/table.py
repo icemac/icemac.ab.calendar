@@ -93,3 +93,4 @@ class Table(Calendar):
 
         self.write('  </tbody>')
         self.write('</table>')
+        return self.fd.getvalue()

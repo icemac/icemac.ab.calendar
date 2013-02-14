@@ -2,6 +2,7 @@
 # Copyright (c) 2010-2013 Michael Howitz
 # See also LICENSE.txt
 import datetime
+from cStringIO import StringIO
 
 
 def last_of_month(date):
@@ -18,9 +19,12 @@ def last_of_month(date):
 class Calendar(object):
     """Base of calendar view."""
 
-    def __init__(self, month, events, fd, only_single_events=False):
+    def __init__(self, month, events, fd=None, only_single_events=False):
         self.month = month
         self.events = events
+        if fd is None:
+            # XXX Is there a case where we really want fd to be not None?
+            fd = StringIO()
         self.fd = fd
         self.only_single_events = only_single_events
 
