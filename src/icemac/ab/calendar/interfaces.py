@@ -9,8 +9,18 @@ import zope.component
 import zope.interface
 
 
+DATE_INDEX = 'icemac.ab.calendar.event.date'
+
+
 class ICalendar(zope.interface.Interface):
     """Calender and storage for dates."""
+
+    def get_events(month, timezone=None):
+        """Get all events which belong to `month`.
+
+        month ... ``gocept.month.Month`` object.
+        timezone ... ``pytz.timezone`` object, None defaults to UTC.
+        """
 
 
 class ICalendarProvider(zope.interface.Interface):
