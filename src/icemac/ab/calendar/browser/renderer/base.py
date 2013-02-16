@@ -5,17 +5,6 @@ import datetime
 from cStringIO import StringIO
 
 
-def last_of_month(date):
-    """Last day of the month `date` belongs to."""
-    if date.month == 12:
-        month = 1
-        year = date.year + 1
-    else:
-        month = date.month + 1
-        year = date.year
-    return datetime.date(year, month, 1) - datetime.timedelta(1)
-
-
 class Calendar(object):
     """Base of calendar view."""
 
