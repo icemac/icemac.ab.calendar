@@ -16,17 +16,17 @@ SPECIAL_CLASS_MAPPING = {
 def render_event(event, show_datetime):
     result = []
     if show_datetime:
-        if event.with_time and event.has_text():
+        if not event.whole_day: # and event.has_text():
             format_string = '%H:%M Uhr'
         else:
             format_string = ''
         result.append('  <dt>%s</dt>' % (
             event.datetime.strftime(format_string)))
     result.append('  <dd')
-    css_class = SPECIAL_CLASS_MAPPING.get(event.special)
+    css_class = SPECIAL_CLASS_MAPPING.get(event.special_event)
     if css_class:
         result.append('    class="%s"' % css_class)
-    result.append('  >%s</dd>' % event.text)
+    result.append('  >%s</dd>' % event.getText())
     return '\n'.join(result)
 
 
@@ -79,7 +79,7 @@ class Table(Calendar):
                 self.write('<span>%s</span>', day.day)
                 found_events_for_day = False
                 for ev in events[:]:
-                    if ev.date != day:
+                    if ev.datetime.date() != day:
                         # events are sorted, so we can break on day in future
                         break
                     # remove day from list to print to keep for loop short

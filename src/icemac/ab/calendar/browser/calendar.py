@@ -43,7 +43,9 @@ class Calendar(object):
         self.month = gocept.month.Month.current()
         self.form = SelectorForm(self, self.request)
         self.form.update()
-        events = []
+        events = [
+            icemac.ab.calendar.browser.renderer.interfaces.IEventDescription(x)
+            for x in self.context.get_events(self.month)]
         self.calendar = icemac.ab.calendar.browser.renderer.table.Table(
             self.month, events)
 

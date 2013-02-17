@@ -38,6 +38,7 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         super(CalendarFTests, self).setUp()
         self.browser = Browser()
         self.browser.login('cal-visitor')
+        self.browser.handleErrors = False
         self.browser.open('http://localhost/ab/++attribute++calendar')
 
     def test_displays_current_month_by_default(self):
@@ -52,6 +53,27 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertIn('May 2003', self.browser.contents)
         self.assertEqual('05/2003', browser.getControl('month').value)
         self.assertEqual(['Month changed.'], browser.get_messages())
+
+    def test_shows_events_belonging_to_month(self):
+        from datetime import datetime, timedelta
+        from pytz import utc
+        import transaction
+        now = datetime.now(tz=utc)
+        self.create_event(alternative_title=u'foo bar', datetime=now)
+        self.create_event(alternative_title=u'baz qux',
+                          datetime=now + timedelta(days=31))
+        transaction.commit()
+        browser = self.browser
+        browser.handleErrors = False
+        browser.reload()
+        self.assertIn('foo bar', browser.contents)
+        self.assertNotIn('baz qux', browser.contents)
+
+    def test_respects_language_of_request_in_hypenation(self):
+        self.fail('nyi')  # Test using mock
+
+    def test_respects_timezone_of_user(self):
+        self.fail('nyi')  # Test using mock
 
 
 class EventDescriptionMixIn(icemac.ab.calendar.testing.ZODBTestCase):

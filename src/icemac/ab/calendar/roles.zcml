@@ -97,5 +97,9 @@
      role="icemac.ab.calendar.Visitor"
      permission="icemac.ab.calendar.ViewCategory"
      />
+  <grant
+     role="icemac.ab.calendar.Visitor"
+     permission="icemac.ab.calendar.ViewEvent"
+     />
 
 </configure>

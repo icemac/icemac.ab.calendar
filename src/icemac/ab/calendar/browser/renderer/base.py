@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2010-2013 Michael Howitz
 # See also LICENSE.txt
-import datetime
 from cStringIO import StringIO
+import datetime
+import gocept.month
 
 
 class Calendar(object):
@@ -18,16 +19,17 @@ class Calendar(object):
         self.only_single_events = only_single_events
 
     def month_events(self):
-        events = []
-        for event in self.events:
-            if isinstance(event, Event):
-                events.append(event)
-            else:
-                if self.only_single_events:
-                    continue
-                for ev in event.create_events(self.month):
-                    events.append(ev)
-        return events
+        # events = []
+        # for event in self.events:
+        #     if isinstance(event, Event):
+        #         events.append(event)
+        #     else:
+        #         if self.only_single_events:
+        #             continue
+        #         for ev in event.create_events(self.month):
+        #             events.append(ev)
+        # return events
+        return self.events
 
     @property
     def max_date(self):
@@ -40,8 +42,7 @@ class Calendar(object):
     def clean_events(self, events):
         result = []
         for event in events[:]:
-            if gocept.month.Month(event.datetime.year,
-                                  event.datetime.year) != self.month:
+            if event.datetime not in self.month:
                 continue
             competitor_events = [ev for ev in events
                                  if (ev != event and
