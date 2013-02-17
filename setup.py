@@ -43,8 +43,9 @@ setuptools.setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'gocept.month >= 1.2.dev0',
         # 'icemac.ab.locales > 0.11',
+        'Pyphen',
+        'gocept.month >= 1.2.dev0',
         'icemac.addressbook >= 1.9.1.dev0',
         'setuptools',
         ],

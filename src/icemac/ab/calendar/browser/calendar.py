@@ -5,8 +5,12 @@ from .resource import calendar_css
 from icemac.addressbook.i18n import _
 import datetime
 import gocept.month
+import grokcore.component as grok
+import icemac.ab.calendar.browser.renderer.interfaces
 import icemac.ab.calendar.browser.renderer.table
+import icemac.ab.calendar.interfaces
 import icemac.addressbook.browser.base
+import pyphen
 import z3c.form.field
 import z3c.formui.form
 import zope.interface
@@ -48,3 +52,30 @@ class Calendar(object):
 
     def render_form(self):
         return self.form.render()
+
+
+class EventDescription(grok.Adapter):
+    """Adapter from Event to EventDescription needed by renderer."""
+
+    grok.context(icemac.ab.calendar.interfaces.IEvent)
+    grok.implements(
+        icemac.ab.calendar.browser.renderer.interfaces.IEventDescription)
+
+
+    def __init__(self, event):
+        self.kind = event.category
+        self.datetime = event.datetime
+        self.prio = 0
+        self.whole_day = False
+        self.special_event = None
+        self._text = event.alternative_title
+
+    def getText(self, lang='en'):
+        text = u''
+        if self._text:
+            text = self._text
+        elif self.kind:
+            text = self.kind.title
+        dic = pyphen.Pyphen(lang=lang)
+        return ' '.join([dic.inserted(word, '&shy;')
+                         for word in text.split()])

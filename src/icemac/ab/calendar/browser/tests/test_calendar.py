@@ -1,4 +1,6 @@
+from mock import Mock
 import icemac.ab.calendar.testing
+import unittest
 
 
 class CalendarSecurity(icemac.ab.calendar.testing.BrowserTestCase):
@@ -50,3 +52,57 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertIn('May 2003', self.browser.contents)
         self.assertEqual('05/2003', browser.getControl('month').value)
         self.assertEqual(['Month changed.'], browser.get_messages())
+
+
+class EventDescriptionMixIn(icemac.ab.calendar.testing.ZODBTestCase):
+    """Mix-in for testing ..calendar.EventDescription."""
+
+    def _makeOne(self, **kw):
+        from icemac.ab.calendar.browser.renderer.interfaces import (
+            IEventDescription)
+        event = self.create_event(**kw)
+        self.event_description = IEventDescription(event)
+
+
+class EventDescriptionTests(EventDescriptionMixIn,
+                            icemac.ab.calendar.testing.ZODBTestCase):
+    """Testing ..calendar.EventDescription."""
+
+    def test_EventDescription_implements_IEventDescription(self):
+        from zope.interface.verify import verifyObject
+        from icemac.ab.calendar.browser.renderer.interfaces import (
+            IEventDescription)
+        from icemac.ab.calendar.browser.calendar import EventDescription
+
+        self.assertTrue(verifyObject(
+            IEventDescription, EventDescription(self.create_event())))
+
+
+class EventDescription_getText_Tests(EventDescriptionMixIn,
+                                     icemac.ab.calendar.testing.ZODBTestCase):
+    """Testing ..calendar.EventDescription.getText()."""
+
+    def callMUT(self, **kw):
+        return self.event_description.getText(**kw)
+
+    def test_returns_alternative_title(self):
+        category = self.create_category(u'birthday')
+        self._makeOne(alternative_title=u'foo bar', category=category)
+        self.assertEqual(u'foo bar', self.callMUT())
+
+    def test_returns_category_title_if_alternative_title_is_not_set(self):
+        self._makeOne(category=self.create_category(u'foo'))
+        self.assertEqual(u'foo', self.callMUT())
+
+    def test_returns_empty_if_neither_alternative_title_nor_category_is_set(
+            self):
+        self._makeOne()
+        self.assertEqual(u'', self.callMUT())
+
+    def test_getText_returns_hyphenated_defaulting_to_english(self):
+        self._makeOne(alternative_title=u'birthday')
+        self.assertEqual(u'birth&shy;day', self.callMUT())
+
+    def test_getText_returns_hyphenated_respecting_set_language(self):
+        self._makeOne(alternative_title=u'Geburtstag')
+        self.assertEqual(u'Ge&shy;burts&shy;tag', self.callMUT(lang='de'))
