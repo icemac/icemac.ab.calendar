@@ -7,7 +7,7 @@ import icemac.ab.calendar.testing
 class CalendarUTests(unittest.TestCase):
     """Unit testing ..calendar.Calendar."""
 
-    def test_calendar_implements_ICalendar_interface(self):
+    def test_calendar_fulfills_ICalendar_interface(self):
         from zope.interface.verify import verifyObject
         from icemac.ab.calendar.interfaces import ICalendar
         from icemac.ab.calendar.calendar import Calendar
