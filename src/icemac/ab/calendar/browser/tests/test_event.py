@@ -20,23 +20,36 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
                          self.browser.url)
 
     def test_event_can_be_added_and_is_shown_in_calendar(self):
+        from datetime import date, time, datetime
         from icemac.addressbook.testing import get_messages
-        self.browser.handleErrors = False
         self.browser.getLink('event').click()
-        self.browser.getControl('date and time').value = '12/01/17 16:32'
-        self.browser.getControl('event category').displayValue = ['wedding day']
+        dt = datetime.combine(date.today(), time(8, 32)).strftime(
+            '%y/%m/%d %H:%M')
+        self.browser.getControl('date and time').value = dt
+        self.browser.getControl('event category').displayValue = [
+            'wedding day']
         self.browser.getControl('Add', index=1).click()
+        self.assertEqual('http://localhost/ab/++attribute++calendar',
+                         self.browser.url)
         self.assertEqual(
             ['"wedding day" added.'], get_messages(self.browser))
         # New event shows up in calendar:
-        self.assertIn('birthday', self.browser.contents)
+        self.assertIn('08:32', self.browser.contents)
 
     def test_event_can_be_edited(self):
-        pass
+        self.fail('nyi')
 
     def test_event_can_be_deleted(self):
-        pass
+        self.fail('nyi')
 
 
 class EventSecurity(icemac.ab.calendar.testing.BrowserTestCase):
     """Security tests for categories."""
+
+    def test_visitor_is_not_able_to_add_events(self):
+        # Check url only
+        self.fail('nyi')
+
+    def test_visitor_is_not_able_to_edit_events(self):
+        # Check url only
+        self.fail('nyi')

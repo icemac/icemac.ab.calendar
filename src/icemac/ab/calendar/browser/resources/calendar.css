@@ -27,13 +27,17 @@ table.calendar td {
     height: 70px;
 }
 
-table.calendar td span {
+table.calendar td span.number {
     float: right;
     font-weight: bold;
 }
 
 table.calendar td dl {
     clear: right;
+}
+
+table.calendar td dl dd {
+    margin-left: 15px;
 }
 
 table.calendar td dl dd.red {

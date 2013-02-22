@@ -3,7 +3,10 @@
 # See also LICENSE.txt
 from .base import Calendar
 from .interfaces import AUSFALL, INTERN
+from icemac.addressbook.i18n import _
 import datetime
+import icemac.addressbook.browser.base
+import zope.component
 
 
 SPECIAL_CLASS_MAPPING = {
@@ -13,21 +16,30 @@ SPECIAL_CLASS_MAPPING = {
     }
 
 
-def render_event(event, show_datetime):
-    result = []
-    if show_datetime:
-        if not event.whole_day: # and event.has_text():
-            format_string = '%H:%M Uhr'
-        else:
-            format_string = ''
-        result.append('  <dt>%s</dt>' % (
-            event.datetime.strftime(format_string)))
-    result.append('  <dd')
-    css_class = SPECIAL_CLASS_MAPPING.get(event.special_event)
-    if css_class:
-        result.append('    class="%s"' % css_class)
-    result.append('  >%s</dd>' % event.getText())
-    return '\n'.join(result)
+class TableEvent(icemac.addressbook.browser.base.BaseView):
+    """View to render an event in the table."""
+
+    show_time = True
+    action_class = 'edit'
+    action_link = _('Edit')
+
+    def time(self):
+        if self.context.whole_day: # and not event.has_text():
+            return ''
+        formatter = self.request.locale.dates.getFormatter('time', 'full')
+        # Only the length 'full' has 'Uhr' in it, but it contains the
+        # timezone offset too which we do not want to display here:
+        time= ' '.join(formatter.format(self.context.datetime).split(' ')[:-1])
+        return time
+
+    def dd_class(self):
+        return SPECIAL_CLASS_MAPPING.get(self.context.special_event)
+
+    def text(self):
+        return self.context.getText()
+
+    def action_url(self):
+        return self.url(self.context.context)
 
 
 class Table(Calendar):
@@ -76,7 +88,7 @@ class Table(Calendar):
             prev_datetime = None
             self.write('<td class="%s">', day.strftime('%A'))
             if day in self.month:
-                self.write('<span>%s</span>', day.day)
+                self.write('<span class="number">%s</span>', day.day)
                 found_events_for_day = False
                 for ev in events[:]:
                     if ev.datetime.date() != day:
@@ -87,7 +99,10 @@ class Table(Calendar):
                     if not found_events_for_day:
                         self.write('<dl>')
                         found_events_for_day = True
-                    self.write(render_event(ev, ev.datetime!=prev_datetime))
+                    view = zope.component.getMultiAdapter(
+                        (ev, self.request), name='table-event')
+                    view.show_time = (ev.datetime != prev_datetime)
+                    self.write(view())
                     prev_datetime = ev.datetime
                 if found_events_for_day:
                     self.write('</dl>')

@@ -12,6 +12,8 @@ INTERN = 'intern'
 class IEventDescription(zope.interface.Interface):
     """Description of a single event which can be rendered."""
 
+    context = zope.interface.Attribute('IEvent this description is based on.')
+
     kind = zope.interface.Attribute('event kind')
     datetime = zope.interface.Attribute('datetime.datetime object')
     prio = zope.interface.Attribute(

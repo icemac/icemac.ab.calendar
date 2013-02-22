@@ -6,20 +6,28 @@ import unittest
 class CalendarSecurity(icemac.ab.calendar.testing.BrowserTestCase):
     """Security tests for the calendar."""
 
-    def test_visitor_is_able_to_access_the_calendar(self):
+    def setUp(self):
         from icemac.addressbook.testing import Browser
-        from mechanize import LinkNotFoundError
+        super(CalendarSecurity, self).setUp()
+        self.browser = Browser()
+        self.browser.login('cal-visitor')
+        self.browser.open('http://localhost/ab')
+        self.browser.getLink('Calendar').click()
 
-        browser = Browser()
-        browser.login('cal-visitor')
-        browser.open('http://localhost/ab')
-        browser.getLink('Calendar').click()
+    def test_visitor_is_able_to_access_the_calendar(self):
         self.assertEqual(
-            'http://localhost/ab/++attribute++calendar', browser.url)
-        self.assertIn('Sunday', browser.contents)
-        # Cannot add events:
+            'http://localhost/ab/++attribute++calendar', self.browser.url)
+        self.assertIn('Sunday', self.browser.contents)
+
+    def test_visitor_is_not_able_to_add_events(self):
+        from mechanize import LinkNotFoundError
+        # No link to add events:
         with self.assertRaises(LinkNotFoundError):
-            browser.getLink('event').click()
+            self.browser.getLink('event').click()
+
+    def test_visitor_is_not_able_to_edit_events(self):
+        # No edit link
+        self.fail('nyi')
 
     def test_anonymous_is_not_able_to_access_calendar(self):
         from icemac.addressbook.testing import Browser
@@ -64,7 +72,6 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
                           datetime=now + timedelta(days=31))
         transaction.commit()
         browser = self.browser
-        browser.handleErrors = False
         browser.reload()
         self.assertIn('foo bar', browser.contents)
         self.assertNotIn('baz qux', browser.contents)
@@ -76,7 +83,7 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         self.fail('nyi')  # Test using mock
 
 
-class EventDescriptionMixIn(icemac.ab.calendar.testing.ZODBTestCase):
+class EventDescriptionMixIn(object):
     """Mix-in for testing ..calendar.EventDescription."""
 
     def _makeOne(self, **kw):

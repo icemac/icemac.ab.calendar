@@ -47,7 +47,7 @@ class Calendar(object):
             icemac.ab.calendar.browser.renderer.interfaces.IEventDescription(x)
             for x in self.context.get_events(self.month)]
         self.calendar = icemac.ab.calendar.browser.renderer.table.Table(
-            self.month, events)
+            self.request, self.month, events)
 
     def render_calendar(self):
         return self.calendar.render()
@@ -63,14 +63,14 @@ class EventDescription(grok.Adapter):
     grok.implements(
         icemac.ab.calendar.browser.renderer.interfaces.IEventDescription)
 
-
-    def __init__(self, event):
-        self.kind = event.category
-        self.datetime = event.datetime
+    def __init__(self, context):
+        super(EventDescription, self).__init__(context)
+        self.kind = context.category
+        self.datetime = context.datetime
         self.prio = 0
         self.whole_day = False
         self.special_event = None
-        self._text = event.alternative_title
+        self._text = context.alternative_title
 
     def getText(self, lang='en'):
         text = u''

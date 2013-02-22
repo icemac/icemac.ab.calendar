@@ -25,5 +25,6 @@
      />
 
   <include file="event.zcml" />
+  <include package=".renderer" />
 
 </configure>

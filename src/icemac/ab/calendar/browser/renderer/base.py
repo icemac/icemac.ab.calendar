@@ -9,7 +9,10 @@ import gocept.month
 class Calendar(object):
     """Base of calendar view."""
 
-    def __init__(self, month, events, fd=None, only_single_events=False):
+    # XXX make me a multi adapter for (month, request),
+    # Adapter can get the events from the calendar utility.
+    def __init__(self, request, month, events, fd=None, only_single_events=False):
+        self.request = request
         self.month = month
         self.events = events
         if fd is None:
@@ -46,7 +49,7 @@ class Calendar(object):
                 continue
             competitor_events = [ev for ev in events
                                  if (ev != event and
-                                     ev.id == event.id and
+                                     ev.kind == event.kind and
                                      ev.datetime == event.datetime)]
             if any([ev.prio > event.prio for ev in competitor_events]):
                 continue

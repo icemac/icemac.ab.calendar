@@ -1,0 +1,15 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="icemac.addressbook">
+
+  <browser:page
+     for=".interfaces.IEventDescription"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="table-event"
+     template="table_event.pt"
+     class=".table.TableEvent"
+     permission="icemac.ab.calendar.ViewCalendar"
+     />
+
+</configure>
