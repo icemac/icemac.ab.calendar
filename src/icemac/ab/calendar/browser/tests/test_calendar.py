@@ -79,9 +79,6 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
     def test_respects_language_of_request_in_hypenation(self):
         self.fail('nyi')  # Test using mock
 
-    def test_respects_timezone_of_user(self):
-        self.fail('nyi')  # Test using mock
-
 
 class EventDescriptionMixIn(object):
     """Mix-in for testing ..calendar.EventDescription."""
