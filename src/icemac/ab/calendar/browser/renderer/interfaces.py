@@ -9,6 +9,13 @@ AUSFALL = 'ausfall'
 INTERN = 'intern'
 
 
+class IRenderer(zope.interface.Interface):
+    """Renderer for a specific calendar view."""
+
+    def __call__():
+        """Return the rendered calendar."""
+
+
 class IEventDescription(zope.interface.Interface):
     """Description of a single event which can be rendered."""
 

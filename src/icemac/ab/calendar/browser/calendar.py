@@ -13,6 +13,7 @@ import icemac.addressbook.browser.base
 import pyphen
 import z3c.form.field
 import z3c.formui.form
+import zope.component
 import zope.interface
 
 
@@ -46,11 +47,13 @@ class Calendar(object):
         events = [
             icemac.ab.calendar.browser.renderer.interfaces.IEventDescription(x)
             for x in self.context.get_events(self.month)]
-        self.calendar = icemac.ab.calendar.browser.renderer.table.Table(
-            self.request, self.month, events)
+        self.renderer = zope.component.getMultiAdapter(
+            (self.month, self.request, events),
+            icemac.ab.calendar.browser.renderer.interfaces.IRenderer,
+            name='table')
 
     def render_calendar(self):
-        return self.calendar.render()
+        return self.renderer()
 
     def render_form(self):
         return self.form.render()

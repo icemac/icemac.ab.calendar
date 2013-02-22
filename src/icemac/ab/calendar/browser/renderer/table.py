@@ -5,6 +5,7 @@ from .base import Calendar
 from .interfaces import AUSFALL, INTERN
 from icemac.addressbook.i18n import _
 import datetime
+import grokcore.component as grok
 import icemac.addressbook.browser.base
 import zope.component
 
@@ -43,10 +44,11 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
 
 
 class Table(Calendar):
-    """Tablular display of a calendar."""
+    """Tabular display of a calendar."""
 
-    def __init__(self, *args, **kw):
-        super(Table, self).__init__(*args, **kw)
+    grok.name('table')
+
+    def update(self):
         first_of_month = self.month.firstOfMonth()
         if first_of_month.isoweekday() == 7:
             self.first_table_day = first_of_month
@@ -111,3 +113,5 @@ class Table(Calendar):
         self.write('  </tbody>')
         self.write('</table>')
         return self.fd.getvalue()
+
+

@@ -4,22 +4,26 @@
 from cStringIO import StringIO
 import datetime
 import gocept.month
+import grokcore.component as grok
+import icemac.ab.calendar.browser.renderer.interfaces
+import icemac.addressbook.browser.interfaces
 
 
-class Calendar(object):
+class Calendar(grok.MultiAdapter):
     """Base of calendar view."""
 
-    # XXX make me a multi adapter for (month, request),
-    # Adapter can get the events from the calendar utility.
-    def __init__(self, request, month, events, fd=None, only_single_events=False):
+    grok.baseclass()
+    grok.adapts(
+        gocept.month.IMonth,
+        icemac.addressbook.browser.interfaces.IAddressBookLayer,
+        list)
+    grok.implements(icemac.ab.calendar.browser.renderer.interfaces.IRenderer)
+
+    def __init__(self, month, request, events):
         self.request = request
         self.month = month
         self.events = events
-        if fd is None:
-            # XXX Is there a case where we really want fd to be not None?
-            fd = StringIO()
-        self.fd = fd
-        self.only_single_events = only_single_events
+        self.fd = StringIO()
 
     def month_events(self):
         # events = []
@@ -64,5 +68,12 @@ class Calendar(object):
     def write(self, string, *args):
         self.fd.write("%s\n" % (string.encode('utf-8') % args))
 
+    def update(self):
+        pass
+
     def render(self):
-        raise NotImplementedError
+        raise NotImplementedError()
+
+    def __call__(self):
+        self.update()
+        return self.render()

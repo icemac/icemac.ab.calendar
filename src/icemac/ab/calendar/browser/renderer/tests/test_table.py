@@ -3,22 +3,32 @@ import icemac.ab.calendar.testing
 import unittest
 
 
-class TableTests(icemac.ab.calendar.testing.ZCMLTestCase):
-    """Testing ..table.Table."""
+class TableUTests(unittest.TestCase):
+    """Unit testing ..table.Table."""
+
+    def test_Table_fulfills_IRenderer_interface(self):
+        from zope.interface.verify import verifyObject
+        from ..interfaces import IRenderer
+        from ..table import Table
+        self.assertTrue(verifyObject(IRenderer, Table(None, None, None)))
+
+
+class TableFTests(icemac.ab.calendar.testing.ZCMLTestCase):
+    """Functional testing ..table.Table."""
 
     def setUp(self):
         from icemac.addressbook.browser.interfaces import IAddressBookLayer
         from zope.interface import alsoProvides
         from zope.publisher.browser import TestRequest
-        super(TableTests, self).setUp()
+        super(TableFTests, self).setUp()
         self.request = TestRequest()
         alsoProvides(self.request, IAddressBookLayer)
 
     def callVUT(self, events):
         from ..table import Table
         from gocept.month import Month
-        table = Table(self.request, Month(2, 2013), events)
-        return table.render()
+        table = Table(Month(2, 2013), self.request, events)
+        return table()
 
     def getETree(self, html):
         from lxml.etree import HTML
