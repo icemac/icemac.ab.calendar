@@ -16,6 +16,10 @@ class IRenderer(zope.interface.Interface):
         """Return the rendered calendar."""
 
 
+class UnknownLanguageError(LookupError):
+    """Error indicating an unknown laguage."""
+
+
 class IEventDescription(zope.interface.Interface):
     """Description of a single event which can be rendered."""
 
@@ -32,5 +36,10 @@ class IEventDescription(zope.interface.Interface):
     special_event = zope.interface.Attribute(
         'One of [AUSFALL, INTERN, None].')
 
-    def getText(lang='en'):
-        """Textual description of the event, hyphenated for HTML."""
+    def getText(lang=None):
+        """Textual description of the event.
+
+        If `lang` is not `None` a hyphenation dict for this language is
+        looked up. This might raise a `LookupError`. Otherwise the text is
+        hyphenated for HTML.
+        """

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2013 Michael Howitz
 # See also LICENSE.txt
+from .renderer.interfaces import UnknownLanguageError
 from .resource import calendar_css
 from icemac.addressbook.i18n import _
 import datetime
@@ -75,12 +76,19 @@ class EventDescription(grok.Adapter):
         self.special_event = None
         self._text = context.alternative_title
 
-    def getText(self, lang='en'):
+    def getText(self, lang=None):
+        if lang is not None:
+            # Fail early if we cannot hythen the desired language:
+            try:
+                dic = pyphen.Pyphen(lang=lang)
+            except KeyError:
+                raise UnknownLanguageError()
         text = u''
         if self._text:
             text = self._text
         elif self.kind:
             text = self.kind.title
-        dic = pyphen.Pyphen(lang=lang)
-        return ' '.join([dic.inserted(word, '&shy;')
-                         for word in text.split()])
+        if lang is not None:
+            text = ' '.join([dic.inserted(word, '&shy;')
+                             for word in text.split()])
+        return text

@@ -63,9 +63,6 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertIn('foo bar', browser.contents)
         self.assertNotIn('baz qux', browser.contents)
 
-    def test_respects_language_of_request_in_hypenation(self):
-        self.fail('nyi')  # Test using mock
-
 
 class EventDescriptionMixIn(object):
     """Mix-in for testing ..calendar.EventDescription."""
@@ -112,9 +109,15 @@ class EventDescription_getText_Tests(EventDescriptionMixIn,
         self._makeOne()
         self.assertEqual(u'', self.callMUT())
 
-    def test_getText_returns_hyphenated_defaulting_to_english(self):
+    def test_getText_returns_not_hyphenated_text_by_default(self):
         self._makeOne(alternative_title=u'birthday')
-        self.assertEqual(u'birth&shy;day', self.callMUT())
+        self.assertEqual(u'birthday', self.callMUT())
+
+    def test_getText_raises_UnknownLanguageError_for_unknown_languages(self):
+        from ..renderer.interfaces import UnknownLanguageError
+        self._makeOne()
+        with self.assertRaises(UnknownLanguageError):
+            self.callMUT(lang='Clingon')
 
     def test_getText_returns_hyphenated_respecting_set_language(self):
         self._makeOne(alternative_title=u'Geburtstag')
