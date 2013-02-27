@@ -39,7 +39,7 @@ class Calendar(object):
     def update(self):
         calendar_css.need()
         # The following assignment only sets the default value,
-        # `self.form.update()` writes the value the user entered to
+        # `self.form.update()` writes the value the user entered on
         # `self.month`.
         self.month = gocept.month.Month.current()
         self.form = SelectorForm(self, self.request)
