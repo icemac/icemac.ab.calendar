@@ -6,29 +6,26 @@ import unittest
 class CalendarSecurity(icemac.ab.calendar.testing.BrowserTestCase):
     """Security tests for the calendar."""
 
-    def setUp(self):
-        from icemac.addressbook.testing import Browser
-        super(CalendarSecurity, self).setUp()
-        self.browser = Browser()
-        self.browser.login('cal-visitor')
-        self.browser.open('http://localhost/ab')
-        self.browser.getLink('Calendar').click()
-
     def test_visitor_is_able_to_access_the_calendar(self):
+        browser = self.get_browser('cal-visitor')
+        browser.open('http://localhost/ab')
+        browser.getLink('Calendar').click()
         self.assertEqual(
-            'http://localhost/ab/++attribute++calendar', self.browser.url)
-        self.assertIn('Sunday', self.browser.contents)
+            'http://localhost/ab/++attribute++calendar', browser.url)
+        self.assertIn('Sunday', browser.contents)
 
     def test_visitor_is_not_able_to_add_events(self):
         from mechanize import LinkNotFoundError
+        browser = self.get_browser('cal-visitor')
+        browser.open('http://localhost/ab/++attribute++calendar')
         # No link to add events:
         with self.assertRaises(LinkNotFoundError):
-            self.browser.getLink('event').click()
+            browser.getLink('event').click()
 
     def test_anonymous_is_not_able_to_access_calendar(self):
         from icemac.addressbook.testing import Browser
         from zope.security.interfaces import Unauthorized
-        browser = Browser()
+        browser = self.get_browser()
         browser.handleErrors = False  # needed to catch exception
         with self.assertRaises(Unauthorized):
             browser.open('http://localhost/ab/++attribute++calendar')
@@ -37,24 +34,19 @@ class CalendarSecurity(icemac.ab.calendar.testing.BrowserTestCase):
 class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
     """Testing ..calendar.Calendar."""
 
-    def setUp(self):
-        from icemac.addressbook.testing import Browser
-        super(CalendarFTests, self).setUp()
-        self.browser = Browser()
-        self.browser.login('cal-visitor')
-        self.browser.handleErrors = False
-        self.browser.open('http://localhost/ab/++attribute++calendar')
-
     def test_displays_current_month_by_default(self):
         import datetime
+        browser = self.get_browser('cal-visitor')
+        browser.open('http://localhost/ab/++attribute++calendar')
         current_month = datetime.date.today().strftime('%B %Y')
-        self.assertIn(current_month, self.browser.contents)
+        self.assertIn(current_month, browser.contents)
 
     def test_can_switch_to_entered_month(self):
-        browser = self.browser
+        browser = self.get_browser('cal-visitor')
+        browser.open('http://localhost/ab/++attribute++calendar')
         browser.getControl('month').value = '05/2003'
         browser.getControl('Apply').click()
-        self.assertIn('May 2003', self.browser.contents)
+        self.assertIn('May 2003', browser.contents)
         self.assertEqual('05/2003', browser.getControl('month').value)
         self.assertEqual(['Month changed.'], browser.get_messages())
 
@@ -66,9 +58,8 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         self.create_event(alternative_title=u'foo bar', datetime=now)
         self.create_event(alternative_title=u'baz qux',
                           datetime=now + timedelta(days=31))
-        transaction.commit()
-        browser = self.browser
-        browser.reload()
+        browser = self.get_browser('cal-visitor')
+        browser.open('http://localhost/ab/++attribute++calendar')
         self.assertIn('foo bar', browser.contents)
         self.assertNotIn('baz qux', browser.contents)
 
