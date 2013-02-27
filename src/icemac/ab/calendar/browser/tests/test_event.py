@@ -1,17 +1,19 @@
 import icemac.ab.calendar.testing
 
+def get_datetime_today_8_32_am():
+    from datetime import date, time, datetime
+    from pytz import utc
+    return datetime.combine(date.today(), time(8, 32, tzinfo=utc))
+
 
 class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
     """CRUD testing for ..event.*"""
 
     def setUp(self):
-        from datetime import date, time, datetime
-        from icemac.addressbook.testing import Browser
-        from pytz import utc
         super(EventCRUD, self).setUp()
         self.create_category(u'birthday')
         self.create_category(u'wedding day')
-        self.datetime = datetime.combine(date.today(), time(8, 32, tzinfo=utc))
+        self.datetime = get_datetime_today_8_32_am()
         self.formatted_datetime = self.datetime.strftime('%y/%m/%d %H:%M')
         self.browser = self.get_browser('cal-editor')
         self.browser.open('http://localhost/ab/++attribute++calendar')
@@ -67,6 +69,11 @@ class EventSecurity(icemac.ab.calendar.testing.BrowserTestCase):
         # Check url only
         self.fail('nyi')
 
-    def test_visitor_is_not_able_to_edit_events(self):
-        # Check url only
-        self.fail('nyi')
+    def test_visitor_is_able_to_view_edit_form_but_not_to_change(self):
+        event = self.create_event(datetime=get_datetime_today_8_32_am())
+        browser = self.get_browser('cal-visitor')
+        browser.open(
+            'http://localhost/ab/++attribute++calendar/%s' % event.__name__)
+        # There are no fields to edit and no delete button:
+        self.assertEqual(['form.buttons.apply', 'form.buttons.cancel'],
+                         browser.get_all_control_names())

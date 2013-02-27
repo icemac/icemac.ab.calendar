@@ -29,7 +29,7 @@
      layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
      name="index.html"
      class=".event.Edit"
-     permission="icemac.ab.calendar.EditEvent"
+     permission="icemac.ab.calendar.ViewCalendar"
      />
 
 </configure>
