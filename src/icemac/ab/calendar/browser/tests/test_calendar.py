@@ -25,10 +25,6 @@ class CalendarSecurity(icemac.ab.calendar.testing.BrowserTestCase):
         with self.assertRaises(LinkNotFoundError):
             self.browser.getLink('event').click()
 
-    def test_visitor_is_not_able_to_edit_events(self):
-        # No edit link
-        self.fail('nyi')
-
     def test_anonymous_is_not_able_to_access_calendar(self):
         from icemac.addressbook.testing import Browser
         from zope.security.interfaces import Unauthorized
