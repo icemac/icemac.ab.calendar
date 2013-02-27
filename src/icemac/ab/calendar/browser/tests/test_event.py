@@ -5,10 +5,14 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
     """CRUD testing for ..event.*"""
 
     def setUp(self):
+        from datetime import date, time, datetime
         from icemac.addressbook.testing import Browser
+        from pytz import utc
         super(EventCRUD, self).setUp()
         self.create_category(u'birthday')
         self.create_category(u'wedding day')
+        self.datetime = datetime.combine(date.today(), time(8, 32, tzinfo=utc))
+        self.formatted_datetime = self.datetime.strftime('%y/%m/%d %H:%M')
         self.browser = Browser()
         self.browser.login('cal-editor')
         self.browser.open('http://localhost/ab/++attribute++calendar')
@@ -20,14 +24,12 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
                          self.browser.url)
 
     def test_event_can_be_added_and_is_shown_in_calendar(self):
-        from datetime import date, time, datetime
         from icemac.addressbook.testing import get_messages
         self.browser.getLink('event').click()
-        dt = datetime.combine(date.today(), time(8, 32)).strftime(
-            '%y/%m/%d %H:%M')
-        self.browser.getControl('date and time').value = dt
-        self.browser.getControl('event category').displayValue = [
-            'wedding day']
+        self.browser.getControl(
+            'date and time').value = self.formatted_datetime
+        self.browser.getControl(
+            'event category').displayValue = ['wedding day']
         self.browser.getControl('Add', index=1).click()
         self.assertEqual('http://localhost/ab/++attribute++calendar',
                          self.browser.url)
@@ -37,7 +39,23 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertIn('08:32', self.browser.contents)
 
     def test_event_can_be_edited(self):
-        self.fail('nyi')
+        event = self.create_event(datetime=self.datetime)
+        browser = self.browser
+        browser.reload()
+        browser.getLink('Edit').click()
+        self.assertEqual(
+            'http://localhost/ab/++attribute++calendar/Event', browser.url)
+        self.assertEqual(
+            self.formatted_datetime, browser.getControl('date and time').value)
+        browser.getControl('event category').displayValue = ['wedding day']
+        browser.getControl('Apply').click()
+        self.assertEqual(
+            ['Data successfully updated.'], browser.get_messages())
+        self.assertEqual(
+            'http://localhost/ab/++attribute++calendar', browser.url)
+        browser.getLink('Edit').click()
+        self.assertEqual(['wedding day'],
+                         browser.getControl('event category').displayValue)
 
     def test_event_can_be_deleted(self):
         self.fail('nyi')
