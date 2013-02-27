@@ -1,5 +1,6 @@
 import icemac.ab.calendar.testing
 
+
 def get_datetime_today_8_32_am():
     from datetime import date, time, datetime
     from pytz import utc
@@ -15,34 +16,34 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.create_category(u'wedding day')
         self.datetime = get_datetime_today_8_32_am()
         self.formatted_datetime = self.datetime.strftime('%y/%m/%d %H:%M')
-        self.browser = self.get_browser('cal-editor')
-        self.browser.open('http://localhost/ab/++attribute++calendar')
 
     def test_navigation_to_calendar_is_possible(self):
-        self.browser.open('http://localhost/ab')
-        self.browser.getLink('Calendar').click()
+        browser = self.get_browser('cal-editor')
+        browser.open('http://localhost/ab')
+        browser.getLink('Calendar').click()
         self.assertEqual('http://localhost/ab/++attribute++calendar',
-                         self.browser.url)
+                         browser.url)
 
     def test_event_can_be_added_and_is_shown_in_calendar(self):
-        from icemac.addressbook.testing import get_messages
-        self.browser.getLink('event').click()
-        self.browser.getControl(
-            'date and time').value = self.formatted_datetime
-        self.browser.getControl(
-            'event category').displayValue = ['wedding day']
-        self.browser.getControl('Add', index=1).click()
-        self.assertEqual('http://localhost/ab/++attribute++calendar',
-                         self.browser.url)
+        browser = self.get_browser('cal-editor')
+        browser.open('http://localhost/ab/++attribute++calendar')
+        browser.getLink('event').click()
         self.assertEqual(
-            ['"wedding day" added.'], get_messages(self.browser))
+            'http://localhost/ab/++attribute++calendar/@@addEvent.html',
+            browser.url)
+        browser.getControl('date and time').value = self.formatted_datetime
+        browser.getControl('event category').displayValue = ['wedding day']
+        browser.getControl('Add', index=1).click()
+        self.assertEqual('http://localhost/ab/++attribute++calendar',
+                         browser.url)
+        self.assertEqual(['"wedding day" added.'], browser.get_messages())
         # New event shows up in calendar:
-        self.assertIn('08:32', self.browser.contents)
+        self.assertIn('08:32', browser.contents)
 
     def test_event_can_be_edited(self):
         event = self.create_event(datetime=self.datetime)
-        browser = self.browser
-        browser.reload()
+        browser = self.get_browser('cal-editor')
+        browser.open('http://localhost/ab/++attribute++calendar')
         browser.getLink('Edit').click()
         self.assertEqual(
             'http://localhost/ab/++attribute++calendar/Event', browser.url)
