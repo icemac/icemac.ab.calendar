@@ -59,8 +59,18 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertEqual(['wedding day'],
                          browser.getControl('event category').displayValue)
 
-    def test_event_can_be_deleted(self):
-        self.fail('nyi')
+    def test_event_can_be_deleted_after_confirmation(self):
+        event = self.create_event(datetime=self.datetime)
+        browser = self.get_browser('cal-editor')
+        browser.open(
+            'http://localhost/ab/++attribute++calendar/%s' % event.__name__)
+        browser.getControl('Delete').click()
+        self.assertIn('Do you really want to delete this event?',
+                      browser.contents)
+        browser.getControl('Yes, delete').click()
+        self.assertEqual(['"event" deleted.'], browser.get_messages())
+        self.assertEqual('http://localhost/ab/++attribute++calendar',
+                         browser.url)
 
 
 class EventSecurity(icemac.ab.calendar.testing.BrowserTestCase):
