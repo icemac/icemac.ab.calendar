@@ -13,8 +13,7 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.create_category(u'wedding day')
         self.datetime = datetime.combine(date.today(), time(8, 32, tzinfo=utc))
         self.formatted_datetime = self.datetime.strftime('%y/%m/%d %H:%M')
-        self.browser = Browser()
-        self.browser.login('cal-editor')
+        self.browser = self.get_browser('cal-editor')
         self.browser.open('http://localhost/ab/++attribute++calendar')
 
     def test_navigation_to_calendar_is_possible(self):
