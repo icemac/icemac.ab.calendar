@@ -66,9 +66,13 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
 class EventSecurity(icemac.ab.calendar.testing.BrowserTestCase):
     """Security tests for categories."""
 
-    def test_visitor_is_not_able_to_add_events(self):
-        # Check url only
-        self.fail('nyi')
+    def test_visitor_is_not_able_to_add_events_even_if_he_knows_the_url(self):
+        from mechanize import HTTPError
+        browser = self.get_browser('cal-visitor')
+        with self.assertRaises(HTTPError) as err:
+            browser.open(
+                'http://localhost/ab/++attribute++calendar/@@addEvent.html')
+        self.assertEqual('HTTP Error 403: Forbidden', str(err.exception))
 
     def test_visitor_is_able_to_view_edit_form_but_not_to_change(self):
         event = self.create_event(datetime=get_datetime_today_8_32_am())
