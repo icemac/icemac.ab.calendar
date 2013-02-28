@@ -2,7 +2,7 @@
 # Copyright (c) 2010-2013 Michael Howitz
 # See also LICENSE.txt
 from .base import Calendar
-from .interfaces import AUSFALL, INTERN
+from .interfaces import AUSFALL, INTERN, UnknownLanguageError
 from icemac.addressbook.i18n import _
 import datetime
 import grokcore.component as grok
@@ -37,7 +37,17 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
         return SPECIAL_CLASS_MAPPING.get(self.context.special_event)
 
     def text(self):
-        return self.context.getText()
+        locale = self.request.locale
+        try:
+            return self.context.getText(locale.getLocaleID())
+        except UnknownLanguageError:
+            # No hypenation dict for the locale id (e. g. de_DE):
+            try:
+                # Try only the language name:
+                return self.context.getText(locale.id.language)
+            except UnknownLanguageError:
+                # Disable hypenation for unknown languages:
+                return self.context.getText()
 
     def action_url(self):
         return self.url(self.context.context)
