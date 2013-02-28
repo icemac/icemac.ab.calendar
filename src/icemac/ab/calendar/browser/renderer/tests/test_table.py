@@ -62,6 +62,9 @@ class TableEventTests(unittest.TestCase):
     def test_renders_time_in_time_zone_of_user(self):
         self.fail('nyi')
 
+    def test_renders_Uhr_if_requested_language_is_German(self):
+        self.fail('nyi')
+
 
 class TableEvent_text_Tests(unittest.TestCase):
     """Testing ..table.TableEvent.text()."""
