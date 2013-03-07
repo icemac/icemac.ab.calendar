@@ -1,10 +1,12 @@
 # Copyright (c) 2013 Michael Howitz
 # See also LICENSE.txt
+import datetime
 import icemac.ab.calendar
 import icemac.ab.calendar.category
 import icemac.ab.calendar.event
 import icemac.addressbook.testing
 import icemac.addressbook.utils
+import pytz
 import unittest2 as unittest
 
 
@@ -15,6 +17,24 @@ ZODB_LAYER = icemac.addressbook.testing.ZODBLayer(
     'Calendar', ZCML_LAYER)
 TEST_BROWSER_LAYER = icemac.addressbook.testing.TestBrowserLayer(
     'Calendar', ZODB_LAYER)
+
+
+class TestMixIn(object):
+    """Helper methods which might be useful in all tests."""
+
+    def get_datetime(self, args, tzinfo=None):
+        """Create a datetime object.
+
+        `args` ... time tuple
+        If no `args` are given current time is returned.
+        If `tzinfo` is None, UTC is used.
+
+        """
+        if tzinfo is None:
+            tzinfo = pytz.utc
+        if args:
+            return datetime.datetime(*args, tzinfo=tzinfo)
+        return datetime.datetime.now(tz=tzinfo)
 
 
 class ZODBTestMixIn(object):
@@ -42,12 +62,12 @@ class ZODBTestMixIn(object):
                             parent='calendar', **kw)
 
 
-class ZCMLTestCase(unittest.TestCase):
+class ZCMLTestCase(unittest.TestCase, TestMixIn):
     """Test case for test which only need the ZCML registrations."""
     layer = ZCML_LAYER
 
 
-class ZODBTestCase(unittest.TestCase, ZODBTestMixIn):
+class ZODBTestCase(unittest.TestCase, TestMixIn, ZODBTestMixIn):
     """Test case for test which need the ZODB."""
     layer = ZODB_LAYER
 
