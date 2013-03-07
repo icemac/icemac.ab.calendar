@@ -38,7 +38,7 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         import datetime
         browser = self.get_browser('cal-visitor')
         browser.open('http://localhost/ab/++attribute++calendar')
-        current_month = datetime.date.today().strftime('%B %Y')
+        current_month = self.get_datetime().strftime('%B %Y')
         self.assertIn(current_month, browser.contents)
 
     def test_can_switch_to_entered_month(self):
@@ -51,10 +51,9 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertEqual(['Month changed.'], browser.get_messages())
 
     def test_shows_events_belonging_to_month(self):
-        from datetime import datetime, timedelta
-        from pytz import utc
+        from datetime import timedelta
         import transaction
-        now = datetime.now(tz=utc)
+        now = self.get_datetime()
         self.create_event(alternative_title=u'foo bar', datetime=now)
         self.create_event(alternative_title=u'baz qux',
                           datetime=now + timedelta(days=31))

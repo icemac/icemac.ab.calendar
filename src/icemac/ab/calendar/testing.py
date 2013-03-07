@@ -22,7 +22,7 @@ TEST_BROWSER_LAYER = icemac.addressbook.testing.TestBrowserLayer(
 class TestMixIn(object):
     """Helper methods which might be useful in all tests."""
 
-    def get_datetime(self, args, tzinfo=None):
+    def get_datetime(self, args=(), tzinfo=None):
         """Create a datetime object.
 
         `args` ... time tuple
@@ -72,7 +72,7 @@ class ZODBTestCase(unittest.TestCase, TestMixIn, ZODBTestMixIn):
     layer = ZODB_LAYER
 
 
-class BrowserTestCase(unittest.TestCase, ZODBTestMixIn):
+class BrowserTestCase(unittest.TestCase, TestMixIn, ZODBTestMixIn):
     """Test case for browser tests."""
     layer = TEST_BROWSER_LAYER
 

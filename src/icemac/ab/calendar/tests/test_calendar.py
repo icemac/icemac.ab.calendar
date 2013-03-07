@@ -19,17 +19,15 @@ class Calendar_get_events_FTests(icemac.ab.calendar.testing.ZODBTestCase):
     """Functional testing ..calendar.Calendar.get_events()"""
 
     def setUp(self):
-        from datetime import datetime
-        from pytz import utc
         super(Calendar_get_events_FTests, self).setUp()
         self.create_event(alternative_title=u'end Jan 2013',
-                          datetime=datetime(2013, 1, 31, 23, 59, tzinfo=utc))
+                          datetime=self.get_datetime((2013, 1, 31, 23, 59)))
         self.create_event(alternative_title=u'start Feb 2013',
-                          datetime=datetime(2013, 2, 1, 0, tzinfo=utc))
+                          datetime=self.get_datetime((2013, 2, 1, 0)))
         self.create_event(alternative_title=u'end Feb 2013',
-                          datetime=datetime(2013, 2, 28, 23, 59, tzinfo=utc))
+                          datetime=self.get_datetime((2013, 2, 28, 23, 59)))
         self.create_event(alternative_title=u'start Mar 2013',
-                          datetime=datetime(2013, 3, 1, 0, tzinfo=utc))
+                          datetime=self.get_datetime((2013, 3, 1, 0)))
 
     def callMUT(self, month, year, timezone=None):
         from gocept.month import Month
