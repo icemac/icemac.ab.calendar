@@ -4,10 +4,12 @@ import datetime
 import icemac.ab.calendar
 import icemac.ab.calendar.category
 import icemac.ab.calendar.event
+import icemac.addressbook.browser.interfaces
 import icemac.addressbook.testing
 import icemac.addressbook.utils
 import pytz
 import unittest2 as unittest
+import zope.publisher.browser
 
 
 ZCML_LAYER = icemac.addressbook.testing.ZCMLLayer(
@@ -36,6 +38,12 @@ class TestMixIn(object):
             return datetime.datetime(*args, tzinfo=tzinfo)
         return datetime.datetime.now(tz=tzinfo)
 
+    def get_request(self, **kw):
+        """Get a request object on the right skin layer."""
+        return zope.publisher.browser.TestRequest(
+            skin=icemac.addressbook.browser.interfaces.IAddressBookLayer,
+            **kw)
+
 
 class ZODBTestMixIn(object):
     """Mix-in methods for test cases using the ZODB."""
@@ -60,6 +68,10 @@ class ZODBTestMixIn(object):
         """Create a new event in the calendar."""
         return self._create(icemac.ab.calendar.event.Event,
                             parent='calendar', **kw)
+
+
+class UnitTestCase(unittest.TestCase, TestMixIn):
+    """Test case for unittests."""
 
 
 class ZCMLTestCase(unittest.TestCase, TestMixIn):

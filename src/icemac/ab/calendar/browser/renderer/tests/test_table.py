@@ -18,11 +18,8 @@ class TableFTests(icemac.ab.calendar.testing.ZCMLTestCase):
 
     def setUp(self):
         from icemac.addressbook.browser.interfaces import IAddressBookLayer
-        from zope.interface import alsoProvides
-        from zope.publisher.browser import TestRequest
         super(TableFTests, self).setUp()
-        self.request = TestRequest()
-        alsoProvides(self.request, IAddressBookLayer)
+        self.request = self.get_request()
 
     def callVUT(self, events):
         from ..table import Table
@@ -65,18 +62,17 @@ class TableEventTests(unittest.TestCase):
         self.fail('nyi')
 
 
-class TableEvent_text_Tests(unittest.TestCase):
+class TableEvent_text_Tests(icemac.ab.calendar.testing.UnitTestCase):
     """Testing ..table.TableEvent.text()."""
 
     def _make_one(self, lang):
         from ..table import TableEvent
         from ..interfaces import UnknownLanguageError
-        from zope.publisher.browser import TestRequest
         view = TableEvent()
         view.context = Mock()
         view.context.getText.side_effect = [
             UnknownLanguageError, UnknownLanguageError, sentinel.val]
-        view.request = TestRequest(HTTP_ACCEPT_LANGUAGE=lang)
+        view.request = self.get_request(HTTP_ACCEPT_LANGUAGE=lang)
         return view
 
     def test_tries_to_find_lang_code_getText_understands(self):
@@ -93,10 +89,9 @@ class TableEventFTests(icemac.ab.calendar.testing.ZODBTestCase):
         from ..interfaces import IEventDescription
         from icemac.addressbook.browser.interfaces import IAddressBookLayer
         from zope.component import getMultiAdapter
-        from zope.publisher.browser import TestRequest
         event_description = IEventDescription(event)
         if request is None:
-            request = TestRequest(skin=IAddressBookLayer)
+            request = self.get_request()
         view = getMultiAdapter(
             (event_description, request), name='table-event')
         return view()
