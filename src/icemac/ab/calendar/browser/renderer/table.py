@@ -23,6 +23,7 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
     show_time = True
     action_class = 'edit'
     action_link = _('Edit')
+    _action_url = None
 
     def time(self):
         if self.context.whole_day: # and not event.has_text():
@@ -50,7 +51,9 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
                 return self.context.getText()
 
     def action_url(self):
-        return self.url(self.context.context)
+        if self._action_url is None:
+            self._action_url = self.url(self.context.context)
+        return self._action_url
 
 
 class Table(Calendar):

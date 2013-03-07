@@ -63,18 +63,7 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertNotIn('baz qux', browser.contents)
 
 
-class EventDescriptionMixIn(object):
-    """Mix-in for testing ..calendar.EventDescription."""
-
-    def _makeOne(self, **kw):
-        from icemac.ab.calendar.browser.renderer.interfaces import (
-            IEventDescription)
-        event = self.create_event(**kw)
-        self.event_description = IEventDescription(event)
-
-
-class EventDescriptionUTests(EventDescriptionMixIn,
-                            icemac.ab.calendar.testing.ZODBTestCase):
+class EventDescriptionUTests(icemac.ab.calendar.testing.UnitTestCase):
     """Unit testing ..calendar.EventDescription."""
 
     def test_EventDescription_implements_IEventDescription(self):
@@ -83,61 +72,67 @@ class EventDescriptionUTests(EventDescriptionMixIn,
             IEventDescription)
         from icemac.ab.calendar.browser.calendar import EventDescription
 
-        self.assertTrue(verifyObject(
-            IEventDescription, EventDescription(self.create_event())))
+        event_description = self.get_event_description()
+        self.assertIsInstance(event_description, EventDescription)
+        self.assertTrue(verifyObject(IEventDescription, event_description))
 
 
-class EventDescriptionFTests(EventDescriptionMixIn,
-                                     icemac.ab.calendar.testing.ZODBTestCase):
+class EventDescriptionFTests(icemac.ab.calendar.testing.ZCMLTestCase):
     """Functional testing ..calendar.EventDescription.persons."""
 
     def test_persons_is_komma_separated_list_of_persons_in_ab_and_externals(
             self):
-        from icemac.addressbook.testing import create_person
-        ab = self.layer['addressbook']
-        p1 = create_person(ab, ab, u'Tester', first_name=u'Hans')
-        p2 = create_person(ab, ab, u'Koch', first_name=u'Fritz')
-        self._makeOne(persons=set([p1, p2]),
-                      external_persons=[u'Klaus Arkpe', u'Heiner Myer'])
+        from icemac.addressbook.person import Person
+        from icemac.addressbook.utils import create_obj
+        p1 = create_obj(Person, last_name=u'Tester', first_name=u'Hans')
+        p2 = create_obj(Person, last_name=u'Koch', first_name=u'Fritz')
+        event_description = self.get_event_description(
+            persons=set([p1, p2]),
+            external_persons=[u'Klaus Arkpe', u'Heiner Myer'])
         self.assertEqual(u'Hans Tester, Fritz Koch, Klaus Arkpe, Heiner Myer',
-                         self.event_description.persons)
+                         event_description.persons)
 
     def test_persons_is_emtpty_string_if_there_are_no_persons_assigned(self):
-        self._makeOne()
-        self.assertEqual(u'', self.event_description.persons)
+        self.assertEqual(u'', self.get_event_description().persons)
 
 
-class EventDescription_getText_Tests(EventDescriptionMixIn,
-                                     icemac.ab.calendar.testing.ZODBTestCase):
+class EventDescription_getText_Tests(icemac.ab.calendar.testing.UnitTestCase):
     """Testing ..calendar.EventDescription.getText()."""
 
-    def callMUT(self, **kw):
-        return self.event_description.getText(**kw)
+    def _makeOne(self, category_name=None, **kw):
+        from icemac.ab.calendar.category import Category
+        from icemac.addressbook.utils import create_obj
+        if category_name is not None:
+            kw['category'] = create_obj(Category, title=category_name)
+        return self.get_event_description(**kw)
+
+    def callMUT(self, event_description, **kw):
+        return event_description.getText(**kw)
 
     def test_returns_alternative_title(self):
-        category = self.create_category(u'birthday')
-        self._makeOne(alternative_title=u'foo bar', category=category)
-        self.assertEqual(u'foo bar', self.callMUT())
+        ed = self._makeOne(
+            category_name=u'birthday', alternative_title=u'foo bar')
+        self.assertEqual(u'foo bar', self.callMUT(ed))
 
     def test_returns_category_title_if_alternative_title_is_not_set(self):
-        self._makeOne(category=self.create_category(u'foo'))
-        self.assertEqual(u'foo', self.callMUT())
+        ed = self._makeOne(category_name=u'foo', alternative_title=None)
+        self.assertEqual(u'foo', self.callMUT(ed))
 
     def test_returns_empty_if_neither_alternative_title_nor_category_is_set(
             self):
-        self._makeOne()
-        self.assertEqual(u'', self.callMUT())
+        ed = self._makeOne(category=None, alternative_title=None)
+        self.assertEqual(u'', self.callMUT(ed))
 
     def test_getText_returns_not_hyphenated_text_by_default(self):
-        self._makeOne(alternative_title=u'birthday')
-        self.assertEqual(u'birthday', self.callMUT())
+        self.assertEqual(
+            u'birthday',
+            self.callMUT(self._makeOne(alternative_title=u'birthday')))
 
     def test_getText_raises_UnknownLanguageError_for_unknown_languages(self):
         from ..renderer.interfaces import UnknownLanguageError
-        self._makeOne()
         with self.assertRaises(UnknownLanguageError):
-            self.callMUT(lang='Clingon')
+            self.callMUT(self._makeOne(),lang='Clingon')
 
     def test_getText_returns_hyphenated_respecting_set_language(self):
-        self._makeOne(alternative_title=u'Geburtstag')
-        self.assertEqual(u'Ge&shy;burts&shy;tag', self.callMUT(lang='de'))
+        ed = self._makeOne(alternative_title=u'Geburtstag')
+        self.assertEqual(u'Ge&shy;burts&shy;tag', self.callMUT(ed, lang='de'))

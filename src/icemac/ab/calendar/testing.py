@@ -2,11 +2,13 @@
 # See also LICENSE.txt
 import datetime
 import icemac.ab.calendar
+import icemac.ab.calendar.browser.calendar
 import icemac.ab.calendar.category
 import icemac.ab.calendar.event
 import icemac.addressbook.browser.interfaces
 import icemac.addressbook.testing
 import icemac.addressbook.utils
+import mock
 import pytz
 import unittest2 as unittest
 import zope.publisher.browser
@@ -43,6 +45,20 @@ class TestMixIn(object):
         return zope.publisher.browser.TestRequest(
             skin=icemac.addressbook.browser.interfaces.IAddressBookLayer,
             **kw)
+
+    def get_event_description(self, time_tuple=(), **kw):
+        """Get an icemac.ab.calendar.browser.calendar.EventDescription.
+
+        time_tuple ... `now` if empty.
+        **kw ... attributes to be set on the event(!).
+        Does not actually create an event.
+
+        """
+        event = mock.MagicMock()
+        event.datetime = self.get_datetime(time_tuple)
+        for key, value in kw.items():
+            setattr(event, key, value)
+        return icemac.ab.calendar.browser.calendar.EventDescription(event)
 
 
 class ZODBTestMixIn(object):

@@ -32,18 +32,10 @@ class TableFTests(icemac.ab.calendar.testing.ZCMLTestCase):
         sugared_value = u'<div>' + html + u'</div>'
         return HTML(sugared_value)
 
-    def getEventDescription(self, time_tuple, **kw):
-        from ...calendar import EventDescription
-        event = MagicMock()
-        event.datetime = self.get_datetime(time_tuple)
-        for key, value in kw.items():
-            setattr(event, key, value)
-        return EventDescription(event)
-
     def test_two_events_at_the_same_time_are_rendered_with_one_time_dt(self):
-        event1 = self.getEventDescription(
+        event1 = self.get_event_description(
             (2013, 2, 22, 16, 14), alternative_title='event1')
-        event2 = self.getEventDescription(
+        event2 = self.get_event_description(
             (2013, 2, 22, 16, 14), alternative_title='event2')
         action_url = (
             'icemac.ab.calendar.browser.renderer.table.TableEvent.action_url')
@@ -82,21 +74,19 @@ class TableEvent_text_Tests(icemac.ab.calendar.testing.UnitTestCase):
                          view.context.getText.call_args_list)
 
 
-class TableEventFTests(icemac.ab.calendar.testing.ZODBTestCase):
+class TableEventFTests(icemac.ab.calendar.testing.ZCMLTestCase):
     """Functional testing ..table.TableEvent."""
 
-    def callVUT(self, event, request=None):
-        from ..interfaces import IEventDescription
-        from icemac.addressbook.browser.interfaces import IAddressBookLayer
+    def callVUT(self, event_description, request=None):
         from zope.component import getMultiAdapter
-        event_description = IEventDescription(event)
         if request is None:
             request = self.get_request()
         view = getMultiAdapter(
             (event_description, request), name='table-event')
+        view._action_url = 'url:'
         return view()
 
     def test_renders_person_names(self):
-        event = self.create_event(datetime=self.get_datetime(),
-                                  external_persons=[u'Foo', u'Bar'])
-        self.assertIn('Foo, Bar', self.callVUT(event))
+        event_description = self.get_event_description(
+            external_persons=[u'Foo', u'Bar'])
+        self.assertIn('Foo, Bar', self.callVUT(event_description))
