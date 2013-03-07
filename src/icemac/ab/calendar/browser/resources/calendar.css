@@ -47,3 +47,8 @@ table.calendar td dl dd.red {
 table.calendar td dl dd.gray {
     color: #444444;
 }
+
+table.calendar td dl dd .persons {
+    display: block;
+    margin-left: 10px;
+}

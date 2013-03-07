@@ -1,4 +1,4 @@
-from mock import Mock, patch, sentinel, call
+from mock import Mock, MagicMock, patch, sentinel, call
 import icemac.ab.calendar.testing
 import unittest
 
@@ -37,9 +37,8 @@ class TableFTests(icemac.ab.calendar.testing.ZCMLTestCase):
 
     def getEventDescription(self, time_tuple, **kw):
         from ...calendar import EventDescription
-        from datetime import datetime
-        event = Mock()
-        event.datetime = datetime(*time_tuple)
+        event = MagicMock()
+        event.datetime = self.get_datetime(time_tuple)
         for key, value in kw.items():
             setattr(event, key, value)
         return EventDescription(event)
@@ -85,3 +84,24 @@ class TableEvent_text_Tests(unittest.TestCase):
         self.assertEqual(sentinel.val, view.text())
         self.assertEqual([call(u'de_DE'), call(u'de'), call()],
                          view.context.getText.call_args_list)
+
+
+class TableEventFTests(icemac.ab.calendar.testing.ZODBTestCase):
+    """Functional testing ..table.TableEvent."""
+
+    def callVUT(self, event, request=None):
+        from ..interfaces import IEventDescription
+        from icemac.addressbook.browser.interfaces import IAddressBookLayer
+        from zope.component import getMultiAdapter
+        from zope.publisher.browser import TestRequest
+        event_description = IEventDescription(event)
+        if request is None:
+            request = TestRequest(skin=IAddressBookLayer)
+        view = getMultiAdapter(
+            (event_description, request), name='table-event')
+        return view()
+
+    def test_renders_person_names(self):
+        event = self.create_event(datetime=self.get_datetime(),
+                                  external_persons=[u'Foo', u'Bar'])
+        self.assertIn('Foo, Bar', self.callVUT(event))

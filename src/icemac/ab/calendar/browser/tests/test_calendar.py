@@ -74,9 +74,9 @@ class EventDescriptionMixIn(object):
         self.event_description = IEventDescription(event)
 
 
-class EventDescriptionTests(EventDescriptionMixIn,
+class EventDescriptionUTests(EventDescriptionMixIn,
                             icemac.ab.calendar.testing.ZODBTestCase):
-    """Testing ..calendar.EventDescription."""
+    """Unit testing ..calendar.EventDescription."""
 
     def test_EventDescription_implements_IEventDescription(self):
         from zope.interface.verify import verifyObject
@@ -86,6 +86,26 @@ class EventDescriptionTests(EventDescriptionMixIn,
 
         self.assertTrue(verifyObject(
             IEventDescription, EventDescription(self.create_event())))
+
+
+class EventDescriptionFTests(EventDescriptionMixIn,
+                                     icemac.ab.calendar.testing.ZODBTestCase):
+    """Functional testing ..calendar.EventDescription.persons."""
+
+    def test_persons_is_komma_separated_list_of_persons_in_ab_and_externals(
+            self):
+        from icemac.addressbook.testing import create_person
+        ab = self.layer['addressbook']
+        p1 = create_person(ab, ab, u'Tester', first_name=u'Hans')
+        p2 = create_person(ab, ab, u'Koch', first_name=u'Fritz')
+        self._makeOne(persons=set([p1, p2]),
+                      external_persons=[u'Klaus Arkpe', u'Heiner Myer'])
+        self.assertEqual(u'Hans Tester, Fritz Koch, Klaus Arkpe, Heiner Myer',
+                         self.event_description.persons)
+
+    def test_persons_is_emtpty_string_if_there_are_no_persons_assigned(self):
+        self._makeOne()
+        self.assertEqual(u'', self.event_description.persons)
 
 
 class EventDescription_getText_Tests(EventDescriptionMixIn,

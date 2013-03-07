@@ -11,6 +11,7 @@ import icemac.ab.calendar.browser.renderer.interfaces
 import icemac.ab.calendar.browser.renderer.table
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.browser.base
+import itertools
 import pyphen
 import z3c.form.field
 import z3c.formui.form
@@ -75,6 +76,10 @@ class EventDescription(grok.Adapter):
         self.whole_day = False
         self.special_event = None
         self._text = context.alternative_title
+        self.persons = u', '.join(itertools.chain(
+            [icemac.addressbook.interfaces.IPersonName(x).get_name()
+             for x in (context.persons or [])],
+            (context.external_persons or [])))
 
     def getText(self, lang=None):
         if lang is not None:

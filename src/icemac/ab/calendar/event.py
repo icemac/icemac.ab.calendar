@@ -23,7 +23,9 @@ class Event(persistent.Persistent,
             'persons', ensure_integrity=True)
 
     def __init__(self):
-        self.category = None  # prevent AttributeError on first read
+        # prevent AttributeErrors on first read
+        self.category = None
+        self.persons = None
 
 
 @grok.adapter(icemac.ab.calendar.interfaces.IEvent)

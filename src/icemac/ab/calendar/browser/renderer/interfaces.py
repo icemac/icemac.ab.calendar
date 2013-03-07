@@ -36,6 +36,9 @@ class IEventDescription(zope.interface.Interface):
     special_event = zope.interface.Attribute(
         'One of [AUSFALL, INTERN, None].')
 
+    persons = zope.interface.Attribute(
+        'Komma separated list of person names belonging to the event.')
+
     def getText(lang=None):
         """Textual description of the event.
 
