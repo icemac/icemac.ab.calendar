@@ -11,6 +11,8 @@ import icemac.ab.calendar.browser.renderer.interfaces
 import icemac.ab.calendar.browser.renderer.table
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.browser.base
+import icemac.addressbook.interfaces
+import icemac.addressbook.preferences.utils
 import itertools
 import pyphen
 import z3c.form.field
@@ -33,7 +35,7 @@ class SelectorForm(icemac.addressbook.browser.base.BaseForm,
     successMessage = _('Month changed.')
 
 
-class Calendar(object):
+class Calendar(icemac.addressbook.browser.base.BaseView):
     """Tabular calendar display."""
 
     zope.interface.implements(IMonthSelector)
@@ -59,6 +61,14 @@ class Calendar(object):
 
     def render_form(self):
         return self.form.render()
+
+    def time_zone_name(self):
+        """User selected time zone name."""
+        return icemac.addressbook.preferences.utils.get_time_zone_name()
+
+    def time_zone_prefs_url(self):
+        return self.url(icemac.addressbook.interfaces.IAddressBook(self),
+                        '++preferences++/ab.timeZone')
 
 
 class EventDescription(grok.Adapter):

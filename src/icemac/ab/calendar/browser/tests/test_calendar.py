@@ -52,7 +52,6 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
 
     def test_shows_events_belonging_to_month(self):
         from datetime import timedelta
-        import transaction
         now = self.get_datetime()
         self.create_event(alternative_title=u'foo bar', datetime=now)
         self.create_event(alternative_title=u'baz qux',
@@ -61,6 +60,23 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         browser.open('http://localhost/ab/++attribute++calendar')
         self.assertIn('foo bar', browser.contents)
         self.assertNotIn('baz qux', browser.contents)
+
+    def test_renders_time_zone_user_has_set_in_prefs_as_link(self):
+        from zope.component import getUtility
+        from zope.preference.interfaces import IDefaultPreferenceProvider
+        default_prefs = getUtility(IDefaultPreferenceProvider)
+        default_prefs.getDefaultPreferenceGroup('ab.timeZone').time_zone = (
+            'Etc/GMT-4')
+        browser = self.get_browser('cal-visitor')
+        browser.handleErrors = False
+        browser.open('http://localhost/ab/++attribute++calendar')
+        self.assertEqual(
+            'http://localhost/ab/++preferences++/ab.timeZone',
+            browser.getLink('Etc/GMT-4').url)
+
+    def test_displays_selected_month_in_backgorund(self):
+        # http://www.graphicsfuel.com/2012/02/calendar-icon-psd/
+        self.fail('nyi')
 
 
 class EventDescriptionUTests(icemac.ab.calendar.testing.UnitTestCase):
