@@ -17,6 +17,17 @@ class EventTests(unittest.TestCase):
 
         self.assertTrue(verifyObject(IEvent, Event()))
 
+    def test_person_referenced_on_an_event_can_still_become_a_principal(self):
+        # regression test
+        self.fail('nyi')
+
+    def test_if_a_person_cannot_be_deleted_it_might_be_referenced_in_cal(self):
+        # regression test, move to i.ab --> fix error message.
+        # (If a person cannot get deleted the reason migt be that he is
+        # referenced in the calendar --> Test it in form &
+        # SearchResultHandler + fix error message)
+        self.fail('nyi')
+
 
 class TitleTests(icemac.ab.calendar.testing.ZODBTestCase):
     """Testing ..event.title()."""

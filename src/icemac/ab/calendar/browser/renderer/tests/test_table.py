@@ -12,6 +12,9 @@ class TableUTests(unittest.TestCase):
         from ..table import Table
         self.assertTrue(verifyObject(IRenderer, Table(None, None, None)))
 
+    def test_weekdays_are_translated_to_language_of_customer(self):
+        self.fail('nyi')
+
 
 class TableFTests(icemac.ab.calendar.testing.ZCMLTestCase):
     """Functional testing ..table.Table."""
