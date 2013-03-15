@@ -65,6 +65,16 @@
      permission="icemac.ab.calendar.EditEvent"
      />
 
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="icemac.addressbook.ViewPersonName"
+     />
+
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="z3c.preference.EditPreference" />
+
+
   <!-- Visitor -->
   <role
       id="icemac.ab.calendar.Visitor"
@@ -89,6 +99,7 @@
      role="icemac.ab.calendar.Visitor"
      permission="icemac.ab.calendar.ViewCalendar"
      />
+
   <grant
      role="icemac.ab.calendar.Visitor"
      permission="icemac.ab.calendar.ViewCategoryContainer"
@@ -101,5 +112,15 @@
      role="icemac.ab.calendar.Visitor"
      permission="icemac.ab.calendar.ViewEvent"
      />
+
+  <grant
+     role="icemac.ab.calendar.Visitor"
+     permission="icemac.addressbook.ViewPersonName"
+     />
+
+  <grant
+     role="icemac.ab.calendar.Visitor"
+     permission="z3c.preference.EditPreference" />
+
 
 </configure>
