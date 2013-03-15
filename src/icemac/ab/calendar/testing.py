@@ -100,17 +100,10 @@ class ZODBTestCase(unittest.TestCase, TestMixIn, ZODBTestMixIn):
     layer = ZODB_LAYER
 
 
-class BrowserTestCase(unittest.TestCase, TestMixIn, ZODBTestMixIn):
+class BrowserTestCase(unittest.TestCase,
+                      icemac.addressbook.testing.BrowserMixIn,
+                      TestMixIn,
+                      ZODBTestMixIn,
+                      icemac.addressbook.testing.ZODBMixIn):
     """Test case for browser tests."""
     layer = TEST_BROWSER_LAYER
-
-    def get_browser(self, username=None):
-        """Get a test browser.
-
-        If `username` is not `None`: user is logged in via basic auth.
-
-        """
-        browser = icemac.addressbook.testing.Browser()
-        if username is not None:
-            browser.login(username)
-        return browser
