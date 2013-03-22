@@ -31,7 +31,7 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertEqual(
             'http://localhost/ab/++attribute++calendar/@@addEvent.html',
             browser.url)
-        browser.getControl('date and time').value = self.formatted_datetime
+        browser.getControl('datetime').value = self.formatted_datetime
         browser.getControl('event category').displayValue = ['wedding day']
         browser.getControl('Add', index=1).click()
         self.assertEqual('http://localhost/ab/++attribute++calendar',
@@ -48,7 +48,7 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertEqual(
             'http://localhost/ab/++attribute++calendar/Event', browser.url)
         self.assertEqual(
-            self.formatted_datetime, browser.getControl('date and time').value)
+            self.formatted_datetime, browser.getControl('datetime').value)
         browser.getControl('event category').displayValue = ['wedding day']
         browser.getControl('Apply').click()
         self.assertEqual(

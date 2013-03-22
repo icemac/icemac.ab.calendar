@@ -79,7 +79,7 @@ person_source = PersonSource()
 class IEvent(zope.interface.Interface):
     """A single event in the calendar."""
 
-    datetime = zope.schema.Datetime(title=_('date and time'))
+    datetime = zope.schema.Datetime(title=_('datetime'))
     category = zope.schema.Choice(
         title=_('event category'), source=category_source)
     alternative_title = zope.schema.TextLine(
