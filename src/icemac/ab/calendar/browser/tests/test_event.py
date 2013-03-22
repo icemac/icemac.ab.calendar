@@ -55,7 +55,7 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
             ['Data successfully updated.'], browser.get_messages())
         self.assertEqual(
             'http://localhost/ab/++attribute++calendar', browser.url)
-        browser.getLink('Edit').click()
+        browser.getLink('wedding day').click()
         self.assertEqual(['wedding day'],
                          browser.getControl('event category').displayValue)
 

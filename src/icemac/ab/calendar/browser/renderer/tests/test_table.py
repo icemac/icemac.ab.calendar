@@ -60,21 +60,26 @@ class TableEventTests(unittest.TestCase):
 class TableEvent_text_Tests(icemac.ab.calendar.testing.UnitTestCase):
     """Testing ..table.TableEvent.text()."""
 
-    def _make_one(self, lang):
+    def _make_one(self, text, lang):
         from ..table import TableEvent
         from ..interfaces import UnknownLanguageError
         view = TableEvent()
         view.context = Mock()
         view.context.getText.side_effect = [
-            UnknownLanguageError, UnknownLanguageError, sentinel.val]
+            UnknownLanguageError, UnknownLanguageError, text]
         view.request = self.get_request(HTTP_ACCEPT_LANGUAGE=lang)
         return view
 
     def test_tries_to_find_lang_code_getText_understands(self):
-        view = self._make_one(lang='de_DE')
-        self.assertEqual(sentinel.val, view.text())
+        view = self._make_one('Foo', lang='de_DE')
+        self.assertEqual('Foo', view.text())
         self.assertEqual([call(u'de_DE'), call(u'de'), call()],
                          view.context.getText.call_args_list)
+
+    def test_returns_Edit_if_text_is_empty(self):
+        # So the user can edit events with empty text.
+        view = self._make_one('', lang='de_DE')
+        self.assertEqual(u'Edit', view.text())
 
 
 class TableEventFTests(icemac.ab.calendar.testing.ZCMLTestCase):

@@ -22,7 +22,6 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
 
     show_time = True
     action_class = 'edit'
-    action_link = _('Edit')
     _action_url = None
 
     def time(self):
@@ -40,15 +39,20 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
     def text(self):
         locale = self.request.locale
         try:
-            return self.context.getText(locale.getLocaleID())
+            text = self.context.getText(locale.getLocaleID())
         except UnknownLanguageError:
             # No hypenation dict for the locale id (e. g. de_DE):
             try:
                 # Try only the language name:
-                return self.context.getText(locale.id.language)
+                text = self.context.getText(locale.id.language)
             except UnknownLanguageError:
                 # Disable hypenation for unknown languages:
-                return self.context.getText()
+                text = self.context.getText()
+        text = text.strip()
+        if not text:
+            text = _('Edit')  # allow at least to edit the entry
+        return text
+
 
     def action_url(self):
         if self._action_url is None:
