@@ -25,7 +25,7 @@ class CalendarSecurity(icemac.ab.calendar.testing.BrowserTestCase):
         browser.getLink('UTC').click()
         self.assertEqual('http://localhost/ab/++preferences++/ab.timeZone',
                          browser.url)
-        browser.getControl('time zone').displayValue = ['Etc/GMT-11']
+        browser.getControl('Time zone').displayValue = ['Etc/GMT-11']
         browser.getControl('Apply').click()
         self.assertEqual(['Data successfully updated.'],
                          browser.get_messages())

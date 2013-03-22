@@ -1,7 +1,7 @@
 <div id="calendar"
      i18n:domain="icemac.addressbook">
   <div class="timezone">
-    <span i18n:translate="">Time zone:</span>
+    <span i18n:translate="">Time zone</span>:
     <a tal:attributes="href view/time_zone_prefs_url"
        tal:content="view/time_zone_name" />
   </div>
