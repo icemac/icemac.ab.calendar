@@ -4,3 +4,27 @@ This package provides a calendar feature for `icemac.addressbook`_.
 
 .. contents::
 
+=========
+ Hacking
+=========
+
+Source code
+===========
+
+Get the source code::
+
+   $ hg clone https://bitbucket.org/icemac/icemac.ab.calendar
+
+or fork me on: https://bitbucket.org/icemac/icemac.ab.calendar
+
+Running Tests
+=============
+
+.. image:: https://secure.travis-ci.org/icemac/icemac.ab.calendar.png
+   :target: https://travis-ci.org/icemac/icemac.ab.calendar
+
+To run the tests yourself call::
+
+  $ python2.6 bootstrap.py
+  $ bin/buildout
+  $ bin/test
