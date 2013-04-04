@@ -29,6 +29,45 @@ class EventTests(unittest.TestCase):
         self.fail('nyi')
 
 
+class EventEntitySTests(icemac.ab.calendar.testing.BrowserTestCase):
+    """Smoke testing event as an entity."""
+
+    def setUp(self):
+        super(EventEntitySTests, self).setUp()
+        self.create_category(u'Wedding')
+
+    def test_a_new_field_can_be_added_and_used(self):
+        browser = self.get_browser('mgr')
+        browser.open('http://localhost/ab/++attribute++entities')
+        # It is possbile to a a new field to an event:
+        browser.getLink('Edit fields', index=8).click()
+        self.assertEqual('http://localhost/ab/++attribute++entities/'
+                         'icemac.ab.calendar.event.Event', browser.url)
+        browser.getLink('field').click()
+        browser.getControl('type').displayValue = ['integer number']
+        browser.getControl('title').value = 'Number of reservations'
+        browser.getControl('Add', index=1).click()
+        self.assertEqual(
+            ['"Number of reservations" added.'], browser.get_messages())
+        # This new field can be used in the event add form:
+        browser.open(
+            'http://localhost/ab/++attribute++calendar/@@addEvent.html')
+        browser.getControl('datetime').value = self.get_datetime().strftime(
+            '%y/%m/%d %H:%M')
+        browser.getControl('event category').displayValue = ['Wedding']
+        browser.getControl('Number of reservations').value = '42'
+        browser.getControl('Add', index=1).click()
+        self.assertEqual(['"Wedding" added.'], browser.get_messages())
+        # And in the event edit form:
+        browser.getLink('Wedding').click()
+        self.assertEqual(
+            '42', browser.getControl('Number of reservations').value)
+        browser.getControl('Number of reservations').value = '41'
+        browser.getControl('Apply').click()
+        self.assertEqual(
+            ['Data successfully updated.'], browser.get_messages())
+
+
 class TitleTests(icemac.ab.calendar.testing.ZODBTestCase):
     """Testing ..event.title()."""
 

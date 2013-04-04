@@ -35,3 +35,5 @@ def update_calendar_infrastructure(address_book):
                 'datetime', icemac.ab.calendar.interfaces.IEvent,
                 resolution=1)
             catalog.updateIndex(catalog.get(DATE_INDEX))
+        icemac.addressbook.addressbook.add_entity_to_order(
+            address_book.orders, icemac.ab.calendar.interfaces.IEvent)

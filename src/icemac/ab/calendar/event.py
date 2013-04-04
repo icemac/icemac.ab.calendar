@@ -2,6 +2,7 @@ from icemac.addressbook.i18n import _
 import gocept.reference
 import grokcore.component as grok
 import icemac.ab.calendar.interfaces
+import icemac.addressbook.entities
 import persistent
 import zope.annotation.interfaces
 import zope.container.contained
@@ -26,6 +27,9 @@ class Event(persistent.Persistent,
         # prevent AttributeErrors on first read
         self.category = None
         self.persons = None
+
+event_entity = icemac.addressbook.entities.create_entity(
+    _(u'event'), icemac.ab.calendar.interfaces.IEvent, Event)
 
 
 @grok.adapter(icemac.ab.calendar.interfaces.IEvent)

@@ -81,5 +81,8 @@
       />
   </class>
 
+  <utility
+      component="icemac.ab.calendar.event.event_entity"
+      name="icemac.ab.calendar.event.Event" />
 
 </configure>
