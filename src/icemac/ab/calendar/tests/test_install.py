@@ -2,6 +2,7 @@
 # See also LICENSE.txt
 
 import icemac.ab.calendar.install
+import icemac.ab.calendar.testing
 import icemac.addressbook.addressbook
 import icemac.addressbook.testing
 import unittest2 as unittest
@@ -10,7 +11,7 @@ import unittest2 as unittest
 class TestInstall(unittest.TestCase,
                   icemac.addressbook.testing.InstallationAssertions):
 
-    layer = icemac.addressbook.testing.ZODB_LAYER
+    layer = icemac.ab.calendar.testing.ZODB_LAYER
 
     def check_addressbook(self, ab):
         self.assertAttribute(
