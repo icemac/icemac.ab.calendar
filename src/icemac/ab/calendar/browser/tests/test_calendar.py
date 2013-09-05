@@ -90,6 +90,7 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
             'http://localhost/ab/++preferences++/ab.timeZone',
             browser.getLink('Etc/GMT-4').url)
 
+    @unittest.skip('nyi')
     def test_displays_selected_month_in_backgorund(self):
         # http://www.graphicsfuel.com/2012/02/calendar-icon-psd/
         self.fail('nyi')
