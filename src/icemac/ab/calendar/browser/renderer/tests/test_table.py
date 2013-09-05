@@ -100,4 +100,4 @@ class TableEventFTests(icemac.ab.calendar.testing.ZCMLTestCase):
     def test_renders_person_names(self):
         event_description = self.get_event_description(
             external_persons=[u'Foo', u'Bar'])
-        self.assertIn('Foo, Bar', self.callVUT(event_description))
+        self.assertIn('Bar, Foo', self.callVUT(event_description))
