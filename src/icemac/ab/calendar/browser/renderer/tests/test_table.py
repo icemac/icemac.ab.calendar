@@ -12,6 +12,7 @@ class TableUTests(unittest.TestCase):
         from ..table import Table
         self.assertTrue(verifyObject(IRenderer, Table(None, None, None)))
 
+    @unittest.expectedFailure
     def test_weekdays_are_translated_to_language_of_customer(self):
         self.fail('nyi')
 
@@ -50,9 +51,11 @@ class TableFTests(icemac.ab.calendar.testing.ZCMLTestCase):
 class TableEventTests(unittest.TestCase):
     """Testing ..table.TableEvent."""
 
+    @unittest.expectedFailure
     def test_renders_time_in_time_zone_of_user(self):
         self.fail('nyi')
 
+    @unittest.expectedFailure
     def test_renders_Uhr_if_requested_language_is_German(self):
         self.fail('nyi')
 
@@ -97,4 +100,4 @@ class TableEventFTests(icemac.ab.calendar.testing.ZCMLTestCase):
     def test_renders_person_names(self):
         event_description = self.get_event_description(
             external_persons=[u'Foo', u'Bar'])
-        self.assertIn('Foo, Bar', self.callVUT(event_description))
+        self.assertIn('Bar, Foo', self.callVUT(event_description))

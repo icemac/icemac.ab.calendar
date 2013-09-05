@@ -90,6 +90,7 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
             'http://localhost/ab/++preferences++/ab.timeZone',
             browser.getLink('Etc/GMT-4').url)
 
+    @unittest.skip('nyi')
     def test_displays_selected_month_in_backgorund(self):
         # http://www.graphicsfuel.com/2012/02/calendar-icon-psd/
         self.fail('nyi')
@@ -121,7 +122,7 @@ class EventDescriptionFTests(icemac.ab.calendar.testing.ZCMLTestCase):
         event_description = self.get_event_description(
             persons=set([p1, p2]),
             external_persons=[u'Klaus Arkpe', u'Heiner Myer'])
-        self.assertEqual(u'Hans Tester, Fritz Koch, Klaus Arkpe, Heiner Myer',
+        self.assertEqual(u'Fritz Koch, Hans Tester, Heiner Myer, Klaus Arkpe',
                          event_description.persons)
 
     def test_persons_is_emtpty_string_if_there_are_no_persons_assigned(self):

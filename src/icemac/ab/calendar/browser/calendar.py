@@ -86,10 +86,10 @@ class EventDescription(grok.Adapter):
         self.whole_day = False
         self.special_event = None
         self._text = context.alternative_title
-        self.persons = u', '.join(itertools.chain(
+        self.persons = u', '.join(sorted(itertools.chain(
             [icemac.addressbook.interfaces.IPersonName(x).get_name()
              for x in (context.persons or [])],
-            (context.external_persons or [])))
+            (context.external_persons or []))))
 
     def getText(self, lang=None):
         if lang is not None:
