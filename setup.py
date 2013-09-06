@@ -47,9 +47,10 @@ setuptools.setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        # 'icemac.ab.locales > 0.11',
         'Pyphen',
+        'decorator',
         'gocept.month >= 1.2.dev0',
+        'grokcore.annotation',
         'icemac.addressbook >= 1.9.1.dev0',
         'setuptools',
         ],

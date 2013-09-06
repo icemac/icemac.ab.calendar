@@ -58,7 +58,13 @@ class TestMixIn(object):
         event.datetime = self.get_datetime(time_tuple)
         for key, value in kw.items():
             setattr(event, key, value)
-        return icemac.ab.calendar.browser.calendar.EventDescription(event)
+        ICalendarDisplaySettings = (
+            'icemac.ab.calendar.interfaces.ICalendarDisplaySettings')
+        with mock.patch(ICalendarDisplaySettings) as ICalendarDisplaySettings:
+            ICalendarDisplaySettings.event_additional_fields = ()
+            with mock.patch('icemac.ab.calendar.interfaces.ICalendar'):
+                return icemac.ab.calendar.browser.calendar.EventDescription(
+                    event)
 
 
 class ZODBTestMixIn(object):

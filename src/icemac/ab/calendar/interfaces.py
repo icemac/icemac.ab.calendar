@@ -2,6 +2,7 @@
 # See also LICENSE.txt
 from icemac.addressbook.i18n import _
 import gocept.reference.field
+import icemac.addressbook.fieldsource
 import icemac.addressbook.interfaces
 import zc.sourcefactory.basic
 import zc.sourcefactory.contextual
@@ -21,6 +22,39 @@ class ICalendar(zope.interface.Interface):
         month ... ``gocept.month.Month`` object.
         timezone ... ``pytz.timezone`` object, None defaults to UTC.
         """
+
+
+class EventFieldsSource(zc.sourcefactory.basic.BasicSourceFactory):
+    """Fields of an event for display in calendar view."""
+
+    def getValues(self):
+        event_entity = icemac.addressbook.interfaces.IEntity(IEvent)
+        # We need the default and user defined fields but not the ones which
+        # are always displayed or handeled in a specfic way:
+        for field_name, field in event_entity.getRawFields():
+            if field_name in ('datetime', 'category', 'alternative_title',
+                              'external_persons'):
+                continue
+            yield field
+
+    def getToken(self, value):
+        return icemac.addressbook.fieldsource.tokenize(
+            icemac.addressbook.interfaces.IEntity(value.interface),
+            value.__name__)
+
+    def getTitle(self, value):
+        return value.title
+
+event_fields_source = EventFieldsSource()
+
+
+class ICalendarDisplaySettings(zope.interface.Interface):
+    """Configuration of how to display the calendar."""
+
+    event_additional_fields = zope.schema.List(
+        title=_('Additional event fields to be displayed in calendar'),
+        required=False,
+        value_type=zope.schema.Choice(source=event_fields_source))
 
 
 class ICalendarProvider(zope.interface.Interface):

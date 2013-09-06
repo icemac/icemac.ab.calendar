@@ -4,6 +4,7 @@
     i18n_domain="icemac.addressbook">
 
   <include package="grokcore.component" file="meta.zcml"/>
+  <include package="grokcore.annotation" />
   <grok:grok package="."
              exclude="generations" />
 
@@ -18,7 +19,6 @@
 
   <subscriber handler=".install.install_calendar" />
 
-
   <!-- Category -->
   <adapter
       for=".interfaces.ICategory"
@@ -31,9 +31,6 @@
       for=".interfaces.ICategory
            zope.lifecycleevent.IObjectModifiedEvent"
       handler=".category.unique_titles" />
-
-  <!-- Event -->
-
 
 
   <include package=".browser" />

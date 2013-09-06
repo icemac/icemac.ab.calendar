@@ -41,3 +41,10 @@ def title(event):
     if event.category:
         return icemac.addressbook.interfaces.ITitle(event.category)
     return _('event')
+
+
+@grok.adapter(icemac.ab.calendar.interfaces.IEvent)
+@grok.implementer(icemac.ab.calendar.interfaces.ICalendar)
+def calendar(event):
+    "Adapt the event to its calendar."
+    return event.__parent__

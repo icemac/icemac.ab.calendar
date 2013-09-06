@@ -33,6 +33,24 @@
      />
   </configure>
 
+  <z3c:siteMenuItem
+     manager="icemac.ab.calendar.masterdata.manager.ICalendarMasterData"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="CalendarView"
+     title="Calendar view"
+     permission="icemac.ab.calendar.EditCalendar"
+     viewName="++attribute++calendar/@@edit-display.html"
+     weight="5"
+     />
+
+  <gocept:pagelet
+      for="icemac.ab.calendar.interfaces.ICalendar"
+      layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+      name="edit-display.html"
+      class=".calendar.CalendarView"
+      permission="icemac.ab.calendar.EditCalendar" />
+
+
   <include file="category.zcml" />
 
 </configure>

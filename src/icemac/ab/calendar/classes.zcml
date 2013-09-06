@@ -2,6 +2,9 @@
 
   <!-- Calendar -->
   <class class=".calendar.Calendar">
+    <implements
+      interface="zope.annotation.interfaces.IAttributeAnnotatable"
+      />
     <require
        permission="icemac.ab.calendar.ViewCalendar"
        interface=".interfaces.ICalendar

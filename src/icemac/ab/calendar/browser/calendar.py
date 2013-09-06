@@ -4,7 +4,9 @@
 from .renderer.interfaces import UnknownLanguageError
 from .resource import calendar_css
 from icemac.addressbook.i18n import _
+import copy
 import datetime
+import decorator
 import gocept.month
 import grokcore.component as grok
 import icemac.ab.calendar.browser.renderer.interfaces
@@ -19,6 +21,8 @@ import z3c.form.field
 import z3c.formui.form
 import zope.component
 import zope.interface
+import zope.preference.interfaces
+import zope.schema.interfaces
 
 
 class IMonthSelector(zope.interface.Interface):
@@ -70,6 +74,31 @@ class Calendar(icemac.addressbook.browser.base.BaseView):
         return self.url(icemac.addressbook.interfaces.IAddressBook(self),
                         '++preferences++/ab.timeZone')
 
+@decorator.decorator
+def hyphenated(func, context, lang=None):
+    """Decorator for methods those return value should be hyphenated.
+
+    Usage:
+
+    @hyphenated
+    def method(self, lang=None):
+        return text
+
+    Call it using: self.method(lang='de')
+
+    """
+    if lang is not None:
+        try:
+            dic = pyphen.Pyphen(lang=lang)
+        except KeyError:
+            # Fail early if we cannot hythen the desired language:
+            raise UnknownLanguageError()
+    text = func(context)
+    if lang is not None:
+        text = ' '.join([dic.inserted(word, '&shy;')
+                         for word in text.split()])
+    return text
+
 
 class EventDescription(grok.Adapter):
     """Adapter from Event to EventDescription needed by renderer."""
@@ -90,20 +119,32 @@ class EventDescription(grok.Adapter):
             [icemac.addressbook.interfaces.IPersonName(x).get_name()
              for x in (context.persons or [])],
             (context.external_persons or []))))
+        calendar = icemac.ab.calendar.interfaces.ICalendar(context)
+        # Without the following line we get a ForbidenError for
+        # `__getitem__` when accessing the annotations where
+        # `ICalendarDisplaySettings` are stored. As only authorized users
+        # are able to access this adapter, this is no security hole.
+        unsave_calendar = zope.security.proxy.getObject(calendar)
+        self.info_fields = copy.copy(
+            icemac.ab.calendar.interfaces.ICalendarDisplaySettings(
+                unsave_calendar).event_additional_fields)
 
+    @hyphenated
     def getText(self, lang=None):
-        if lang is not None:
-            # Fail early if we cannot hythen the desired language:
-            try:
-                dic = pyphen.Pyphen(lang=lang)
-            except KeyError:
-                raise UnknownLanguageError()
         text = u''
         if self._text:
             text = self._text
         elif self.kind:
             text = self.kind.title
-        if lang is not None:
-            text = ' '.join([dic.inserted(word, '&shy;')
-                             for word in text.split()])
         return text
+
+    @hyphenated
+    def getInfo(self, lang=None):
+        info = []
+        for field in self.info_fields:
+            schema_field = icemac.addressbook.entities.get_bound_schema_field(
+                self.context,
+                icemac.addressbook.interfaces.IEntity(field.interface),
+                field)
+            info.append(unicode(schema_field.get(schema_field.context)))
+        return u', '.join(info)

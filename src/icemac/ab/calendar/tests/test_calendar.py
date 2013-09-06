@@ -5,7 +5,7 @@ import icemac.ab.calendar.testing
 
 
 class CalendarUTests(unittest.TestCase):
-    """Unit testing ..calendar.Calendar."""
+    """Unit testing ..calendar.*."""
 
     def test_calendar_fulfills_ICalendar_interface(self):
         from zope.interface.verify import verifyObject
@@ -13,6 +13,13 @@ class CalendarUTests(unittest.TestCase):
         from icemac.ab.calendar.calendar import Calendar
 
         self.assertTrue(verifyObject(ICalendar, Calendar()))
+
+    def test_CalendarDisplaySettings_fulfills_ICalendarDisplaySettings(self):
+        from zope.interface.verify import verifyObject
+        from icemac.ab.calendar.interfaces import ICalendarDisplaySettings
+        from icemac.ab.calendar.calendar import CalendarDisplaySettings
+
+        self.assertTrue(verifyObject(ICalendarDisplaySettings, CalendarDisplaySettings()))
 
 
 class Calendar_get_events_FTests(icemac.ab.calendar.testing.ZODBTestCase):
@@ -49,3 +56,36 @@ class Calendar_get_events_FTests(icemac.ab.calendar.testing.ZODBTestCase):
     def test_respects_the_given_time_western_zone(self):
         self.assertEqual([u'end Jan 2013', 'start Feb 2013'],
                          self.callMUT(2, 2013, 'Etc/GMT-1'))
+
+
+class CalendarDisplaySettingsTests(icemac.ab.calendar.testing.ZODBTestCase):
+    """Testing ..calendar.CalendarDisplaySettings."""
+
+    def setUp(self):
+        from icemac.addressbook.testing import create_field
+        from icemac.addressbook.interfaces import IEntity
+        from icemac.ab.calendar.interfaces import IEvent
+        super(CalendarDisplaySettingsTests, self).setUp()
+        user_field_name = create_field(
+            self.layer['addressbook'], IEvent, 'Int', u'Num')
+        self.user_field = IEntity(IEvent).getRawField(user_field_name)
+
+    def getCUT(self):
+        from ..calendar import CalendarDisplaySettings
+        return CalendarDisplaySettings()
+
+    def test_event_additional_fields_stores_string_repr_of_fields(self):
+        from ..interfaces import IEvent
+        cds = self.getCUT()
+        cds.event_additional_fields = [IEvent['text'], self.user_field]
+        self.assertEqual(['IcemacAbCalendarEventEvent###text',
+                          'IcemacAbCalendarEventEvent###Field-1'],
+                         cds._event_additional_fields)
+
+    def test_event_additional_fields_returns_actual_fields(self):
+        from ..interfaces import IEvent
+        cds = self.getCUT()
+        cds._event_additional_fields = ['IcemacAbCalendarEventEvent###text',
+                                        'IcemacAbCalendarEventEvent###Field-1']
+        self.assertEqual([IEvent['text'], self.user_field],
+                         cds.event_additional_fields)

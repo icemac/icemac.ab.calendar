@@ -90,3 +90,12 @@ class TitleTests(icemac.ab.calendar.testing.ZODBTestCase):
 
     def test_returns_string_if_alternative_title_and_category_not_set(self):
         self.assertEqual(u'event', self.callAUT())
+
+
+class GetCalendarITests(icemac.ab.calendar.testing.ZODBTestCase):
+    """Testing ..event.get_calendar()."""
+
+    def test_event_can_be_adapted_to_calendar(self):
+        from ..interfaces import ICalendar
+        event = self.create_event()
+        self.assertEqual(self.layer['addressbook'].calendar, ICalendar(event))
