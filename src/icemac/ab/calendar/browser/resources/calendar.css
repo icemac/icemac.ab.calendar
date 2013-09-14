@@ -59,7 +59,11 @@
     color: #444444;
 }
 
-#calendar .calendar table td dl dd .persons {
+#calendar .calendar table td dl dd span.info {
     display: block;
     margin-left: 10px;
+}
+
+#calendar .calendar table td dl dd ul.info li {
+    list-style-type: disc;
 }

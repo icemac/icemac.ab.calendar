@@ -85,19 +85,43 @@ class TableEvent_text_Tests(icemac.ab.calendar.testing.UnitTestCase):
         self.assertEqual(u'Edit', view.text())
 
 
-class TableEventFTests(icemac.ab.calendar.testing.ZCMLTestCase):
-    """Functional testing ..table.TableEvent."""
+class TableEventITests(icemac.ab.calendar.testing.ZODBTestCase):
+    """Integration testing ..table.TableEvent."""
 
-    def callVUT(self, event_description, request=None):
+    def callVUT(self, event, field_names):
+        from icemac.ab.calendar.browser.renderer.interfaces import (
+            IEventDescription)
+        from icemac.ab.calendar.interfaces import (
+            ICalendarDisplaySettings, IEvent)
         from zope.component import getMultiAdapter
-        if request is None:
-            request = self.get_request()
+        request = self.get_request()
+        ab = self.layer['addressbook']
+        ICalendarDisplaySettings(ab.calendar).event_additional_fields = [
+            IEvent[x] for x in field_names]
+        event_description = IEventDescription(event)
         view = getMultiAdapter(
             (event_description, request), name='table-event')
         view._action_url = 'url:'
         return view()
 
-    def test_renders_person_names(self):
-        event_description = self.get_event_description(
-            external_persons=[u'Foo', u'Bar'])
-        self.assertIn('Bar, Foo', self.callVUT(event_description))
+    def test_renders_no_selected_event_additional_field_as_nothing(self):
+        event = self.create_event(datetime=self.get_datetime())
+        self.assertNotEllipsis('...class="info"...',
+                               self.callVUT(event, []))
+
+    def test_renders_single_selected_event_additional_field_not_as_list(self):
+        event = self.create_event(datetime=self.get_datetime(),
+                                  external_persons=[u'Foo', u'Bar'])
+        self.assertEllipsis('...<span class="info">Bar, Foo</span>...',
+                            self.callVUT(event, ['persons']))
+
+    def test_renders_multiple_selected_event_additional_fields_as_list(self):
+        event = self.create_event(
+            datetime=self.get_datetime(),
+            external_persons=[u'Foo', u'Bar'], text=u'Cool!')
+        self.assertEllipsis('''...\
+        <ul class="info">
+          <li>Bar, Foo</li>
+          <li>Cool!</li>
+        </ul>
+        ...''', self.callVUT(event, ['persons', 'text']))

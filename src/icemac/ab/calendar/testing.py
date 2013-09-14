@@ -1,6 +1,7 @@
 # Copyright (c) 2013 Michael Howitz
 # See also LICENSE.txt
 import datetime
+import gocept.testing.assertion
 import icemac.ab.calendar
 import icemac.ab.calendar.browser.calendar
 import icemac.ab.calendar.category
@@ -101,7 +102,10 @@ class ZCMLTestCase(unittest.TestCase, TestMixIn):
     layer = ZCML_LAYER
 
 
-class ZODBTestCase(unittest.TestCase, TestMixIn, ZODBTestMixIn):
+class ZODBTestCase(unittest.TestCase,
+                   gocept.testing.assertion.Ellipsis,
+                   TestMixIn,
+                   ZODBTestMixIn):
     """Test case for test which need the ZODB."""
     layer = ZODB_LAYER
 

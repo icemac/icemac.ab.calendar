@@ -56,6 +56,7 @@ setuptools.setup(
         ],
     extras_require = dict(
         test=[
+            'gocept.testing',
             'icemac.addressbook [test]',
             'zope.testing >= 3.8.0',
             ]),

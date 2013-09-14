@@ -36,23 +36,28 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
     def dd_class(self):
         return SPECIAL_CLASS_MAPPING.get(self.context.special_event)
 
-    def text(self):
+    def _localized(self, func):
         locale = self.request.locale
         try:
-            text = self.context.getText(locale.getLocaleID())
+            result = func(locale.getLocaleID())
         except UnknownLanguageError:
             # No hypenation dict for the locale id (e. g. de_DE):
             try:
                 # Try only the language name:
-                text = self.context.getText(locale.id.language)
+                result = func(locale.id.language)
             except UnknownLanguageError:
                 # Disable hypenation for unknown languages:
-                text = self.context.getText()
-        text = text.strip()
+                result = func()
+        return result
+
+    def text(self):
+        text = self._localized(self.context.getText).strip()
         if not text:
             text = _('Edit')  # allow at least to edit the entry
         return text
 
+    def info(self):
+        return [{'info': x} for x in self._localized(self.context.getInfo)]
 
     def action_url(self):
         if self._action_url is None:

@@ -7,17 +7,16 @@ class CalendarSecurity(icemac.ab.calendar.testing.BrowserTestCase):
     """Security tests for the calendar."""
 
     def test_visitor_is_able_to_access_a_filled_calendar(self):
-        person = self.create_person(u'Hans Muster')
         event = self.create_event(
-            datetime=self.get_datetime(), alternative_title=u'Birthday',
-            persons=set([person]))
+            datetime=self.get_datetime(),
+            alternative_title=u"Cousin's Birthday")
         browser = self.get_browser('cal-visitor')
         browser.open('http://localhost/ab')
         browser.getLink('Calendar').click()
         self.assertEqual(
             'http://localhost/ab/++attribute++calendar', browser.url)
         self.assertIn('Sunday', browser.contents)
-        self.assertIn('Hans Muster', browser.contents)
+        self.assertIn("Cousin's Birthday", browser.contents)
 
     def test_visitor_is_able_to_change_the_time_zone(self):
         browser = self.get_browser('cal-visitor')

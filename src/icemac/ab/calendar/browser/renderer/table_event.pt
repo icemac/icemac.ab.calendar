@@ -4,5 +4,14 @@
   <a tal:attributes="class view/action_class;
                      href view/action_url"
      tal:content="structure view/text" />
-  <span class="persons" tal:content="context/persons" />
+  <tal:info tal:define="info view/info">
+    <tal:single-element condition="python:len(info) &lt;= 1">
+      <span class="info" tal:repeat="info info" tal:content="info/info" />
+    </tal:single-element>
+    <tal:multiple-elements condition="python:len(info) > 1">
+      <ul class="info">
+        <li tal:repeat="info info" tal:content="info/info"></li>
+      </ul>
+    </tal:multiple-elements>
+  </tal:info>
 </dd>
