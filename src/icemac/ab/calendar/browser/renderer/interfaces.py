@@ -46,3 +46,10 @@ class IEventDescription(zope.interface.Interface):
         looked up. This might raise a `LookupError`. Otherwise the text is
         hyphenated for HTML.
         """
+
+    def getInfo(lang=None):
+        """List of additional information about the event.
+
+        The contents of the list are defined in master data of calendar.
+
+        """

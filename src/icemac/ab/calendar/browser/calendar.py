@@ -91,12 +91,17 @@ def hyphenated(func, context, lang=None):
         try:
             dic = pyphen.Pyphen(lang=lang)
         except KeyError:
-            # Fail early if we cannot hythen the desired language:
+            # Fail early if we cannot hyphen the desired language:
             raise UnknownLanguageError()
+    def hyph(text):
+        return ' '.join([dic.inserted(word, '&shy;')
+                         for word in text.split()])
     text = func(context)
     if lang is not None:
-        text = ' '.join([dic.inserted(word, '&shy;')
-                         for word in text.split()])
+        if isinstance(text, list):
+            text = [hyph(x) for x in text]
+        else:
+            text = hyph(text)
     return text
 
 
@@ -125,6 +130,7 @@ class EventDescription(grok.Adapter):
         # `ICalendarDisplaySettings` are stored. As only authorized users
         # are able to access this adapter, this is no security hole.
         unsave_calendar = zope.security.proxy.getObject(calendar)
+        # Making a copy chaning is not possible:
         self.info_fields = copy.copy(
             icemac.ab.calendar.interfaces.ICalendarDisplaySettings(
                 unsave_calendar).event_additional_fields)
@@ -142,9 +148,14 @@ class EventDescription(grok.Adapter):
     def getInfo(self, lang=None):
         info = []
         for field in self.info_fields:
-            schema_field = icemac.addressbook.entities.get_bound_schema_field(
-                self.context,
-                icemac.addressbook.interfaces.IEntity(field.interface),
-                field)
-            info.append(unicode(schema_field.get(schema_field.context)))
-        return u', '.join(info)
+            if field is icemac.ab.calendar.interfaces.IEvent['persons']:
+                value = self.persons
+            else:
+                schema_field = (
+                    icemac.addressbook.entities.get_bound_schema_field(
+                        self.context,
+                        icemac.addressbook.interfaces.IEntity(field.interface),
+                        field))
+                value = unicode(schema_field.get(schema_field.context))
+            info.append(value)
+        return info
