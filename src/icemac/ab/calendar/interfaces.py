@@ -113,9 +113,9 @@ person_source = PersonSource()
 class IEvent(zope.interface.Interface):
     """A single event in the calendar."""
 
-    datetime = zope.schema.Datetime(title=_('datetime'))
     category = zope.schema.Choice(
         title=_('event category'), source=category_source)
+    datetime = zope.schema.Datetime(title=_('datetime'))
     alternative_title = zope.schema.TextLine(
         title=_('alternative title to category'), required=False)
     persons = gocept.reference.field.Set(
