@@ -24,7 +24,7 @@ class CalendarSecurity(icemac.ab.calendar.testing.BrowserTestCase):
         browser.getLink('UTC').click()
         self.assertEqual('http://localhost/ab/++preferences++/ab.timeZone',
                          browser.url)
-        browser.getControl('Time zone').displayValue = ['Etc/GMT-11']
+        browser.getControl('Time zone').displayValue = ['Indian/Christmas']
         browser.getControl('Apply').click()
         self.assertEqual(['Data successfully updated.'],
                          browser.get_messages())
@@ -81,13 +81,12 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         from zope.preference.interfaces import IDefaultPreferenceProvider
         default_prefs = getUtility(IDefaultPreferenceProvider)
         default_prefs.getDefaultPreferenceGroup('ab.timeZone').time_zone = (
-            'Etc/GMT-4')
+            'Pacific/Fiji')
         browser = self.get_browser('cal-visitor')
-        browser.handleErrors = False
         browser.open('http://localhost/ab/++attribute++calendar')
         self.assertEqual(
             'http://localhost/ab/++preferences++/ab.timeZone',
-            browser.getLink('Etc/GMT-4').url)
+            browser.getLink('Pacific/Fiji').url)
 
     @unittest.skip('nyi')
     def test_displays_selected_month_in_backgorund(self):
