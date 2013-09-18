@@ -21,7 +21,7 @@
     max-width: 14%;
 }
 
-#calendar .calendar table .Sunday {
+#calendar .calendar table .day-0 {
     background-color: #F8E286;
 }
 

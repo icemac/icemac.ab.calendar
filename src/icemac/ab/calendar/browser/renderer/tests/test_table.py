@@ -12,10 +12,6 @@ class TableUTests(unittest.TestCase):
         from ..table import Table
         self.assertTrue(verifyObject(IRenderer, Table(None, None, None)))
 
-    @unittest.expectedFailure
-    def test_weekdays_are_translated_to_language_of_customer(self):
-        self.fail('nyi')
-
 
 class TableFTests(icemac.ab.calendar.testing.ZCMLTestCase):
     """Functional testing ..table.Table."""
@@ -46,6 +42,18 @@ class TableFTests(icemac.ab.calendar.testing.ZCMLTestCase):
         with patch(action_url):
             result = self.callVUT([event1, event2])
         self.assertEqual(1, len(self.getETree(result).xpath('//dt')))
+
+
+class TableITests(icemac.ab.calendar.testing.BrowserTestCase):
+    """Integraion testing ..table.Table."""
+
+    def test_weekdays_are_translated_to_language_of_customer(self):
+        browser = self.get_browser('cal-visitor')
+        browser.open('http://localhost/ab/++attribute++calendar')
+        self.assertNotIn('Sonntag', browser.contents)  # English locale
+        browser.addHeader('Accept-Language', 'de-DE')
+        browser.reload()
+        self.assertIn('Sonntag', browser.contents)  # German locale
 
 
 class TableEventTests(unittest.TestCase):

@@ -90,10 +90,12 @@ class Table(Calendar):
         self.write('<table class="calendar">')
         self.write('  <thead>')
         self.write('    <tr>')
-        for delta in range(7):
-            day = self.first_table_day + datetime.timedelta(delta)
-            day_name = day.strftime('%A')
-            self.write('      <th class="%s">%s</th>', day_name, day_name)
+        day_names = self.request.locale.dates.calendars[
+            'gregorian'].getDayNames()
+        # Move Sunday to position one
+        day_names.insert(0, day_names.pop(-1))
+        for index, day_name in enumerate(day_names):
+            self.write('      <th class="day-%s">%s</th>', index, day_name)
         self.write('    </tr>')
         self.write('  </thead>')
 
@@ -110,7 +112,7 @@ class Table(Calendar):
                 self.write('    </tr>')
             day = self.first_table_day + datetime.timedelta(delta)
             prev_datetime = None
-            self.write('<td class="%s">', day.strftime('%A'))
+            self.write('<td class="day-%s">', day.strftime('%w'))
             if day in self.month:
                 self.write('<span class="number">%s</span>', day.day)
                 found_events_for_day = False
