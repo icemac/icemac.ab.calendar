@@ -67,3 +67,14 @@
 #calendar .calendar table td dl dd ul.info li {
     list-style-type: disc;
 }
+
+#content {
+    background: #eee url(img/calendar-icon-512x512.png) no-repeat right 5px;
+    border: 1px solid #999;
+    min-height: 495px;
+    padding: 5px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    -moz-border-radius-bottomleft: 8px;
+    -moz-border-radius-bottomright: 8px;
+}
