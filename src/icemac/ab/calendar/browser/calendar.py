@@ -2,7 +2,6 @@
 # Copyright (c) 2013 Michael Howitz
 # See also LICENSE.txt
 from .renderer.interfaces import UnknownLanguageError
-from .resource import calendar_css
 from icemac.addressbook.i18n import _
 import copy
 import datetime
@@ -45,7 +44,6 @@ class Calendar(icemac.addressbook.browser.base.BaseView):
     zope.interface.implements(IMonthSelector)
 
     def update(self):
-        calendar_css.need()
         # The following assignment only sets the default value,
         # `self.form.update()` writes the value the user entered on
         # `self.month`.

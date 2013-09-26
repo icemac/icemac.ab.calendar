@@ -24,6 +24,20 @@
      weight="30"
      />
 
+  <browser:viewlet
+      layer=".interfaces.ICalendarLayer"
+      manager="icemac.addressbook.browser.interfaces.IFanstaticViewletManager"
+      name="CalendarResources"
+      class=".resource.CalendarResources"
+      permission="zope.Public" />
+
+  <subscriber
+      for="..interfaces.ICalendar
+           icemac.addressbook.browser.interfaces.IAddressBookLayer"
+      factory=".resource.set_layer"
+      provides="icemac.addressbook.browser.interfaces.IAttributeTraversalHook"
+      />
+
   <include file="event.zcml" />
   <include package=".renderer" />
 
