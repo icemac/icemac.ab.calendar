@@ -7,16 +7,22 @@ class CalendarSecurity(icemac.ab.calendar.testing.BrowserTestCase):
     """Security tests for the calendar."""
 
     def test_visitor_is_able_to_access_a_filled_calendar(self):
+        from ..calendar import hyphenate
+        from pyphen import Pyphen
         event = self.create_event(
             datetime=self.get_datetime(),
             alternative_title=u"Cousin's Birthday")
         browser = self.get_browser('cal-visitor')
+        # We need to set a language as otherwise there will only be numbers
+        # instead of week day names:
+        browser.addHeader('Accept-Language', 'en')
         browser.open('http://localhost/ab')
         browser.getLink('Calendar').click()
         self.assertEqual(
             'http://localhost/ab/++attribute++calendar', browser.url)
         self.assertIn('Sunday', browser.contents)
-        self.assertIn("Cousin's Birthday", browser.contents)
+        self.assertIn(hyphenate("Cousin's Birthday", Pyphen(lang='en')),
+                      browser.contents)
 
     def test_visitor_is_able_to_change_the_time_zone(self):
         browser = self.get_browser('cal-visitor')

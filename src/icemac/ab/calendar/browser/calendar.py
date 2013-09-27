@@ -72,6 +72,13 @@ class Calendar(icemac.addressbook.browser.base.BaseView):
         return self.url(icemac.addressbook.interfaces.IAddressBook(self),
                         '++preferences++/ab.timeZone')
 
+
+def hyphenate(text, dic):
+    """Hyphenate a `text` using `dic`tionary for display in browser."""
+    return ' '.join([dic.inserted(word, '&shy;')
+                     for word in text.split()])
+
+
 @decorator.decorator
 def hyphenated(func, context, lang=None):
     """Decorator for methods those return value should be hyphenated.
@@ -91,15 +98,12 @@ def hyphenated(func, context, lang=None):
         except KeyError:
             # Fail early if we cannot hyphen the desired language:
             raise UnknownLanguageError()
-    def hyph(text):
-        return ' '.join([dic.inserted(word, '&shy;')
-                         for word in text.split()])
     text = func(context)
     if lang is not None:
         if isinstance(text, list):
-            text = [hyph(x) for x in text]
+            text = [hyphenate(x, dic) for x in text]
         else:
-            text = hyph(text)
+            text = hyphenate(text, dic)
     return text
 
 
