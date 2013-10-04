@@ -38,6 +38,12 @@
       provides="icemac.addressbook.browser.interfaces.IAttributeTraversalHook"
       />
 
+  <subscriber
+      for="*"
+      provides="icemac.addressbook.browser.interfaces.IIconProviderInfo"
+      factory=".about.CalendarIcon" />
+
+
   <include file="event.zcml" />
   <include package=".renderer" />
 
