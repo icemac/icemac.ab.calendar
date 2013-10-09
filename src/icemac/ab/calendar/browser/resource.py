@@ -25,3 +25,8 @@ def set_layer(context, request):
     """Set the calendar layer on the request, so the resources are rendered."""
     zope.interface.alsoProvides(
         request, icemac.ab.calendar.browser.interfaces.ICalendarLayer)
+
+
+calendar_favicon = icemac.addressbook.browser.favicon.FavIconData(
+    '/fanstatic/calendar/img/favicon.png',
+    '/fanstatic/calendar/img/favicon-preview.png')

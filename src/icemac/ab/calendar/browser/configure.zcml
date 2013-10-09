@@ -43,6 +43,11 @@
       provides="icemac.addressbook.browser.interfaces.IIconProviderInfo"
       factory=".about.CalendarIcon" />
 
+  <subscriber
+       for="*"
+       provides="icemac.addressbook.interfaces.IFaviconData"
+       factory=".resource.calendar_favicon" />
+
 
   <include file="event.zcml" />
   <include package=".renderer" />
