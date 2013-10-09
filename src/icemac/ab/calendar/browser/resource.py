@@ -7,8 +7,8 @@ import os.path
 import zope.viewlet.viewlet
 
 
-css_lib = fanstatic.Library('calendar_css', 'resources')
-calendar_css = fanstatic.Resource(css_lib, 'calendar.css', depends=[base_css])
+lib = fanstatic.Library('calendar', 'resources')
+calendar_css = fanstatic.Resource(lib, 'calendar.css', depends=[base_css])
 
 
 class CalendarResources(zope.viewlet.viewlet.ViewletBase):

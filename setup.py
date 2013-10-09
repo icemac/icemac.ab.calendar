@@ -62,6 +62,6 @@ setuptools.setup(
             ]),
     entry_points = """
       [fanstatic.libraries]
-      calendar_css = icemac.ab.calendar.browser.resource:css_lib
+      calendar = icemac.ab.calendar.browser.resource:lib
       """,
     )
