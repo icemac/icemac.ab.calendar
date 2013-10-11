@@ -87,7 +87,7 @@ class Table(Calendar):
 
     def table_head(self):
         self.write('<h2>%s</h2>', self.month.firstOfMonth().strftime('%B %Y'))
-        self.write('<table class="calendar">')
+        self.write('<table>')
         self.write('  <thead>')
         self.write('    <tr>')
         day_names = self.request.locale.dates.calendars[

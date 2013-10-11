@@ -36,6 +36,7 @@ class SelectorForm(icemac.addressbook.browser.base.BaseForm,
 
     fields = z3c.form.field.Fields(IMonthSelector)
     successMessage = _('Month changed.')
+    id = 'month-select-form'
 
 
 class Calendar(icemac.addressbook.browser.base.BaseView):

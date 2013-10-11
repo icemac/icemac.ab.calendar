@@ -2,16 +2,29 @@
     float: right;
 }
 
-#calendar #form {
+#calendar #month-select-form {
     float: left;
+    position: absolute;
+}
+
+#calendar #month-select-form .status,
+#calendar #month-select-form .required-info {
+    display: none;
 }
 
 #calendar .calendar {
-    clear:both;
+    background: #eee url(img/bg-calendar.png) no-repeat;
+    background-position: top center;
+}
+
+#calendar .calendar h2 {
+    text-align: center;
+    padding-top: 65px;
 }
 
 #calendar .calendar table {
     width: 100%;
+    margin-top: 30px;
 }
 
 #calendar .calendar table th,
@@ -69,9 +82,8 @@
 }
 
 #content {
-    background: #eee url(img/calendar-icon-512x512.png) no-repeat right 5px;
+    background: #eee none;
     border: 1px solid #999;
-    min-height: 495px;
     padding: 5px;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
