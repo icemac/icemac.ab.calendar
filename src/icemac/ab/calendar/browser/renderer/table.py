@@ -86,12 +86,13 @@ class Table(Calendar):
             self.num_of_days += 6 - end_of_month.isoweekday()
 
     def table_head(self):
-        self.write('<h2>%s</h2>', self.month.firstOfMonth().strftime('%B %Y'))
+        calendar = self.request.locale.dates.calendars['gregorian']
+        month_name = calendar.getMonthNames()[self.month.month - 1]
+        self.write('<h2>%s %s</h2>', month_name, self.month.year)
         self.write('<table>')
         self.write('  <thead>')
         self.write('    <tr>')
-        day_names = self.request.locale.dates.calendars[
-            'gregorian'].getDayNames()
+        day_names = calendar.getDayNames()
         # Move Sunday to position one
         day_names.insert(0, day_names.pop(-1))
         for index, day_name in enumerate(day_names):

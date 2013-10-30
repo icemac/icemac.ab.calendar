@@ -94,10 +94,13 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
             'http://localhost/ab/++preferences++/ab.timeZone',
             browser.getLink('Pacific/Fiji').url)
 
-    @unittest.skip('nyi')
-    def test_displays_selected_month_in_backgorund(self):
-        # http://www.graphicsfuel.com/2012/02/calendar-icon-psd/
-        self.fail('nyi')
+    def test_translates_selected_month(self):
+        browser = self.get_browser('cal-visitor')
+        browser.addHeader('Accept-Language', 'de-DE')
+        browser.open('http://localhost/ab/++attribute++calendar')
+        browser.getControl('month for display').value = '10/2013'
+        browser.getControl('Anwenden').click()
+        self.assertIn('<h2>Oktober 2013</h2>', browser.contents)
 
 
 class EventDescriptionUTests(icemac.ab.calendar.testing.UnitTestCase):
