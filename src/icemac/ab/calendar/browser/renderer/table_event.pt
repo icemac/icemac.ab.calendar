@@ -10,7 +10,7 @@
     </tal:single-element>
     <tal:multiple-elements condition="python:len(info) > 1">
       <ul class="info">
-        <li tal:repeat="info info" tal:content="info/info"></li>
+        <li tal:repeat="info info" tal:content="structure info/info"></li>
       </ul>
     </tal:multiple-elements>
   </tal:info>
