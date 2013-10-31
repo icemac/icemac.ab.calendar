@@ -58,12 +58,14 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
     def test_displays_current_month_by_default(self):
         import datetime
         browser = self.get_browser('cal-visitor')
+        browser.addHeader('Accept-Language', 'en')
         browser.open('http://localhost/ab/++attribute++calendar')
         current_month = self.get_datetime().strftime('%B %Y')
         self.assertIn(current_month, browser.contents)
 
     def test_can_switch_to_entered_month(self):
         browser = self.get_browser('cal-visitor')
+        browser.addHeader('Accept-Language', 'en')
         browser.open('http://localhost/ab/++attribute++calendar')
         browser.getControl('month').value = '05/2003'
         browser.getControl('Apply').click()
