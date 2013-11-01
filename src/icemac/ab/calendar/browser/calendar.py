@@ -149,7 +149,7 @@ class EventDescription(grok.Adapter):
         # `ICalendarDisplaySettings` are stored. As only authorized users
         # are able to access this adapter, this is no security hole.
         unsave_calendar = zope.security.proxy.getObject(calendar)
-        # Making a copy chaning is not possible:
+        # Making a copy so changing is not possible:
         self.info_fields = copy.copy(
             icemac.ab.calendar.interfaces.ICalendarDisplaySettings(
                 unsave_calendar).event_additional_fields)
