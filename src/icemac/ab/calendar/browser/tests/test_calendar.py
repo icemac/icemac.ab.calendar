@@ -164,6 +164,20 @@ class EventDescriptionITests_getInfo(icemac.ab.calendar.testing.ZODBTestCase):
         ed = IEventDescription(event)
         self.assertEqual([u'Event is not yet sure.', u'50'], ed.getInfo())
 
+    def test_omits_fields_with_None_value(self):
+        from icemac.ab.calendar.browser.renderer.interfaces import (
+            IEventDescription)
+        from icemac.ab.calendar.interfaces import (
+            ICalendarDisplaySettings, IEvent)
+        from icemac.addressbook.testing import create
+        ab = self.layer['addressbook']
+        ICalendarDisplaySettings(ab.calendar).event_additional_fields = [
+            IEvent['text']]
+        event = create(
+            ab, ab.calendar, 'icemac.ab.calendar.event.Event', return_obj=True)
+        ed = IEventDescription(event)
+        self.assertEqual([], ed.getInfo())
+
     def test_returns_external_and_internal_persons_if_persons_selected(self):
         from icemac.ab.calendar.browser.renderer.interfaces import (
             IEventDescription)

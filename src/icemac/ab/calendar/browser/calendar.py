@@ -175,6 +175,9 @@ class EventDescription(grok.Adapter):
                         self.context,
                         icemac.addressbook.interfaces.IEntity(field.interface),
                         field))
-                value = unicode(schema_field.get(schema_field.context))
-            info.append(value)
+                value = schema_field.get(schema_field.context)
+                if value is not None:
+                    value = unicode(value)
+            if value is not None:
+                info.append(value)
         return info
