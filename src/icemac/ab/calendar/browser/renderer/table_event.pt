@@ -6,7 +6,9 @@
      tal:content="structure view/text" />
   <tal:info tal:define="info view/info">
     <tal:single-element condition="python:len(info) &lt;= 1">
-      <span class="info" tal:repeat="info info" tal:content="info/info" />
+      <span class="info"
+            tal:repeat="info info"
+            tal:content="structure info/info" />
     </tal:single-element>
     <tal:multiple-elements condition="python:len(info) > 1">
       <ul class="info">
