@@ -15,7 +15,7 @@ import unittest2 as unittest
 import zope.publisher.browser
 
 
-ZCML_LAYER = icemac.addressbook.testing.ZCMLLayer(
+ZCML_LAYER = icemac.addressbook.testing.SecondaryZCMLLayer(
     'Calendar', __name__, icemac.ab.calendar,
     bases=[icemac.addressbook.testing.ZCML_LAYER])
 ZODB_LAYER = icemac.addressbook.testing.ZODBLayer(
