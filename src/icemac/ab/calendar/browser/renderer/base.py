@@ -23,7 +23,7 @@ class Calendar(grok.MultiAdapter):
         self.request = request
         self.month = month
         self.events = events
-        self.fd = StringIO()
+        self._fd = StringIO()
 
     def month_events(self):
         # events = []
@@ -66,7 +66,14 @@ class Calendar(grok.MultiAdapter):
             key=lambda ev: tuple(ev.datetime.timetuple())[:5] + (ev.prio,))
 
     def write(self, string, *args):
-        self.fd.write("%s\n" % (string.encode('utf-8') % args))
+        """Store a string which might contain % marks which get replaced."""
+        # We have to decode the string here as the used cStringIO does not
+        # support unicode charaters outside ASCII:
+        self._fd.write("%s\n" % (string.encode('utf-8') % args))
+
+    def read(self):
+        """Get the stored information back as unicode."""
+        return self._fd.getvalue().decode('utf-8')
 
     def update(self):
         pass

@@ -77,12 +77,12 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
     def test_shows_events_belonging_to_month(self):
         from datetime import timedelta
         now = self.get_datetime()
-        self.create_event(alternative_title=u'foo bar', datetime=now)
+        self.create_event(alternative_title=u'foo bär', datetime=now)
         self.create_event(alternative_title=u'baz qux',
                           datetime=now + timedelta(days=31))
         browser = self.get_browser('cal-visitor')
         browser.open('http://localhost/ab/++attribute++calendar')
-        self.assertIn('foo bar', browser.contents)
+        self.assertIn('foo bär', browser.contents)
         self.assertNotIn('baz qux', browser.contents)
 
     def test_renders_time_zone_user_has_set_in_prefs_as_link(self):

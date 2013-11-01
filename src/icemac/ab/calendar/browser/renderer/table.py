@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2010-2013 Michael Howitz
 # See also LICENSE.txt
+from __future__ import unicode_literals
 from .base import Calendar
 from .interfaces import AUSFALL, INTERN, UnknownLanguageError
 from icemac.addressbook.i18n import _
@@ -137,6 +138,6 @@ class Table(Calendar):
 
         self.write('  </tbody>')
         self.write('</table>')
-        return self.fd.getvalue()
+        return self.read()
 
 
