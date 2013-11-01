@@ -102,7 +102,7 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         browser.addHeader('Accept-Language', 'de-DE')
         browser.open('http://localhost/ab/++attribute++calendar')
         browser.getControl('month for display').value = '10/2013'
-        browser.getControl('Anwenden').click()
+        browser.getControl('Apply').click()
         self.assertIn('<h2>Oktober 2013</h2>', browser.contents)
 
 
