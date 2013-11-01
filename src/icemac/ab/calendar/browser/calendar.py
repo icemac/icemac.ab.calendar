@@ -3,6 +3,7 @@
 # See also LICENSE.txt
 from .renderer.interfaces import UnknownLanguageError
 from icemac.addressbook.i18n import _
+import cgi
 import copy
 import datetime
 import decorator
@@ -74,10 +75,24 @@ class Calendar(icemac.addressbook.browser.base.BaseView):
                         '++preferences++/ab.timeZone')
 
 
+SOFT_HYPHEN = u'\u00AD'
+SOFT_HYPHEN_HTML = u'&shy;'
+
+
 def hyphenate(text, dic):
     """Hyphenate a `text` using `dic`tionary for display in browser."""
-    return ' '.join([dic.inserted(word, '&shy;')
-                     for word in text.split()])
+    # HTML escape needs to be done *after* the hyphenation, otherwise the
+    # entities are hyphenated. Thus there is a two step process:
+    # 1. Hyphenate with a special marker
+    # 2. replace marker with the actual entity
+    if dic is None:
+        hyphenated = text
+    else:
+        words = text.split(u' ')
+        hyphenated = u' '.join(
+            [dic.inserted(word, SOFT_HYPHEN) for word in words])
+    escaped = cgi.escape(hyphenated)
+    return escaped.replace(SOFT_HYPHEN, SOFT_HYPHEN_HTML)
 
 
 @decorator.decorator
@@ -93,18 +108,19 @@ def hyphenated(func, context, lang=None):
     Call it using: self.method(lang='de')
 
     """
-    if lang is not None:
+    if lang is None:
+        dic = None
+    else:
         try:
             dic = pyphen.Pyphen(lang=lang)
         except KeyError:
             # Fail early if we cannot hyphen the desired language:
             raise UnknownLanguageError()
     text = func(context)
-    if lang is not None:
-        if isinstance(text, list):
-            text = [hyphenate(x, dic) for x in text]
-        else:
-            text = hyphenate(text, dic)
+    if isinstance(text, list):
+        text = [hyphenate(x, dic) for x in text]
+    else:
+        text = hyphenate(text, dic)
     return text
 
 

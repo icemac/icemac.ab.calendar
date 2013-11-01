@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from mock import Mock
 import icemac.ab.calendar.testing
 import unittest
@@ -234,3 +235,27 @@ class EventDescription_getText_Tests(icemac.ab.calendar.testing.UnitTestCase):
     def test_getText_returns_hyphenated_respecting_set_language(self):
         ed = self._makeOne(alternative_title=u'Geburtstag')
         self.assertEqual(u'Ge&shy;burts&shy;tag', self.callMUT(ed, lang='de'))
+
+
+class HyphenatedTests(unittest.TestCase):
+    """Testing ..calendar.hyphenated"""
+
+    def test_encodes_text_as_html_even_if_not_hyphenating(self):
+        from ..calendar import hyphenated
+
+        @hyphenated
+        def func(ignored):
+            return u'<script>'
+
+        self.assertEqual(u'&lt;script&gt;', func(any))
+
+    def test_hyphenates_text_and_encodes_text_for_html(self):
+        from ..calendar import hyphenated
+
+        @hyphenated
+        def func(ignored, lang=None):
+            return u'Gebürtstag<>'
+
+        res = func(any, lang='de')
+        self.assertIsInstance(res, unicode)
+        self.assertEqual(u'Ge&shy;bürts&shy;tag&lt;&gt;', res)
