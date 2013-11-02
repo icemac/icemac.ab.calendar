@@ -60,14 +60,6 @@ class TableITests(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertIn('Sonntag', browser.contents)  # German locale
 
 
-class TableEventTests(unittest.TestCase):
-    """Testing ..table.TableEvent."""
-
-    @unittest.expectedFailure
-    def test_renders_Uhr_if_requested_language_is_German(self):
-        self.fail('nyi')
-
-
 class TableEvent_text_Tests(icemac.ab.calendar.testing.UnitTestCase):
     """Testing ..table.TableEvent.text()."""
 
@@ -105,13 +97,14 @@ class TableEventITests(icemac.ab.calendar.testing.ZODBTestCase):
         self.get_time_zone_name.return_value = 'UTC'
         self.addCleanup(patcher.stop)
 
-    def getVUT(self, event, field_names=[], time_zone_name=None):
+    def getVUT(
+            self, event, field_names=[], time_zone_name=None, request_kw={}):
         from icemac.ab.calendar.browser.renderer.interfaces import (
             IEventDescription)
         from icemac.ab.calendar.interfaces import (
             ICalendarDisplaySettings, IEvent)
         from zope.component import getMultiAdapter
-        request = self.get_request()
+        request = self.get_request(**request_kw)
         ab = self.layer['addressbook']
         ICalendarDisplaySettings(ab.calendar).event_additional_fields = [
             IEvent[x] for x in field_names]
@@ -147,5 +140,17 @@ class TableEventITests(icemac.ab.calendar.testing.ZODBTestCase):
         event = self.create_event(
             datetime=self.get_datetime((2013, 11, 2, 9, 27)))
         self.get_time_zone_name.return_value = 'Australia/Currie'
-        self.assertEqual(u'20:27:00', self.getVUT(event).time())
+        self.assertEqual(u'20:27', self.getVUT(event).time())
+
+    def test_time_renders_Uhr_if_requested_language_is_German(self):
+        event = self.create_event(
+            datetime=self.get_datetime((2013, 11, 2, 9, 47)))
+        view = self.getVUT(event, request_kw={'HTTP_ACCEPT_LANGUAGE': 'de'})
+        self.assertEqual(u'09:47 Uhr', view.time())
+
+    def test_time_renders_Uhr_if_requested_language_is_English(self):
+        event = self.create_event(
+            datetime=self.get_datetime((2013, 11, 2, 9, 47)))
+        view = self.getVUT(event, request_kw={'HTTP_ACCEPT_LANGUAGE': 'en'})
+        self.assertEqual(u'9:47 AM', view.time())
 

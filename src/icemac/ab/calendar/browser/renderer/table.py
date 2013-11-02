@@ -33,10 +33,11 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
         timezone = pytz.timezone(
                 icemac.addressbook.preferences.utils.get_time_zone_name())
         local_time = self.context.datetime.astimezone(timezone)
-        # Only the length 'full' has 'Uhr' in it, but it contains the
-        # timezone offset too which we do not want to display here:
-        formatter = self.request.locale.dates.getFormatter('time', 'full')
-        time= ' '.join(formatter.format(local_time).split(' ')[:-1])
+        formatter = self.request.locale.dates.getFormatter(
+                'time', 'short')
+        time = formatter.format(local_time)
+        if self.request.locale.id.language == 'de':
+            time += ' Uhr'
         return time
 
     def dd_class(self):
