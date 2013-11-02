@@ -14,13 +14,7 @@ class EventTests(unittest.TestCase):
         from gocept.reference.verify import verifyObject
         from icemac.ab.calendar.interfaces import IEvent
         from icemac.ab.calendar.event import Event
-
         self.assertTrue(verifyObject(IEvent, Event()))
-
-    @unittest.expectedFailure
-    def test_person_referenced_on_an_event_can_still_become_a_principal(self):
-        # regression test
-        self.fail('nyi')
 
     @unittest.expectedFailure
     def test_if_a_person_cannot_be_deleted_it_might_be_referenced_in_cal(self):
@@ -29,6 +23,25 @@ class EventTests(unittest.TestCase):
         # referenced in the calendar --> Test it in form &
         # SearchResultHandler + fix error message)
         self.fail('nyi')
+
+
+class EventRTests(icemac.ab.calendar.testing.BrowserTestCase):
+    """Regression testing ..event.Event."""
+
+    def test_person_referenced_on_an_event_can_still_become_a_principal(self):
+        from icemac.addressbook.testing import (
+            create_person, create_email_address)
+        ab = self.layer['addressbook']
+        person = create_person(ab, ab, u'Tester')
+        create_email_address(ab, person, email=u'tester@example.com')
+        event = self.create_event(persons=set([person]))
+        browser = self.get_browser('mgr')
+        browser.open(
+            'http://localhost/ab/++attribute++principals/@@addPrincipal.html')
+        # User referenced on event is still in the list of persons which
+        # might become a principal:
+        self.assertEqual(['Tester'],
+                         browser.getControl('person').displayOptions)
 
 
 class EventEntitySTests(icemac.ab.calendar.testing.BrowserTestCase):
