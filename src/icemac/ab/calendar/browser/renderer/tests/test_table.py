@@ -39,7 +39,11 @@ class TableFTests(icemac.ab.calendar.testing.ZCMLTestCase):
             (2013, 2, 22, 16, 14), alternative_title='event2')
         action_url = (
             'icemac.ab.calendar.browser.renderer.table.TableEvent.action_url')
-        with patch(action_url):
+        get_time_zone_name = (
+            'icemac.addressbook.preferences.utils.get_time_zone_name')
+        with patch(action_url), \
+             patch(get_time_zone_name) as get_time_zone_name:
+            get_time_zone_name.return_value = 'UTC'
             result = self.callVUT([event1, event2])
         self.assertEqual(1, len(self.getETree(result).xpath('//dt')))
 
@@ -58,10 +62,6 @@ class TableITests(icemac.ab.calendar.testing.BrowserTestCase):
 
 class TableEventTests(unittest.TestCase):
     """Testing ..table.TableEvent."""
-
-    @unittest.expectedFailure
-    def test_renders_time_in_time_zone_of_user(self):
-        self.fail('nyi')
 
     @unittest.expectedFailure
     def test_renders_Uhr_if_requested_language_is_German(self):
@@ -95,6 +95,15 @@ class TableEvent_text_Tests(icemac.ab.calendar.testing.UnitTestCase):
 
 class TableEventITests(icemac.ab.calendar.testing.ZODBTestCase):
     """Integration testing ..table.TableEvent."""
+
+    def setUp(self):
+        super(TableEventITests, self).setUp()
+        get_time_zone_name = (
+            'icemac.addressbook.preferences.utils.get_time_zone_name')
+        patcher = patch(get_time_zone_name)
+        self.get_time_zone_name = patcher.start()
+        self.get_time_zone_name.return_value = 'UTC'
+        self.addCleanup(patcher.stop)
 
     def getVUT(self, event, field_names=[], time_zone_name=None):
         from icemac.ab.calendar.browser.renderer.interfaces import (
@@ -133,3 +142,10 @@ class TableEventITests(icemac.ab.calendar.testing.ZODBTestCase):
           <li>Cool!</li>
         </ul>
         ...''', self.getVUT(event, ['persons', 'text'])())
+
+    def test_time_is_converted_to_timezone_of_user(self):
+        event = self.create_event(
+            datetime=self.get_datetime((2013, 11, 2, 9, 27)))
+        self.get_time_zone_name.return_value = 'Australia/Currie'
+        self.assertEqual(u'20:27:00', self.getVUT(event).time())
+

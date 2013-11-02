@@ -8,6 +8,8 @@ from icemac.addressbook.i18n import _
 import datetime
 import grokcore.component as grok
 import icemac.addressbook.browser.base
+import icemac.addressbook.preferences.utils
+import pytz
 import zope.component
 
 
@@ -28,10 +30,13 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
     def time(self):
         if self.context.whole_day: # and not event.has_text():
             return ''
-        formatter = self.request.locale.dates.getFormatter('time', 'full')
+        timezone = pytz.timezone(
+                icemac.addressbook.preferences.utils.get_time_zone_name())
+        local_time = self.context.datetime.astimezone(timezone)
         # Only the length 'full' has 'Uhr' in it, but it contains the
         # timezone offset too which we do not want to display here:
-        time= ' '.join(formatter.format(self.context.datetime).split(' ')[:-1])
+        formatter = self.request.locale.dates.getFormatter('time', 'full')
+        time= ' '.join(formatter.format(local_time).split(' ')[:-1])
         return time
 
     def dd_class(self):
