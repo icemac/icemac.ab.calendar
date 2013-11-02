@@ -67,7 +67,7 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         browser.getControl('Delete').click()
         self.assertIn('Do you really want to delete this event?',
                       browser.contents)
-        browser.getControl('Yes, delete').click()
+        browser.getControl('Yes').click()
         self.assertEqual(['"event" deleted.'], browser.get_messages())
         self.assertEqual('http://localhost/ab/++attribute++calendar',
                          browser.url)
