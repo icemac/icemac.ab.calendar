@@ -16,14 +16,6 @@ class EventTests(unittest.TestCase):
         from icemac.ab.calendar.event import Event
         self.assertTrue(verifyObject(IEvent, Event()))
 
-    @unittest.expectedFailure
-    def test_if_a_person_cannot_be_deleted_it_might_be_referenced_in_cal(self):
-        # regression test, move to i.ab --> fix error message.
-        # (If a person cannot get deleted the reason migt be that he is
-        # referenced in the calendar --> Test it in form &
-        # SearchResultHandler + fix error message)
-        self.fail('nyi')
-
 
 class EventRTests(icemac.ab.calendar.testing.BrowserTestCase):
     """Regression testing ..event.Event."""
