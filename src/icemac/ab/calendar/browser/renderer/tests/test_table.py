@@ -96,7 +96,7 @@ class TableEvent_text_Tests(icemac.ab.calendar.testing.UnitTestCase):
 class TableEventITests(icemac.ab.calendar.testing.ZODBTestCase):
     """Integration testing ..table.TableEvent."""
 
-    def callVUT(self, event, field_names):
+    def getVUT(self, event, field_names=[], time_zone_name=None):
         from icemac.ab.calendar.browser.renderer.interfaces import (
             IEventDescription)
         from icemac.ab.calendar.interfaces import (
@@ -110,18 +110,18 @@ class TableEventITests(icemac.ab.calendar.testing.ZODBTestCase):
         view = getMultiAdapter(
             (event_description, request), name='table-event')
         view._action_url = 'url:'
-        return view()
+        return view
 
     def test_renders_no_selected_event_additional_field_as_nothing(self):
         event = self.create_event(datetime=self.get_datetime())
         self.assertNotEllipsis('...class="info"...',
-                               self.callVUT(event, []))
+                               self.getVUT(event, [])())
 
     def test_renders_single_selected_event_additional_field_not_as_list(self):
         event = self.create_event(datetime=self.get_datetime(),
                                   external_persons=[u'Foo', u'Bar'])
         self.assertEllipsis('...<span class="info">Bar, Foo</span>...',
-                            self.callVUT(event, ['persons']))
+                            self.getVUT(event, ['persons'])())
 
     def test_renders_multiple_selected_event_additional_fields_as_list(self):
         event = self.create_event(
@@ -132,4 +132,4 @@ class TableEventITests(icemac.ab.calendar.testing.ZODBTestCase):
           <li>Bar, Foo</li>
           <li>Cool!</li>
         </ul>
-        ...''', self.callVUT(event, ['persons', 'text']))
+        ...''', self.getVUT(event, ['persons', 'text'])())
