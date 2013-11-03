@@ -72,6 +72,20 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertEqual('http://localhost/ab/++attribute++calendar',
                          browser.url)
 
+    def test_event_can_be_cloned_after_confirmation(self):
+        event = self.create_event(datetime=self.datetime)
+        browser = self.get_browser('cal-editor')
+        browser.open(
+            'http://localhost/ab/++attribute++calendar/%s' % event.__name__)
+        browser.getControl('Clone event').click()
+        self.assertEqual(['form.buttons.action', 'form.buttons.cancel'],
+                         browser.get_submit_control_names())
+        browser.getControl('Yes').click()
+        self.assertEqual(['"event" cloned.'], browser.get_messages())
+        # Clone leads to edit view of cloned event:
+        self.assertEqual('http://localhost/ab/++attribute++calendar/Event-2',
+                         browser.url)
+
 
 class EventSecurity(icemac.ab.calendar.testing.BrowserTestCase):
     """Security tests for categories."""

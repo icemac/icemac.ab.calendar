@@ -26,6 +26,12 @@ class Edit(icemac.addressbook.browser.base.GroupEditForm):
                           ignoreFields=True)
 
     @z3c.form.button.buttonAndHandler(
+        _('Clone event'), name='clone_event',
+        condition=icemac.addressbook.browser.base.can_access('@@clone.html'))
+    def handleCloneEvent(self, action):
+        self.redirect_to_next_url('object', '@@clone.html')
+
+    @z3c.form.button.buttonAndHandler(
         _(u'Delete'), name='delete',
         condition=icemac.addressbook.browser.base.can_access('@@delete.html'))
     def handleDelete(self, action):
@@ -36,5 +42,13 @@ class Delete(icemac.addressbook.browser.base.BaseDeleteForm):
     """Confirmation when deleting an event."""
 
     label = _(u'Do you really want to delete this event?')
+    interface = icemac.ab.calendar.interfaces.IEvent
+    field_names = ('datetime', 'category', 'alternative_title')
+
+
+class Clone(icemac.addressbook.browser.base.BaseCloneForm):
+    """Clone event with confirmation."""
+
+    label = _(u'Do you really want to clone this event?')
     interface = icemac.ab.calendar.interfaces.IEvent
     field_names = ('datetime', 'category', 'alternative_title')

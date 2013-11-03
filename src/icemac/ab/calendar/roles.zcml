@@ -64,6 +64,10 @@
      role="icemac.ab.calendar.Editor"
      permission="icemac.ab.calendar.EditEvent"
      />
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="icemac.ab.calendar.CloneEvent"
+     />
 
   <grant
      role="icemac.ab.calendar.Editor"

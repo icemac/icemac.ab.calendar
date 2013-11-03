@@ -40,4 +40,12 @@
      permission="icemac.ab.calendar.EditEvent"
      />
 
+  <z3c:pagelet
+     for="icemac.ab.calendar.interfaces.IEvent"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="clone.html"
+     class=".event.Clone"
+     permission="icemac.ab.calendar.CloneEvent"
+     />
+
 </configure>

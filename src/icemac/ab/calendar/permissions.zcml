@@ -55,4 +55,9 @@
      title="calendar:EditEvent"
      />
 
+  <permission
+     id="icemac.ab.calendar.CloneEvent"
+     title="calendar:CloneEvent"
+     />
+
 </configure>
