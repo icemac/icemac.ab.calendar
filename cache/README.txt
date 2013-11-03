@@ -1,0 +1,1 @@
+Chameleon puts its cache files here in tests.
