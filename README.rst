@@ -20,8 +20,9 @@ or fork me on: https://bitbucket.org/icemac/icemac.ab.calendar
 Running Tests
 =============
 
-.. image:: https://secure.travis-ci.org/icemac/icemac.ab.calendar.png
-   :target: https://travis-ci.org/icemac/icemac.ab.calendar
+.. Currently the tests on Travis-CI are not run:
+.. .. image:: https://secure.travis-ci.org/icemac/icemac.ab.calendar.png
+..    :target: https://travis-ci.org/icemac/icemac.ab.calendar
 
 To run the tests yourself call::
 
