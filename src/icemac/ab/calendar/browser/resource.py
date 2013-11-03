@@ -28,5 +28,5 @@ def set_layer(context, request):
 
 
 calendar_favicon = icemac.addressbook.browser.favicon.FavIconData(
-    '/fanstatic/calendar/img/favicon.png',
+    '/fanstatic/calendar/img/favicon.ico',
     '/fanstatic/calendar/img/favicon-preview.png')
