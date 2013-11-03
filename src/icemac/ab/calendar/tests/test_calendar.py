@@ -19,7 +19,8 @@ class CalendarUTests(unittest.TestCase):
         from icemac.ab.calendar.interfaces import ICalendarDisplaySettings
         from icemac.ab.calendar.calendar import CalendarDisplaySettings
 
-        self.assertTrue(verifyObject(ICalendarDisplaySettings, CalendarDisplaySettings()))
+        self.assertTrue(
+            verifyObject(ICalendarDisplaySettings, CalendarDisplaySettings()))
 
 
 class Calendar_get_events_FTests(icemac.ab.calendar.testing.ZODBTestCase):

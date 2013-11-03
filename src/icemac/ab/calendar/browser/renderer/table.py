@@ -28,7 +28,7 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
     _action_url = None
 
     def time(self):
-        if self.context.whole_day: # and not event.has_text():
+        if self.context.whole_day:  # and not event.has_text():
             return ''
         timezone = pytz.timezone(
                 icemac.addressbook.preferences.utils.get_time_zone_name())
@@ -145,5 +145,3 @@ class Table(Calendar):
         self.write('  </tbody>')
         self.write('</table>')
         return self.read()
-
-

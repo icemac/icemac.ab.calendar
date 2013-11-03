@@ -25,7 +25,8 @@ class CategoryCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertEqual(
             'http://localhost/ab/++attribute++calendar_categories',
             self.browser.url)
-        self.assertIn('No event categories defined yet.', self.browser.contents)
+        self.assertIn(
+            'No event categories defined yet.', self.browser.contents)
 
     def test_category_can_be_added_and_is_shown_in_list(self):
         self.browser.getLink('event category').click()

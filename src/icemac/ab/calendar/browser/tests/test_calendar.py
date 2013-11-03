@@ -241,7 +241,7 @@ class EventDescription_getText_Tests(icemac.ab.calendar.testing.UnitTestCase):
     def test_getText_raises_UnknownLanguageError_for_unknown_languages(self):
         from ..renderer.interfaces import UnknownLanguageError
         with self.assertRaises(UnknownLanguageError):
-            self.callMUT(self._makeOne(),lang='Clingon')
+            self.callMUT(self._makeOne(), lang='Clingon')
 
     def test_getText_returns_hyphenated_respecting_set_language(self):
         ed = self._makeOne(alternative_title=u'Geburtstag')

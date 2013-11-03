@@ -79,7 +79,8 @@ class ZODBTestMixIn(object):
         else:
             parent = getattr(ab, parent)
         with icemac.addressbook.utils.site(ab):
-            name = icemac.addressbook.utils.create_and_add(parent, class_, **kw)
+            name = icemac.addressbook.utils.create_and_add(
+                parent, class_, **kw)
         return parent[name]
 
     def create_category(self, title):
