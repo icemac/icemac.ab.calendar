@@ -5,12 +5,10 @@ from .renderer.interfaces import UnknownLanguageError
 from icemac.addressbook.i18n import _
 import cgi
 import copy
-import datetime
 import decorator
 import gocept.month
 import grokcore.component as grok
 import icemac.ab.calendar.browser.renderer.interfaces
-import icemac.ab.calendar.browser.renderer.table
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.browser.base
 import icemac.addressbook.interfaces
@@ -21,8 +19,6 @@ import z3c.form.field
 import z3c.formui.form
 import zope.component
 import zope.interface
-import zope.preference.interfaces
-import zope.schema.interfaces
 
 
 class IMonthSelector(zope.interface.Interface):

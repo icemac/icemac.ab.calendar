@@ -1,4 +1,3 @@
-import zope.interface
 import icemac.addressbook.browser.about.about
 
 

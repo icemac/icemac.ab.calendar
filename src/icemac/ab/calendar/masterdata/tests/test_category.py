@@ -1,7 +1,7 @@
 # Copyright (c) 2013 Michael Howitz
 # See also LICENSE.txt
 import icemac.ab.calendar.testing
-import unittest2 as unittest
+import icemac.ab.calendar.testing
 
 
 class CategoryCRUD(icemac.ab.calendar.testing.BrowserTestCase):

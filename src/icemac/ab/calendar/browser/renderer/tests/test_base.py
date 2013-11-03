@@ -1,5 +1,3 @@
-from mock import Mock, patch
-import icemac.ab.calendar.testing
 import unittest
 
 

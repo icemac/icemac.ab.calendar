@@ -1,5 +1,4 @@
 import icemac.ab.calendar.testing
-import unittest
 
 
 class MasterDataSecurity(icemac.ab.calendar.testing.BrowserTestCase):

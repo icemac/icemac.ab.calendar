@@ -2,7 +2,6 @@
 # Copyright (c) 2010-2013 Michael Howitz
 # See also LICENSE.txt
 from cStringIO import StringIO
-import datetime
 import gocept.month
 import grokcore.component as grok
 import icemac.ab.calendar.browser.renderer.interfaces

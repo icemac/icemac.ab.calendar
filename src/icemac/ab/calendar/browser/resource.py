@@ -3,7 +3,6 @@
 from icemac.addressbook.browser.resource import base_css
 import fanstatic
 import icemac.ab.calendar.browser.interfaces
-import os.path
 import zope.viewlet.viewlet
 
 

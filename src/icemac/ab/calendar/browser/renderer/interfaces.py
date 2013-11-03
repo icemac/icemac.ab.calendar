@@ -2,7 +2,6 @@
 # Copyright (c) 2010-2013 Michael Howitz
 # See also LICENSE.txt
 import zope.interface
-import zope.schema
 
 
 AUSFALL = 'ausfall'

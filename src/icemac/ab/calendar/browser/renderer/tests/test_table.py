@@ -1,4 +1,4 @@
-from mock import Mock, MagicMock, patch, sentinel, call
+from mock import Mock, patch, call
 import icemac.ab.calendar.testing
 import unittest
 
@@ -17,7 +17,6 @@ class TableFTests(icemac.ab.calendar.testing.ZCMLTestCase):
     """Functional testing ..table.Table."""
 
     def setUp(self):
-        from icemac.addressbook.browser.interfaces import IAddressBookLayer
         super(TableFTests, self).setUp()
         self.request = self.get_request()
 

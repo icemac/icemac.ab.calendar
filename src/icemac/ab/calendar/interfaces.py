@@ -5,7 +5,6 @@ import gocept.reference.field
 import icemac.addressbook.fieldsource
 import icemac.addressbook.interfaces
 import zc.sourcefactory.basic
-import zc.sourcefactory.contextual
 import zope.component
 import zope.interface
 

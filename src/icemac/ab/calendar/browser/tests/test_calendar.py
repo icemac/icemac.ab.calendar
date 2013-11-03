@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from mock import Mock
 import icemac.ab.calendar.testing
 import unittest
 
@@ -45,7 +44,6 @@ class CalendarSecurity(icemac.ab.calendar.testing.BrowserTestCase):
             browser.getLink('event').click()
 
     def test_anonymous_is_not_able_to_access_calendar(self):
-        from icemac.addressbook.testing import Browser
         from zope.security.interfaces import Unauthorized
         browser = self.get_browser()
         browser.handleErrors = False  # needed to catch exception
@@ -57,7 +55,6 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
     """Testing ..calendar.Calendar."""
 
     def test_displays_current_month_by_default(self):
-        import datetime
         browser = self.get_browser('cal-visitor')
         browser.addHeader('Accept-Language', 'en')
         browser.open('http://localhost/ab/++attribute++calendar')
