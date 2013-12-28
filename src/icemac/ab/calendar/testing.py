@@ -22,6 +22,8 @@ ZODB_LAYER = icemac.addressbook.testing.ZODBLayer(
     'Calendar', ZCML_LAYER)
 TEST_BROWSER_LAYER = icemac.addressbook.testing.TestBrowserLayer(
     'Calendar', ZODB_LAYER)
+SELENIUM_LAYER = icemac.addressbook.testing.SeleniumLayer(
+    'Calendar', ZODB_LAYER)
 
 
 class TestMixIn(object):
@@ -118,3 +120,8 @@ class BrowserTestCase(unittest.TestCase,
                       icemac.addressbook.testing.ZODBMixIn):
     """Test case for browser tests."""
     layer = TEST_BROWSER_LAYER
+
+
+class SeleniumTestCase(icemac.addressbook.testing.SeleniumTestCase):
+    """Test case for selenium tests."""
+    layer = SELENIUM_LAYER

@@ -51,7 +51,7 @@ setuptools.setup(
         'decorator',
         'gocept.month >= 1.2.dev0',
         'grokcore.annotation',
-        'icemac.addressbook >= 2.0.0.dev0',
+        'icemac.addressbook >= 2.1.0.dev0',
         'setuptools',
         ],
     extras_require = dict(

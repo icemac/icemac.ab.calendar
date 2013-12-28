@@ -48,6 +48,10 @@
        provides="icemac.addressbook.interfaces.IFaviconData"
        factory=".resource.calendar_favicon" />
 
+  <subscriber
+       for="*"
+       provides="icemac.addressbook.interfaces.IStartpageData"
+       factory=".startpage.calendar" />
 
   <include file="event.zcml" />
   <include package=".renderer" />

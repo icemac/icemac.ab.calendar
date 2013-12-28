@@ -5,7 +5,8 @@
 1.0.2 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Add option to select calendar as start page. (thus requring at least
+  `icemac.addressbook 2.1`).
 
 
 1.0.1 (2013-12-26)

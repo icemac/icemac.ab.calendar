@@ -52,3 +52,10 @@ class CalendarDisplaySettings(grok.Annotation):
                 icemac.addressbook.interfaces.IEntity(field.interface),
                 field.__name__))
         self._event_additional_fields = values
+
+
+@grok.adapter(icemac.addressbook.interfaces.IAddressBook)
+@grok.implementer(icemac.ab.calendar.interfaces.ICalendar)
+def calendar(address_book):
+    "Adapt the event to its calendar."
+    return address_book.calendar
