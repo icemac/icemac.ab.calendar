@@ -2,7 +2,7 @@
  Changelog
 ===========
 
-1.0.2 (unreleased)
+1.1.0 (2013-12-31)
 ==================
 
 - Add option to select calendar as start page. (thus requring at least
