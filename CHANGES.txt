@@ -2,7 +2,7 @@
  Changelog
 ===========
 
-1.1.1 (unreleased)
+1.2.0 (2014-01-02)
 ==================
 
 - Selected month is kept in session, to ease editing in another month than
