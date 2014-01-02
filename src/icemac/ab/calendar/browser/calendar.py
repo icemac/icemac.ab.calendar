@@ -185,6 +185,6 @@ class EventDescription(grok.Adapter):
                 value = schema_field.get(schema_field.context)
                 if value is not None:
                     value = unicode(value)
-            if value is not None:
+            if value:
                 info.append(value)
         return info

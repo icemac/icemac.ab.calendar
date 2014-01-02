@@ -194,6 +194,24 @@ class EventDescriptionITests_getInfo(icemac.ab.calendar.testing.ZODBTestCase):
         self.assertIsNone(ed.context.text)
         self.assertEqual([], ed.getInfo())
 
+    def test_omits_empty_string_values(self):
+        self._set_settings('persons')
+        ed = self._make_one()
+        self.assertEqual('', ed.persons)
+        self.assertEqual([], ed.getInfo())
+
+    def test_does_not_omit_0_numbers(self):
+        from icemac.ab.calendar.interfaces import IEvent
+        from icemac.addressbook.interfaces import IEntity
+        from icemac.addressbook.testing import create_field
+        ab = self.layer['addressbook']
+        num_name = create_field(
+            ab, 'icemac.ab.calendar.event.Event', u'Int', u'num')
+        event_entity = IEntity(IEvent)
+        self._set_settings(event_entity.getRawField(num_name))
+        ed = self._make_one(**{num_name: 0})
+        self.assertEqual([u'0'], ed.getInfo())
+
     def test_returns_external_and_internal_persons_if_persons_selected(self):
         from icemac.addressbook.testing import create_person
         ab = self.layer['addressbook']
