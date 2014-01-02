@@ -75,6 +75,16 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertEqual('05/2003', browser.getControl('month').value)
         self.assertEqual(['Month changed.'], browser.get_messages())
 
+    def test_keeps_month_switched_to(self):
+        browser = self.get_browser('cal-visitor')
+        calendar_url = 'http://localhost/ab/++attribute++calendar'
+        browser.open(calendar_url)
+        browser.getControl('month').value = '05/2003'
+        browser.getControl('Apply').click()
+        self.assertEqual(['Month changed.'], browser.get_messages())
+        browser.open(calendar_url)
+        self.assertEqual('05/2003', browser.getControl('month').value)
+
     def test_shows_events_belonging_to_month(self):
         from datetime import timedelta
         now = self.get_datetime()

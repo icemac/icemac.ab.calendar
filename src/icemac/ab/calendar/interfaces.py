@@ -9,6 +9,7 @@ import zope.component
 import zope.interface
 
 
+PACKAGE_ID = 'icemac.ab.calendar'
 DATE_INDEX = 'icemac.ab.calendar.event.date'
 
 

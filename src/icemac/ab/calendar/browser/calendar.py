@@ -8,6 +8,7 @@ import copy
 import decorator
 import gocept.month
 import grokcore.component as grok
+import icemac.ab.calendar.browser.base
 import icemac.ab.calendar.browser.renderer.interfaces
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.browser.base
@@ -36,17 +37,27 @@ class SelectorForm(icemac.addressbook.browser.base.BaseForm,
     id = 'month-select-form'
 
 
-class Calendar(icemac.addressbook.browser.base.BaseView):
+class Calendar(icemac.ab.calendar.browser.base.View):
     """Tabular calendar display."""
 
     zope.interface.implements(IMonthSelector)
 
+    @property
+    def month(self):
+        """Month which should get displayed."""
+        month = self.session.get('selected_month')
+        if month is None:
+            # Store default value:
+            self.month = month = gocept.month.Month.current()
+        return month
+
+    @month.setter
+    def month(self, value):
+        self.session['selected_month'] = value
+
     def update(self):
-        # The following assignment only sets the default value,
-        # `self.form.update()` writes the value the user entered on
-        # `self.month`.
-        self.month = gocept.month.Month.current()
         self.form = SelectorForm(self, self.request)
+        # Write the value the user entered on `self.month`:
         self.form.update()
         events = [
             icemac.ab.calendar.browser.renderer.interfaces.IEventDescription(x)
