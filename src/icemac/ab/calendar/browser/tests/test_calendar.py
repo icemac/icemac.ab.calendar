@@ -153,69 +153,61 @@ class EventDescriptionFTests(icemac.ab.calendar.testing.ZCMLTestCase):
 class EventDescriptionITests_getInfo(icemac.ab.calendar.testing.ZODBTestCase):
     """Integration testing ..calendar.EventDescription.getInfo()"""
 
-    def test_returns_list_of_selected_fields(self):
+    def _make_one(self, **kw):
         from icemac.ab.calendar.browser.renderer.interfaces import (
             IEventDescription)
+        from icemac.addressbook.testing import create
+        ab = self.layer['addressbook']
+        event = create(
+            ab, ab.calendar, 'icemac.ab.calendar.event.Event',
+            return_obj=True, **kw)
+        return IEventDescription(event)
+
+    def _set_settings(self, *args):
         from icemac.ab.calendar.interfaces import (
             ICalendarDisplaySettings, IEvent)
+        fields = []
+        for arg in args:
+            if isinstance(arg, basestring):
+                arg = IEvent[arg]
+            fields.append(arg)
+        ab = self.layer['addressbook']
+        ICalendarDisplaySettings(ab.calendar).event_additional_fields = fields
+
+    def test_returns_list_of_selected_fields_as_unicodes(self):
+        from icemac.ab.calendar.interfaces import IEvent
         from icemac.addressbook.interfaces import IEntity
-        from icemac.addressbook.testing import create_field, create
+        from icemac.addressbook.testing import create_field
         ab = self.layer['addressbook']
         reservations_name = create_field(
             ab, 'icemac.ab.calendar.event.Event', u'Int', u'reservations')
         event_entity = IEntity(IEvent)
         # Both user fields and pre-defined fields are possible
-        ICalendarDisplaySettings(ab.calendar).event_additional_fields = [
-            IEvent['text'], event_entity.getRawField(reservations_name)
-            ]
-        event = create(
-            ab, ab.calendar, 'icemac.ab.calendar.event.Event',
-            return_obj=True,
+        self._set_settings('text', event_entity.getRawField(reservations_name))
+        ed = self._make_one(
             **{'text': u'Event is not yet sure.', reservations_name: 50})
-        ed = IEventDescription(event)
         self.assertEqual([u'Event is not yet sure.', u'50'], ed.getInfo())
 
     def test_omits_fields_with_None_value(self):
-        from icemac.ab.calendar.browser.renderer.interfaces import (
-            IEventDescription)
-        from icemac.ab.calendar.interfaces import (
-            ICalendarDisplaySettings, IEvent)
-        from icemac.addressbook.testing import create
-        ab = self.layer['addressbook']
-        ICalendarDisplaySettings(ab.calendar).event_additional_fields = [
-            IEvent['text']]
-        event = create(
-            ab, ab.calendar, 'icemac.ab.calendar.event.Event', return_obj=True)
-        ed = IEventDescription(event)
+        self._set_settings('text')
+        ed = self._make_one()
+        self.assertIsNone(ed.context.text)
         self.assertEqual([], ed.getInfo())
 
     def test_returns_external_and_internal_persons_if_persons_selected(self):
-        from icemac.ab.calendar.browser.renderer.interfaces import (
-            IEventDescription)
-        from icemac.ab.calendar.interfaces import (
-            ICalendarDisplaySettings, IEvent)
         from icemac.addressbook.testing import create_person
         ab = self.layer['addressbook']
-        ICalendarDisplaySettings(ab.calendar).event_additional_fields = [
-            IEvent['persons']]
         p1 = create_person(ab, ab, u'Tester', first_name=u'Hans')
-        event = self.create_event(
+        self._set_settings('persons')
+        ed = self._make_one(
             persons=set([p1]),
             external_persons=[u'Franz Vrozzek', u'Fritz Vrba'])
-        ed = IEventDescription(event)
         self.assertEqual([u'Franz Vrozzek, Fritz Vrba, Hans Tester'],
                          ed.getInfo())
 
     def test_hyphenates_text(self):
-        from icemac.ab.calendar.browser.renderer.interfaces import (
-            IEventDescription)
-        from icemac.ab.calendar.interfaces import (
-            ICalendarDisplaySettings, IEvent)
-        ab = self.layer['addressbook']
-        ICalendarDisplaySettings(ab.calendar).event_additional_fields = [
-            IEvent['text']]
-        event = self.create_event(text=u'I contain longer words.')
-        ed = IEventDescription(event)
+        self._set_settings('text')
+        ed = self._make_one(text=u'I contain longer words.')
         self.assertEqual([u'I con&shy;tain longer word&shy;s.'],
                          ed.getInfo(lang='en'))
 
