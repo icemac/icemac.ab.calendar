@@ -60,8 +60,12 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         # month name is not displayed:
         browser.addHeader('Accept-Language', 'en')
         browser.open('http://localhost/ab/++attribute++calendar')
-        current_month = self.get_datetime().strftime('%B %Y')
-        self.assertIn(current_month, browser.contents)
+        current_month, current_year = self.get_datetime().strftime(
+            '%B %Y').split()
+        self.assertEqual(
+            [current_month], browser.getControl('month').displayValue)
+        self.assertEqual(
+            [current_year], browser.getControl('year').displayValue)
 
     def test_can_switch_to_entered_month(self):
         browser = self.get_browser('cal-visitor')
@@ -69,21 +73,33 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         # month name is not displayed:
         browser.addHeader('Accept-Language', 'en')
         browser.open('http://localhost/ab/++attribute++calendar')
-        browser.getControl('month').value = '05/2003'
+        browser.getControl('month').getControl('May').click()
+        browser.getControl('year').getControl('2024').click()
         browser.getControl('Apply').click()
-        self.assertIn('May 2003', browser.contents)
-        self.assertEqual('05/2003', browser.getControl('month').value)
         self.assertEqual(['Month changed.'], browser.get_messages())
+        self.assertEqual(['May'], browser.getControl('month').displayValue)
+        self.assertEqual(['2024'], browser.getControl('year').displayValue)
 
     def test_keeps_month_switched_to(self):
         browser = self.get_browser('cal-visitor')
+        # We need to explicitly set the language here because otherwise the
+        # month name is not displayed:
+        browser.addHeader('Accept-Language', 'en')
         calendar_url = 'http://localhost/ab/++attribute++calendar'
         browser.open(calendar_url)
-        browser.getControl('month').value = '05/2003'
+        browser.getControl('month').getControl('May').click()
+        browser.getControl('year').getControl('2024').click()
         browser.getControl('Apply').click()
         self.assertEqual(['Month changed.'], browser.get_messages())
         browser.open(calendar_url)
-        self.assertEqual('05/2003', browser.getControl('month').value)
+        self.assertEqual(['May'], browser.getControl('month').displayValue)
+        self.assertEqual(['2024'], browser.getControl('year').displayValue)
+
+    def test_translates_months_in_dropdown(self):
+        browser = self.get_browser('cal-visitor')
+        browser.addHeader('Accept-Language', 'de-DE')
+        browser.open('http://localhost/ab/++attribute++calendar')
+        self.assertEqual('Mai', browser.getControl('month').displayOptions[4])
 
     def test_shows_events_belonging_to_month(self):
         from datetime import timedelta
@@ -108,13 +124,25 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
             'http://localhost/ab/++preferences++/ab.timeZone',
             browser.getLink('Pacific/Fiji').url)
 
-    def test_translates_selected_month(self):
-        browser = self.get_browser('cal-visitor')
-        browser.addHeader('Accept-Language', 'de-DE')
-        browser.open('http://localhost/ab/++attribute++calendar')
-        browser.getControl('month for display').value = '10/2013'
-        browser.getControl('Apply').click()
-        self.assertIn('<h2>Oktober 2013</h2>', browser.contents)
+
+class CalendarSTests(icemac.ab.calendar.testing.SeleniumTestCase):
+    """Selenium testing ..calendar.Calendar."""
+
+    def test_month_dropdown_autosubmits(self):
+        self.login()
+        sel = self.selenium
+        sel.open('/ab/++attribute++calendar')
+        sel.select('id=form-widgets-calendar_month', 'label=May')
+        sel.waitForPageToLoad()
+        self.assertMessage(u'Month changed.')
+
+    def test_year_dropdown_autosubmits(self):
+        self.login()
+        sel = self.selenium
+        sel.open('/ab/++attribute++calendar')
+        sel.select('id=form-widgets-calendar_year', 'label=2024')
+        sel.waitForPageToLoad()
+        self.assertMessage(u'Month changed.')
 
 
 class EventDescriptionUTests(icemac.ab.calendar.testing.UnitTestCase):

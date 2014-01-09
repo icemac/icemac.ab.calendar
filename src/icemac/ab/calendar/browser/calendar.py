@@ -2,6 +2,7 @@
 # Copyright (c) 2013 Michael Howitz
 # See also LICENSE.txt
 from .renderer.interfaces import UnknownLanguageError
+from datetime import date
 from icemac.addressbook.i18n import _
 import cgi
 import copy
@@ -18,14 +19,43 @@ import itertools
 import pyphen
 import z3c.form.field
 import z3c.formui.form
+import zc.sourcefactory.basic
 import zope.component
+import zope.globalrequest
 import zope.interface
+
+
+class MonthSource(zc.sourcefactory.basic.BasicSourceFactory):
+    """Enumerates months."""
+
+    def getValues(self):
+        return range(1, 13)
+
+    def getTitle(self, value):
+        request = zope.globalrequest.getRequest()
+        calendar = request.locale.dates.calendars['gregorian']
+        return calendar.getMonthNames()[value - 1]
+
+month_source = MonthSource()
+
+
+class YearSource(zc.sourcefactory.basic.BasicSourceFactory):
+    """Enumerate 5 years past + 10 years future."""
+
+    def getValues(self):
+        current_year = date.today().year
+        return range(current_year - 5, current_year + 11)
+
+year_source = YearSource()
 
 
 class IMonthSelector(zope.interface.Interface):
     """Select a month for display."""
 
-    month = gocept.month.MonthField(title=_('month for display'))
+    calendar_month = zope.schema.Choice(
+        title=_('month'), source=month_source)
+    calendar_year = zope.schema.Choice(
+        title=_('year'), source=year_source)
 
 
 class SelectorForm(icemac.addressbook.browser.base.BaseForm,
@@ -43,17 +73,33 @@ class Calendar(icemac.ab.calendar.browser.base.View):
     zope.interface.implements(IMonthSelector)
 
     @property
-    def month(self):
-        """Month which should get displayed."""
-        month = self.session.get('selected_month')
+    def calendar_month(self):
+        month = self.session.get('calendar_month')
         if month is None:
             # Store default value:
-            self.month = month = gocept.month.Month.current()
+            self.calendar_month = month = gocept.month.Month.current().month
         return month
 
-    @month.setter
-    def month(self, value):
-        self.session['selected_month'] = value
+    @calendar_month.setter
+    def calendar_month(self, value):
+        self.session['calendar_month'] = value
+
+    @property
+    def calendar_year(self):
+        year = self.session.get('calendar_year')
+        if year is None:
+            # Store default value:
+            self.calendar_year = year = gocept.month.Month.current().year
+        return year
+
+    @calendar_year.setter
+    def calendar_year(self, value):
+        self.session['calendar_year'] = value
+
+    @property
+    def month(self):
+        """Month which should get displayed."""
+        return gocept.month.Month(self.calendar_month, self.calendar_year)
 
     def update(self):
         self.form = SelectorForm(self, self.request)

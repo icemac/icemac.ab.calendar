@@ -3,12 +3,24 @@
 }
 
 #calendar #month-select-form {
-    float: left;
-    position: absolute;
+    padding-top: 65px;
+}
+
+#calendar #month-select-form .viewspace {
+    text-align: center;
+}
+
+#calendar #month-select-form .row {
+    display:inline-block;
+}
+
+#calendar #month-select-form div.widget {
+    margin-left: 0;
 }
 
 #calendar #month-select-form .status,
-#calendar #month-select-form .required-info {
+#calendar #month-select-form .required-info,
+#calendar #month-select-form .label {
     display: none;
 }
 

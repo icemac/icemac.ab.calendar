@@ -94,8 +94,6 @@ class Table(Calendar):
 
     def table_head(self):
         calendar = self.request.locale.dates.calendars['gregorian']
-        month_name = calendar.getMonthNames()[self.month.month - 1]
-        self.write('<h2>%s %s</h2>', month_name, self.month.year)
         self.write('<table>')
         self.write('  <thead>')
         self.write('    <tr>')

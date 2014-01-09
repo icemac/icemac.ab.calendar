@@ -5,8 +5,8 @@
     <a tal:attributes="href view/time_zone_prefs_url"
        tal:content="view/time_zone_name" />
   </div>
-  <div tal:replace="structure view/render_form" />
   <div class="calendar">
+    <div tal:replace="structure view/render_form" />
     <div tal:replace="structure view/render_calendar" />
   </div>
 </div>
