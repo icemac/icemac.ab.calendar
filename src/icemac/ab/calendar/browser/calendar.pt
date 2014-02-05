@@ -6,6 +6,20 @@
   </div>
   <div id="calendar"
        tal:attributes="class view/css_class">
+    <div class="menu">
+      <ul>
+        <li>
+          <a tal:attributes="href python:view.menu_url('month');
+                             class python:view.selected_css_class('month')"
+             i18n:translate="">Month</a>
+        </li>
+        <li>
+          <a tal:attributes="href python:view.menu_url('year');
+                             class python:view.selected_css_class('year')"
+             i18n:translate="">Year</a>
+        </li>
+      </ul>
+    </div>
     <div tal:replace="structure view/render_form" />
     <div tal:replace="structure view/render_calendar" />
   </div>

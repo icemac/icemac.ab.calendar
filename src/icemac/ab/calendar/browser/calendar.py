@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2013 Michael Howitz
 # See also LICENSE.txt
-from .renderer.interfaces import UnknownLanguageError
+from .renderer.interfaces import UnknownLanguageError, IEventDescription
 from datetime import date
 from icemac.addressbook.i18n import _
 import cgi
@@ -23,6 +23,24 @@ import zc.sourcefactory.basic
 import zope.component
 import zope.globalrequest
 import zope.interface
+import zope.publisher.interfaces
+
+
+class Dispatcher(icemac.ab.calendar.browser.base.View):
+    """Dispatch to month resp. year view."""
+
+    possible_views = {'month': 'month.html',
+                      'year': 'year.html'}
+
+    def __call__(self):
+        target = self.request.get('to', None)
+        if target in self.possible_views:
+            self.session['calendar_view'] = target
+        else:
+            target = self.session.get('calendar_view', 'month')
+        self.request.response.redirect(
+            self.url(self.context, self.possible_views[target]))
+        return ''
 
 
 class MonthSource(zc.sourcefactory.basic.BasicSourceFactory):
@@ -52,25 +70,67 @@ year_source = YearSource()
 class IMonthSelector(zope.interface.Interface):
     """Select a month for display."""
 
-    calendar_month = zope.schema.Choice(
-        title=_('month'), source=month_source)
-    calendar_year = zope.schema.Choice(
-        title=_('year'), source=year_source)
+    calendar_month = zope.schema.Choice(title=_('month'), source=month_source)
+    calendar_year = zope.schema.Choice(title=_('year'), source=year_source)
 
 
-class SelectorForm(icemac.addressbook.browser.base.BaseForm,
-                   z3c.formui.form.EditForm):
+class MonthSelectorForm(icemac.addressbook.browser.base.BaseForm,
+                        z3c.formui.form.EditForm):
     """Form to enter the month which should be displayed in the calendar."""
 
     fields = z3c.form.field.Fields(IMonthSelector)
     successMessage = _('Month changed.')
-    id = 'month-select-form'
+    id = 'calendar-select-form'
 
 
-class Calendar(icemac.ab.calendar.browser.base.View):
+class TabularCalendar(icemac.ab.calendar.browser.base.View):
     """Tabular calendar display."""
 
+    form_class = NotImplemented
+    css_class = NotImplemented
+
+    @property
+    def calendar_year(self):
+        year = self.session.get('calendar_year')
+        if year is None:
+            # Store default value:
+            self.calendar_year = year = gocept.month.Month.current().year
+        return year
+
+    @calendar_year.setter
+    def calendar_year(self, value):
+        self.session['calendar_year'] = value
+
+    def selected_css_class(self, name):
+        if self.session.get('calendar_view') == name:
+            return 'selected'
+
+    def menu_url(self, target):
+        return self.url(self.context, to=target)
+
+    def update(self):
+        self.form = self.form_class(self, self.request)
+        # Write the value the user entered on self:
+        self.form.update()
+
+    def render_form(self):
+        return self.form.render()
+
+    def time_zone_name(self):
+        """User selected time zone name."""
+        return icemac.addressbook.preferences.utils.get_time_zone_name()
+
+    def time_zone_prefs_url(self):
+        return self.url(icemac.addressbook.interfaces.IAddressBook(self),
+                        '++preferences++/ab.timeZone')
+
+
+class MonthCalendar(TabularCalendar):
+    """Calendar display of one month."""
+
     zope.interface.implements(IMonthSelector)
+    form_class = MonthSelectorForm
+    css_class = 'month'
 
     @property
     def calendar_month(self):
@@ -85,29 +145,14 @@ class Calendar(icemac.ab.calendar.browser.base.View):
         self.session['calendar_month'] = value
 
     @property
-    def calendar_year(self):
-        year = self.session.get('calendar_year')
-        if year is None:
-            # Store default value:
-            self.calendar_year = year = gocept.month.Month.current().year
-        return year
-
-    @calendar_year.setter
-    def calendar_year(self, value):
-        self.session['calendar_year'] = value
-
-    @property
     def month(self):
         """Month which should get displayed."""
         return gocept.month.Month(self.calendar_month, self.calendar_year)
 
     def update(self):
-        self.form = SelectorForm(self, self.request)
-        # Write the value the user entered on `self.month`:
-        self.form.update()
-        events = [
-            icemac.ab.calendar.browser.renderer.interfaces.IEventDescription(x)
-            for x in self.context.get_events(self.month)]
+        super(MonthCalendar, self).update()
+        events = [IEventDescription(x)
+                  for x in self.context.get_events(self.month)]
         self.renderer = zope.component.getMultiAdapter(
             (self.month, self.request, events),
             icemac.ab.calendar.browser.renderer.interfaces.IRenderer,
@@ -116,16 +161,55 @@ class Calendar(icemac.ab.calendar.browser.base.View):
     def render_calendar(self):
         return self.renderer()
 
-    def render_form(self):
-        return self.form.render()
 
-    def time_zone_name(self):
-        """User selected time zone name."""
-        return icemac.addressbook.preferences.utils.get_time_zone_name()
+class IYearSelector(zope.interface.Interface):
+    """Select a month for display."""
 
-    def time_zone_prefs_url(self):
-        return self.url(icemac.addressbook.interfaces.IAddressBook(self),
-                        '++preferences++/ab.timeZone')
+    calendar_year = zope.schema.Choice(title=_('year'), source=year_source)
+
+
+class YearSelectorForm(icemac.addressbook.browser.base.BaseForm,
+                       z3c.formui.form.EditForm):
+    """Form to enter the year which should be displayed in the calendar."""
+
+    fields = z3c.form.field.Fields(IYearSelector)
+    successMessage = _('Year changed.')
+    id = 'calendar-select-form'
+
+
+class YearCalendar(TabularCalendar):
+    """Calendar displaying a whole year."""
+
+    zope.interface.implements(IYearSelector)
+    form_class = YearSelectorForm
+    css_class = 'year'
+
+    def update(self):
+        super(YearCalendar, self).update()
+        year = gocept.month.MonthInterval(
+            gocept.month.Month(1, self.calendar_year),
+            gocept.month.Month(12, self.calendar_year))
+        self.events = []
+        for month in year:
+            events = [IEventDescription(x)
+                      for x in self.context.get_events(month)]
+            self.events.append((month, events))
+        locale_calendar = self.request.locale.dates.calendars['gregorian']
+        self.month_names = locale_calendar.getMonthNames()
+
+    def render_events(self, month, events):
+        month_name = self.month_names[month.month - 1]
+        headline = u'<h2>{} {}</h2>'.format(month_name, month.year)
+        calendar = zope.component.getMultiAdapter(
+            (month, self.request, events),
+            icemac.ab.calendar.browser.renderer.interfaces.IRenderer,
+            name='table')()
+        return '\n'.join((headline, calendar))
+
+    def render_calendar(self):
+        result = [self.render_events(month, events)
+                  for month, events in self.events]
+        return '\n'.join(result)
 
 
 SOFT_HYPHEN = u'\u00AD'

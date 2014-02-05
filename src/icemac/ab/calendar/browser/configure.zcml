@@ -5,12 +5,28 @@
    xmlns:z3c="http://namespaces.zope.org/z3c"
    i18n_domain="icemac.addressbook">
 
-  <gocept:pagelet
+  <browser:page
      for="icemac.ab.calendar.interfaces.ICalendar"
      layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
      name="index.html"
+     class=".calendar.Dispatcher"
+     permission="icemac.ab.calendar.ViewCalendar" />
+
+  <gocept:pagelet
+     for="icemac.ab.calendar.interfaces.ICalendar"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="month.html"
      template="calendar.pt"
-     class=".calendar.Calendar"
+     class=".calendar.MonthCalendar"
+     permission="icemac.ab.calendar.ViewCalendar"
+     />
+
+  <gocept:pagelet
+     for="icemac.ab.calendar.interfaces.ICalendar"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="year.html"
+     template="calendar.pt"
+     class=".calendar.YearCalendar"
      permission="icemac.ab.calendar.ViewCalendar"
      />
 

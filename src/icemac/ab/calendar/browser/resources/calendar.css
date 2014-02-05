@@ -111,3 +111,31 @@
 #calendar table td dl dd ul.info li {
     list-style-type: disc;
 }
+
+#calendar .menu {
+    padding-top: 9px;
+}
+
+#calendar .menu ul {
+    text-align: center;
+}
+
+#calendar .menu li {
+    display:inline-block;
+}
+
+#calendar .menu a {
+    border: 1px solid #996633;
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+    padding: 0.1em 0.5em;
+    text-decoration: none;
+    color: #000000;
+    background-color: #FFFFFF;
+}
+
+#calendar .menu a:hover,
+#calendar .menu a.selected {
+    background-color: #996633;
+    color: #FFFFFF;
+}

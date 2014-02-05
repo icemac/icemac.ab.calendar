@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import datetime
 import icemac.ab.calendar.testing
 import unittest
 
@@ -124,11 +125,33 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
             'http://localhost/ab/++preferences++/ab.timeZone',
             browser.getLink('Pacific/Fiji').url)
 
+    def test_can_switch_to_year_view(self):
+        browser = self.get_browser('cal-visitor')
+        # We need to explicitly set the language here because otherwise the
+        # month names are not displayed:
+        browser.addHeader('Accept-Language', 'en')
+        calendar_url = 'http://localhost/ab/++attribute++calendar'
+        browser.open(calendar_url)
+        browser.getLink('Year').click()
+        self.assertEqual(calendar_url + '/year.html', browser.url)
+        year = datetime.date.today().year
+        self.assertIn('January {}'.format(year), browser.contents)
+        self.assertIn('December {}'.format(year), browser.contents)
+
+    def test_keeps_view_switched_to(self):
+        browser = self.get_browser('cal-visitor')
+        calendar_url = 'http://localhost/ab/++attribute++calendar'
+        browser.open(calendar_url)
+        browser.getLink('Year').click()
+        self.assertEqual(calendar_url + '/year.html', browser.url)
+        browser.open(calendar_url)
+        self.assertEqual(calendar_url + '/year.html', browser.url)
+
 
 class CalendarSTests(icemac.ab.calendar.testing.SeleniumTestCase):
     """Selenium testing ..calendar.Calendar."""
 
-    def test_month_dropdown_autosubmits(self):
+    def test_month_dropdown_on_month_view_autosubmits(self):
         self.login()
         sel = self.selenium
         sel.open('/ab/++attribute++calendar')
@@ -136,13 +159,22 @@ class CalendarSTests(icemac.ab.calendar.testing.SeleniumTestCase):
         sel.waitForPageToLoad()
         self.assertMessage(u'Month changed.')
 
-    def test_year_dropdown_autosubmits(self):
+    def test_year_dropdown_on_month_view_autosubmits(self):
         self.login()
         sel = self.selenium
         sel.open('/ab/++attribute++calendar')
         sel.select('id=form-widgets-calendar_year', 'label=2024')
         sel.waitForPageToLoad()
         self.assertMessage(u'Month changed.')
+
+    def test_year_dropdown_on_year_view_autosubmits(self):
+        self.login()
+        sel = self.selenium
+        sel.open('/ab/++attribute++calendar')
+        sel.clickAndWait('link=Year')
+        sel.select('id=form-widgets-calendar_year', 'label=2024')
+        sel.waitForPageToLoad()
+        self.assertMessage(u'Year changed.')
 
 
 class EventDescriptionUTests(icemac.ab.calendar.testing.UnitTestCase):
