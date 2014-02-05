@@ -43,7 +43,7 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertIn('08:32', browser.contents)
 
     def test_event_can_be_edited(self):
-        event = self.create_event(datetime=self.datetime)
+        self.create_event(datetime=self.datetime)
         browser = self.get_browser('cal-editor')
         browser.open('http://localhost/ab/++attribute++calendar')
         browser.getLink('Edit').click()
