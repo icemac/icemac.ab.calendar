@@ -21,8 +21,9 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         browser = self.get_browser('cal-editor')
         browser.open('http://localhost/ab')
         browser.getLink('Calendar').click()
-        self.assertEqual('http://localhost/ab/++attribute++calendar',
-                         browser.url)
+        self.assertEqual(
+            'http://localhost/ab/++attribute++calendar/month.html',
+            browser.url)
 
     def test_event_can_be_added_and_is_shown_in_calendar(self):
         browser = self.get_browser('cal-editor')
@@ -34,8 +35,9 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         browser.getControl('datetime').value = self.formatted_datetime
         browser.getControl('event category').displayValue = ['wedding day']
         browser.getControl('Add', index=1).click()
-        self.assertEqual('http://localhost/ab/++attribute++calendar',
-                         browser.url)
+        self.assertEqual(
+            'http://localhost/ab/++attribute++calendar/month.html',
+            browser.url)
         self.assertEqual(['"wedding day" added.'], browser.get_messages())
         # New event shows up in calendar:
         self.assertIn('08:32', browser.contents)
@@ -54,7 +56,8 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertEqual(
             ['Data successfully updated.'], browser.get_messages())
         self.assertEqual(
-            'http://localhost/ab/++attribute++calendar', browser.url)
+            'http://localhost/ab/++attribute++calendar/month.html',
+            browser.url)
         browser.getLink('wedding day').click()
         self.assertEqual(['wedding day'],
                          browser.getControl('event category').displayValue)
@@ -69,8 +72,9 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
                       browser.contents)
         browser.getControl('Yes').click()
         self.assertEqual(['"event" deleted.'], browser.get_messages())
-        self.assertEqual('http://localhost/ab/++attribute++calendar',
-                         browser.url)
+        self.assertEqual(
+            'http://localhost/ab/++attribute++calendar/month.html',
+            browser.url)
 
     def test_event_can_be_cloned_after_confirmation(self):
         event = self.create_event(datetime=self.datetime)

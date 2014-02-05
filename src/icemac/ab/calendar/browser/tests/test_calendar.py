@@ -20,7 +20,8 @@ class CalendarSecurity(icemac.ab.calendar.testing.BrowserTestCase):
         browser.open('http://localhost/ab')
         browser.getLink('Calendar').click()
         self.assertEqual(
-            'http://localhost/ab/++attribute++calendar', browser.url)
+            'http://localhost/ab/++attribute++calendar/month.html',
+            browser.url)
         self.assertIn('Sunday', browser.contents)
         self.assertIn(hyphenate("Cousin's Birthday", Pyphen(lang='en')),
                       browser.contents)
