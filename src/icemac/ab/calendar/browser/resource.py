@@ -1,4 +1,4 @@
-# Copyright (c) 2013 Michael Howitz
+# Copyright (c) 2013-2014 Michael Howitz
 # See also LICENSE.txt
 from icemac.addressbook.browser.resource import base_css
 import fanstatic

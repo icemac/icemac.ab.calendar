@@ -1,4 +1,4 @@
-# Copyright (c) 2013 Michael Howitz
+# Copyright (c) 2013-2014 Michael Howitz
 # See also LICENSE.txt
 import icemac.ab.calendar.testing
 import icemac.addressbook.testing

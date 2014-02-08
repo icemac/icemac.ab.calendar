@@ -1,4 +1,4 @@
-# Copyright (c) 2013 Michael Howitz
+# Copyright (c) 2013-2014 Michael Howitz
 # See also LICENSE.txt
 
 import z3c.menu.ready2go

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2013 Michael Howitz
+# Copyright (c) 2013-2014 Michael Howitz
 # See also LICENSE.txt
 from .interfaces import DATE_INDEX
 from datetime import datetime, time
