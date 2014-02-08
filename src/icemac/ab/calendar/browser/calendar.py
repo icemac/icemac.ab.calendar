@@ -23,7 +23,6 @@ import zc.sourcefactory.basic
 import zope.component
 import zope.globalrequest
 import zope.interface
-import zope.publisher.interfaces
 
 
 class Dispatcher(icemac.ab.calendar.browser.base.View):
