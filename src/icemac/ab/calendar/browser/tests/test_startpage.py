@@ -12,4 +12,5 @@ class StartpageDispatchSTests(icemac.ab.calendar.testing.SeleniumTestCase):
         sel.type('id=form-widgets-title', 'Test')
         sel.clickAndWait('id=form-buttons-apply')
         sel.open('/ab')
-        sel.assertLocation('http://%s/ab/++attribute++calendar' % sel.server)
+        sel.assertLocation(
+            'http://%s/ab/++attribute++calendar/month.html' % sel.server)
