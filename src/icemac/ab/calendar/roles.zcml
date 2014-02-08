@@ -20,6 +20,10 @@
      role="icemac.ab.calendar.Editor"
      permission="icemac.addressbook.ViewAddressBook"
      />
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="icemac.addressbook.ViewSomePrincipals"
+     />
 
   <grant
      role="icemac.ab.calendar.Editor"
@@ -98,6 +102,10 @@
      role="icemac.ab.calendar.Visitor"
      permission="icemac.addressbook.ViewAddressBook"
      />
+  <grant
+     role="icemac.ab.calendar.Visitor"
+     permission="icemac.addressbook.ViewSomePrincipals"
+     />
 
   <grant
      role="icemac.ab.calendar.Visitor"
@@ -125,6 +133,16 @@
   <grant
      role="icemac.ab.calendar.Visitor"
      permission="z3c.preference.EditPreference" />
+
+
+  <subscriber
+    for="*"
+    provides="icemac.addressbook.principals.interfaces.IEditorRole"
+    factory=".roles.editor_role" />
+  <subscriber
+    for="*"
+    provides="icemac.addressbook.principals.interfaces.IVisitorRole"
+    factory=".roles.visitor_role" />
 
 
 </configure>
