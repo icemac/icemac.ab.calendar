@@ -73,6 +73,10 @@ body.main {
     background-color: #F8E286;
 }
 
+#calendar table td.today {
+    background-color: #F5CA85;
+}
+
 
 #calendar table th {
     font-weight: bold;

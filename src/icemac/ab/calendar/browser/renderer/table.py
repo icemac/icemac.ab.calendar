@@ -108,6 +108,7 @@ class Table(Calendar):
     def render(self):
         self.table_head()
         self.write('  <tbody>')
+        today = datetime.date.today()
         events = self.sort_events(self.clean_events(self.month_events()))
         for delta in xrange(self.num_of_days):
             if (delta % 7) == 0:
@@ -118,7 +119,10 @@ class Table(Calendar):
                 self.write('    </tr>')
             day = self.first_table_day + datetime.timedelta(delta)
             prev_datetime = None
-            self.write('<td class="day-%s">', day.strftime('%w'))
+            css_classes = ['day-%s' % day.strftime('%w')]
+            if day == today:
+                css_classes.append('today')
+            self.write('<td class="%s">', ' '.join(css_classes))
             if day in self.month:
                 self.write('<span class="number">%s</span>', day.day)
                 found_events_for_day = False
