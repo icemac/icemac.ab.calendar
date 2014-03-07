@@ -32,19 +32,6 @@
 
 - Bugfix: empty field values are no longer displayed in the calendar.
 
-
-1.1.0 (2013-12-31)
-==================
-
-- Add option to select calendar as start page. (thus requring at least
-  `icemac.addressbook 2.1`).
-
-
-1.0.1 (2013-12-26)
-==================
-
-- Bugfix: Successfully render calendar if month name contains an umlaut.
-
 Older versions
 ==============
 
