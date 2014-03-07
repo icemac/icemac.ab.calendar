@@ -2,7 +2,7 @@
  Changelog
 ===========
 
-1.3.2 (unreleased)
+1.4.0 (2014-03-07)
 ==================
 
 - Color the current day on the calendar.
