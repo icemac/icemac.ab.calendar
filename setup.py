@@ -11,7 +11,7 @@ def read(*path_elements):
 version = '1.3.2.dev0'
 long_description = '\n\n'.join([
     read('README.rst'),
-    read('CHANGES.txt'),
+    read('CHANGES.rst'),
     ])
 
 setuptools.setup(
@@ -25,7 +25,7 @@ setuptools.setup(
     url='http://pypi.python.org/pypi/icemac.ab.calendar',
     license='ZPL 2.1',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Framework :: Paste',
         'Framework :: Zope3',
