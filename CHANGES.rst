@@ -5,7 +5,8 @@
 1.4.1 (unreleased)
 ==================
 
-- Nothing changed yet.
+- The calendar tab in the main menu is now highlighted if the calendar or an
+  event is displayed.
 
 
 1.4.0 (2014-03-07)

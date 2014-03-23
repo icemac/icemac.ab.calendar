@@ -35,6 +35,7 @@
      layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
      name="Calendar"
      title="Calendar"
+     class=".menu.CalendarMenuItem"
      permission="icemac.ab.calendar.ViewCalendar"
      viewName="++attribute++calendar"
      weight="30"
