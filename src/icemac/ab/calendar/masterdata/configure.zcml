@@ -34,7 +34,7 @@
   </configure>
 
   <z3c:siteMenuItem
-     manager="icemac.ab.calendar.masterdata.manager.ICalendarMasterData"
+     manager="icemac.ab.calendar.masterdata.interfaces.ICalendarMasterData"
      layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
      name="CalendarView"
      title="Calendar view"
