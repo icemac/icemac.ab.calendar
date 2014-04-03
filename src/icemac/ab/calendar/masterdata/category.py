@@ -18,7 +18,7 @@ class Table(icemac.addressbook.browser.table.Table):
         return [z3c.table.column.addColumn(
             self, icemac.addressbook.browser.table.TitleLinkColumn, 'title',
             header=_(u'event category')),
-                ]
+            ]
 
     @property
     def values(self):
