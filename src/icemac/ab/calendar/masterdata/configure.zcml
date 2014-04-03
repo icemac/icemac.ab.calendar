@@ -22,12 +22,18 @@
       template="calendar-masterdata.pt"
       permission="icemac.ab.calendar.ViewCalendar" />
 
+  <subscriber
+     for="*"
+     provides="
+        icemac.addressbook.browser.masterdata.interfaces.IMasterDataMenuItemOn"
+     factory=".menu.calendar_views" />
+
   <!-- viewlet manager for calendar master data page contents -->
   <configure package="icemac.addressbook.browser">
     <browser:viewletManager
         layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
         name="calendar-master-data"
-        class="icemac.ab.calendar.masterdata.manager.CalendarMasterDataManager"
+        class="icemac.ab.calendar.masterdata.menu.CalendarMasterDataManager"
         permission="zope.Public"
         template="bullet-menu.pt"
      />

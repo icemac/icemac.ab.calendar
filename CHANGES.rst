@@ -5,8 +5,8 @@
 1.5.0 (unreleased)
 ==================
 
-- The calendar tab in the main menu is now highlighted if the calendar or an
-  event is displayed.
+- The calendar tab in the main menu is now highlighted if the calendar, an
+  event or calendar masterdata is displayed.
 
 - Adapt tests and code to changes in `icemac.addressbook 2.5`.
 
