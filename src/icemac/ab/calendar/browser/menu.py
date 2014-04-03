@@ -25,8 +25,8 @@ class CalendarMenuItemSelectedChecker(
 
     @property
     def selected(self):
-        if icemac.ab.calendar.interfaces.ICalendar.providedBy(self.context):
-            return True
         if icemac.ab.calendar.interfaces.IEvent.providedBy(self.context):
+            return True
+        if self.view.__name__ in ('month.html', 'year.html', 'addEvent.html'):
             return True
         return False
