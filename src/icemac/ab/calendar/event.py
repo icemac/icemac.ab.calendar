@@ -11,7 +11,7 @@ import zope.interface
 
 class Event(persistent.Persistent,
             zope.container.contained.Contained):
-    "An event in the calendar."
+    """An event in the calendar."""
 
     zope.interface.implements(
         icemac.ab.calendar.interfaces.IEvent,
@@ -21,7 +21,7 @@ class Event(persistent.Persistent,
 
     category = gocept.reference.Reference('category', ensure_integrity=True)
     persons = gocept.reference.ReferenceCollection(
-            'persons', ensure_integrity=True)
+        'persons', ensure_integrity=True)
 
     def __init__(self):
         # prevent AttributeErrors on first read
@@ -35,7 +35,7 @@ event_entity = icemac.addressbook.entities.create_entity(
 @grok.adapter(icemac.ab.calendar.interfaces.IEvent)
 @grok.implementer(icemac.addressbook.interfaces.ITitle)
 def title(event):
-    "Human readable title for an event."
+    """Human readable title for an event."""
     if event.alternative_title:
         return event.alternative_title
     if event.category:
@@ -46,5 +46,5 @@ def title(event):
 @grok.adapter(icemac.ab.calendar.interfaces.IEvent)
 @grok.implementer(icemac.ab.calendar.interfaces.ICalendar)
 def calendar(event):
-    "Adapt the event to its calendar."
+    """Adapt the event to its calendar."""
     return event.__parent__

@@ -5,7 +5,7 @@ import icemac.addressbook.testing
 import unittest
 
 
-class EventTests(unittest.TestCase):
+class EventUTests(unittest.TestCase):
     """Testing ..event.Event."""
 
     layer = icemac.addressbook.testing.ADDRESS_BOOK_UNITTESTS
@@ -26,7 +26,7 @@ class EventRTests(icemac.ab.calendar.testing.BrowserTestCase):
         ab = self.layer['addressbook']
         person = create_person(ab, ab, u'Tester')
         create_email_address(ab, person, email=u'tester@example.com')
-        event = self.create_event(persons=set([person]))
+        self.create_event(persons=set([person]))
         browser = self.get_browser('mgr')
         browser.open(
             'http://localhost/ab/++attribute++principals/@@addPrincipal.html')
@@ -59,8 +59,8 @@ class EventEntitySTests(icemac.ab.calendar.testing.BrowserTestCase):
         # This new field can be used in the event add form:
         browser.open(
             'http://localhost/ab/++attribute++calendar/@@addEvent.html')
-        browser.getControl('datetime').value = self.get_datetime().strftime(
-            '%y/%m/%d %H:%M')
+        browser.getControl('datetime').value = self.format_datetime(
+            self.get_datetime())
         browser.getControl('event category').displayValue = ['Wedding']
         browser.getControl('Number of reservations').value = '42'
         browser.getControl('Add', index=1).click()
