@@ -75,6 +75,28 @@
 
   <grant
      role="icemac.ab.calendar.Editor"
+     permission="icemac.ab.calendar.EditRecurringEventContainer"
+     />
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="icemac.ab.calendar.ViewRecurringEventContainer"
+     />
+
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="icemac.ab.calendar.AddRecurringEvent"
+     />
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="icemac.ab.calendar.ViewRecurringEvent"
+     />
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permission="icemac.ab.calendar.EditRecurringEvent"
+     />
+
+  <grant
+     role="icemac.ab.calendar.Editor"
      permission="icemac.addressbook.ViewPersonName"
      />
 
@@ -123,6 +145,15 @@
   <grant
      role="icemac.ab.calendar.Visitor"
      permission="icemac.ab.calendar.ViewEvent"
+     />
+
+  <grant
+     role="icemac.ab.calendar.Visitor"
+     permission="icemac.ab.calendar.ViewRecurringEventContainer"
+     />
+  <grant
+     role="icemac.ab.calendar.Visitor"
+     permission="icemac.ab.calendar.ViewRecurringEvent"
      />
 
   <grant

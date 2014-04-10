@@ -58,5 +58,6 @@
 
 
   <include file="category.zcml" />
+  <include file="event.zcml" />
 
 </configure>

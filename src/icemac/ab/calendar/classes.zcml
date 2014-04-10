@@ -88,4 +88,40 @@
       component="icemac.ab.calendar.event.event_entity"
       name="icemac.ab.calendar.event.Event" />
 
+  <!-- RecurringEventsContainer -->
+  <class class=".event.RecurringEventContainer">
+    <implements interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+    <require
+       permission="icemac.ab.calendar.ViewRecurringEventContainer"
+       interface=".interfaces.IRecurringEvents
+                  zope.container.interfaces.IReadContainer"
+       attributes="__annotations__"
+       />
+    <require
+       permission="icemac.ab.calendar.EditRecurringEventContainer"
+       interface="zope.container.interfaces.IWriteContainer"
+       set_schema=".interfaces.IRecurringEvents"
+       set_attributes="__annotations__"
+      />
+  </class>
+
+  <!-- RecurringEvent -->
+  <class class=".event.RecurringEvent">
+    <implements interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+    <require
+       permission="icemac.ab.calendar.ViewRecurringEvent"
+       interface=".interfaces.IRecurringEvent"
+       attributes="__annotations__"
+       />
+    <require
+      permission="icemac.ab.calendar.EditRecurringEvent"
+      set_schema=".interfaces.IRecurringEvent"
+      set_attributes="__annotations__"
+      />
+  </class>
+
+  <utility
+      component="icemac.ab.calendar.event.recurring_event_entity"
+      name="icemac.ab.calendar.event.RecurringEvent" />
+
 </configure>

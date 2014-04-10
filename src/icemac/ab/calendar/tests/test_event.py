@@ -16,6 +16,19 @@ class EventUTests(unittest.TestCase):
         from icemac.ab.calendar.event import Event
         self.assertTrue(verifyObject(IEvent, Event()))
 
+    def test_recurring_events_implements_IRecurringEvents_interface(self):
+        from gocept.reference.verify import verifyObject
+        from icemac.ab.calendar.interfaces import IRecurringEvents
+        from icemac.ab.calendar.event import RecurringEventContainer
+        self.assertTrue(
+            verifyObject(IRecurringEvents, RecurringEventContainer()))
+
+    def test_recurring_event_implements_IRecurringEvent_interface(self):
+        from gocept.reference.verify import verifyObject
+        from icemac.ab.calendar.interfaces import IRecurringEvent
+        from icemac.ab.calendar.event import RecurringEvent
+        self.assertTrue(verifyObject(IRecurringEvent, RecurringEvent()))
+
 
 class EventRTests(icemac.ab.calendar.testing.BrowserTestCase):
     """Regression testing ..event.Event."""

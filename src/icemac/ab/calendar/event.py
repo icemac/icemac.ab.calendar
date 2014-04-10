@@ -5,6 +5,7 @@ import icemac.ab.calendar.interfaces
 import icemac.addressbook.entities
 import persistent
 import zope.annotation.interfaces
+import zope.container.btree
 import zope.container.contained
 import zope.interface
 
@@ -48,3 +49,20 @@ def title(event):
 def calendar(event):
     """Adapt the event to its calendar."""
     return event.__parent__
+
+
+class RecurringEventContainer(zope.container.btree.BTreeContainer):
+    """A container for recurring events."""
+    zope.interface.implements(icemac.ab.calendar.interfaces.IRecurringEvents)
+
+
+class RecurringEvent(Event):
+    """An event which repeats after a defined period."""
+    zope.interface.implements(icemac.ab.calendar.interfaces.IRecurringEvent)
+    icemac.addressbook.schema.createFieldProperties(
+        icemac.ab.calendar.interfaces.IRecurrence)
+
+
+recurring_event_entity = icemac.addressbook.entities.create_entity(
+    _(u'recurring event'), icemac.ab.calendar.interfaces.IRecurringEvent,
+    RecurringEvent)

@@ -1,9 +1,11 @@
 # Copyright (c) 2013-2014 Michael Howitz
 # See also LICENSE.txt
 from icemac.addressbook.i18n import _
+import collections
 import gocept.reference.field
 import icemac.addressbook.fieldsource
 import icemac.addressbook.interfaces
+import icemac.addressbook.sources
 import zc.sourcefactory.basic
 import zope.component
 import zope.interface
@@ -73,6 +75,7 @@ class ICalendarMasterData(zope.interface.Interface):
 
     """
     calendar_categories = zope.interface.Attribute(u'ICategories')
+    calendar_recurring_events = zope.interface.Attribute(u'IRecurringEvents')
 
 
 class ICategories(zope.interface.Interface):
@@ -127,3 +130,31 @@ class IEvent(zope.interface.Interface):
         title=_('other persons'), required=False,
         value_type=zope.schema.TextLine(title=_('person name')))
     text = zope.schema.Text(title=_('notes'), required=False)
+
+
+class IRecurringEvents(zope.interface.Interface):
+    """Container for recurrign events."""
+
+
+class RecurrencePeriodSource(icemac.addressbook.sources.TitleMappingSource):
+    """Periods after which an event is repeated.
+
+    Values are the names of registered utilities.  # XXX name the util iface!
+
+    """
+    _mapping = collections.OrderedDict(
+        (('week', _(u'weekly')),
+         ))
+
+recurrence_period_source = RecurrencePeriodSource()
+
+
+class IRecurrence(zope.interface.Interface):
+    """Time interval after which an event recurres."""
+
+    period = zope.schema.Choice(
+        title=_('recurrence period'), source=recurrence_period_source)
+
+
+class IRecurringEvent(IEvent, IRecurrence):
+    """An event recurring after a defined period."""

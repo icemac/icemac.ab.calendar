@@ -60,4 +60,31 @@
      title="calendar:CloneEvent"
      />
 
+  <!-- RecurringEventContainer -->
+  <permission
+     id="icemac.ab.calendar.EditRecurringEventContainer"
+     title="calendar:EditRecurringEventContainer"
+     />
+
+  <permission
+     id="icemac.ab.calendar.ViewRecurringEventContainer"
+     title="calendar:ViewRecurringEventContainer"
+     />
+
+  <!-- RecurringEvent -->
+  <permission
+     id="icemac.ab.calendar.AddRecurringEvent"
+     title="calendar:AddEventRecurringEvent"
+     />
+
+  <permission
+     id="icemac.ab.calendar.ViewRecurringEvent"
+     title="calendar:ViewEventRecurringEvent"
+     />
+
+  <permission
+     id="icemac.ab.calendar.EditRecurringEvent"
+     title="calendar:EditEventRecurringEvent"
+     />
+
 </configure>

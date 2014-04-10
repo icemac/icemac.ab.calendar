@@ -43,6 +43,10 @@ class TestMixIn(object):
             return datetime.datetime(*args, tzinfo=tzinfo)
         return datetime.datetime.now(tz=tzinfo)
 
+    def format_datetime(self, datetime):
+        """Format a datetime to the format needed in testbrowser."""
+        return datetime.strftime('%y/%m/%d %H:%M')
+
     def get_request(self, **kw):
         """Get a request object on the right skin layer."""
         return zope.publisher.browser.TestRequest(
@@ -94,6 +98,11 @@ class ZODBTestMixIn(object):
         """Create a new event in the calendar."""
         return self._create(icemac.ab.calendar.event.Event,
                             parent='calendar', **kw)
+
+    def create_recurring_event(self, **kw):
+        """Create a new recurring event in master data."""
+        return self._create(icemac.ab.calendar.event.RecurringEvent,
+                            parent='calendar_recurring_events', **kw)
 
 
 class UnitTestCase(unittest.TestCase, TestMixIn):

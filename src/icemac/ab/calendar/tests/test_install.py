@@ -19,6 +19,9 @@ class TestInstall(unittest.TestCase,
         self.assertAttribute(
             ab, 'calendar_categories',
             icemac.ab.calendar.interfaces.ICategories)
+        self.assertAttribute(
+            ab, 'calendar_recurring_events',
+            icemac.ab.calendar.interfaces.IRecurringEvents )
 
     def setUp(self):
         self.ab = self.layer['addressbook']

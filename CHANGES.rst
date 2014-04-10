@@ -5,6 +5,9 @@
 1.5.0 (unreleased)
 ==================
 
+- Add concept of recurring events, in user interface see master data of
+  calendar.
+
 - The calendar tab in the main menu is now highlighted when the calendar, an
   event or calendar masterdata is displayed.
 

@@ -1,0 +1,64 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   xmlns:z3c="http://namespaces.zope.org/z3c"
+   xmlns:gocept="http://namespaces.gocept.com/zcml"
+   i18n_domain="icemac.addressbook">
+
+  <!-- RecurringEventContainer -->
+  <z3c:siteMenuItem
+     manager="icemac.ab.calendar.masterdata.interfaces.ICalendarMasterData"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="RecurringEvents"
+     title="Recurring Events"
+     permission="icemac.ab.calendar.ViewRecurringEventContainer"
+     viewName="++attribute++calendar_recurring_events"
+     weight="10"
+     />
+
+  <gocept:pagelet
+     name="index.html"
+     for="icemac.ab.calendar.interfaces.IRecurringEvents"
+     permission="icemac.ab.calendar.ViewRecurringEventContainer"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     class=".event.Table"
+     />
+
+  <z3c:addMenuItem
+     manager="icemac.addressbook.browser.menus.interfaces.IAddMenu"
+     for="icemac.ab.calendar.interfaces.IRecurringEvents"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="recurring event"
+     title="recurring event"
+     viewName="@@addRecurringEvent.html"
+     permission="icemac.ab.calendar.AddRecurringEvent"
+     weight="1"
+     />
+
+  <z3c:pagelet
+     for="icemac.ab.calendar.interfaces.IRecurringEvents"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="addRecurringEvent.html"
+     class=".event.Add"
+     permission="icemac.ab.calendar.AddRecurringEvent"
+     />
+
+  <!-- RecurringEvent -->
+  <z3c:pagelet
+     for="icemac.ab.calendar.interfaces.IRecurringEvent"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="index.html"
+     class=".event.Edit"
+     permission="icemac.ab.calendar.ViewRecurringEvent"
+     />
+
+  <z3c:pagelet
+     for="icemac.ab.calendar.interfaces.IRecurringEvent"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="delete.html"
+     class=".event.Delete"
+     permission="icemac.ab.calendar.EditRecurringEvent"
+     />
+
+
+</configure>

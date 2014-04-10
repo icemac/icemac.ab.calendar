@@ -37,3 +37,9 @@ def update_calendar_infrastructure(address_book):
             catalog.updateIndex(catalog.get(DATE_INDEX))
         icemac.addressbook.addressbook.add_entity_to_order(
             address_book.orders, icemac.ab.calendar.interfaces.IEvent)
+        icemac.addressbook.addressbook.create_and_register(
+            address_book, 'calendar_recurring_events',
+            icemac.ab.calendar.event.RecurringEventContainer,
+            icemac.ab.calendar.interfaces.IRecurringEvents)
+        icemac.addressbook.addressbook.add_entity_to_order(
+            address_book.orders, icemac.ab.calendar.interfaces.IRecurringEvent)
