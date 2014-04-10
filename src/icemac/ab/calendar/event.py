@@ -51,6 +51,13 @@ def calendar(event):
     return event.__parent__
 
 
+@grok.adapter(icemac.ab.calendar.interfaces.IEvent)
+@grok.implementer(icemac.ab.calendar.interfaces.IEventDateTime)
+def event_datetime(event):
+    """Catalog datetime of event."""
+    return event
+
+
 class RecurringEventContainer(zope.container.btree.BTreeContainer):
     """A container for recurring events."""
     zope.interface.implements(icemac.ab.calendar.interfaces.IRecurringEvents)
@@ -66,3 +73,10 @@ class RecurringEvent(Event):
 recurring_event_entity = icemac.addressbook.entities.create_entity(
     _(u'recurring event'), icemac.ab.calendar.interfaces.IRecurringEvent,
     RecurringEvent)
+
+
+@grok.adapter(icemac.ab.calendar.interfaces.IRecurringEvent)
+@grok.implementer(icemac.ab.calendar.interfaces.IEventDateTime)
+def recurring_event_datetime(event):
+    """Do not catalog datetime of recurring event."""
+    return None

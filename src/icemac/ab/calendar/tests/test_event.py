@@ -3,6 +3,8 @@
 import icemac.ab.calendar.testing
 import icemac.addressbook.testing
 import unittest
+import zope.catalog.interfaces
+import zope.component
 
 
 class EventUTests(unittest.TestCase):
@@ -28,6 +30,22 @@ class EventUTests(unittest.TestCase):
         from icemac.ab.calendar.interfaces import IRecurringEvent
         from icemac.ab.calendar.event import RecurringEvent
         self.assertTrue(verifyObject(IRecurringEvent, RecurringEvent()))
+
+
+class EventCatalogTests(icemac.ab.calendar.testing.ZODBTestCase):
+    """Testing catatloging of events."""
+
+    def setUp(self):
+        super(EventCatalogTests, self).setUp()
+        datetime = self.get_datetime()
+        self.event = self.create_event(datetime=datetime)
+        self.create_recurring_event(datetime=datetime)
+
+    def test_event_gets_cataloged_but_not_recurring_event(self):
+        from ..interfaces import DATE_INDEX
+        catalog = zope.component.getUtility(zope.catalog.interfaces.ICatalog)
+        results = catalog.searchResults(**{DATE_INDEX: {'any': None}})
+        self.assertEqual([self.event], list(results))
 
 
 class EventRTests(icemac.ab.calendar.testing.BrowserTestCase):

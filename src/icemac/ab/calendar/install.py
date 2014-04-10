@@ -32,7 +32,7 @@ def update_calendar_infrastructure(address_book):
         catalog = zope.component.getUtility(zope.catalog.interfaces.ICatalog)
         if DATE_INDEX not in catalog:
             catalog[DATE_INDEX] = zc.catalog.catalogindex.DateTimeValueIndex(
-                'datetime', icemac.ab.calendar.interfaces.IEvent,
+                'datetime', icemac.ab.calendar.interfaces.IEventDateTime,
                 resolution=1)
             catalog.updateIndex(catalog.get(DATE_INDEX))
         icemac.addressbook.addressbook.add_entity_to_order(

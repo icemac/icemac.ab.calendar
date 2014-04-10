@@ -132,6 +132,12 @@ class IEvent(zope.interface.Interface):
     text = zope.schema.Text(title=_('notes'), required=False)
 
 
+class IEventDateTime(zope.interface.Interface):
+    """Datetime of an event, used for cataloging the event."""
+
+    datetime = zope.interface.Attribute('datetime of the event')
+
+
 class IRecurringEvents(zope.interface.Interface):
     """Container for recurrign events."""
 
