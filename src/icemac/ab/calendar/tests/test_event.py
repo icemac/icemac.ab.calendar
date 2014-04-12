@@ -1,5 +1,6 @@
 # Copyright (c) 2013-2014 Michael Howitz
 # See also LICENSE.txt
+from __future__ import unicode_literals
 import icemac.ab.calendar.testing
 import icemac.addressbook.testing
 import unittest
@@ -31,6 +32,12 @@ class EventUTests(unittest.TestCase):
         from icemac.ab.calendar.event import RecurringEvent
         self.assertTrue(verifyObject(IRecurringEvent, RecurringEvent()))
 
+    def test_recurred_event_implements_IRecurredEvent_interface(self):
+        from gocept.reference.verify import verifyObject
+        from icemac.ab.calendar.interfaces import IRecurredEvent
+        from icemac.ab.calendar.event import RecurredEvent
+        self.assertTrue(verifyObject(IRecurredEvent, RecurredEvent()))
+
 
 class EventCatalogTests(icemac.ab.calendar.testing.ZODBTestCase):
     """Testing catatloging of events."""
@@ -46,6 +53,41 @@ class EventCatalogTests(icemac.ab.calendar.testing.ZODBTestCase):
         catalog = zope.component.getUtility(zope.catalog.interfaces.ICatalog)
         results = catalog.searchResults(**{DATE_INDEX: {'any': None}})
         self.assertEqual([self.event], list(results))
+
+
+class TestRecurrStarEvent(icemac.ab.calendar.testing.ZODBTestCase):
+    """Testing ..event.RecurringEvent and ..event.RecurredEvent"""
+
+    def setUp(self):
+        from icemac.addressbook.testing import create_person
+        super(TestRecurrStarEvent, self).setUp()
+        ab = self.layer['addressbook']
+        category = self.create_category('birthday')
+        person = create_person(ab, ab, 'Tester')
+        self.recurring_event = self.create_recurring_event(
+            datetime=self.get_datetime(), category=category, period='weekly',
+            persons=set([person]), text='foobar')
+
+    def test_get_events_returns_iterable_of_RecurredEvent_instances(self):
+        from ..event import RecurredEvent
+        events = list(self.recurring_event.get_events(
+            self.get_datetime((2014, 5, 1, 0)).date(),
+            self.get_datetime((2014, 5, 8, 0)).date()))
+        self.assertEqual(1, len(events))
+        event = events[0]
+        self.assertIsInstance(event, RecurredEvent)
+        self.assertEqual('foobar', event.text)
+
+    def test_RecurredEvent__create_from_copies_attributes_from_parameter(self):
+        from ..event import RecurredEvent
+        recurred_event = RecurredEvent.create_from(
+            self.recurring_event, self.get_datetime((2014, 4, 12, 21)))
+        self.assertEqual(
+            self.get_datetime((2014, 4, 12, 21)), recurred_event.datetime)
+        self.assertIn(list(self.recurring_event.persons)[0],
+                      recurred_event.persons)
+        self.assertEqual(
+            self.recurring_event.category, recurred_event.category)
 
 
 class EventRTests(icemac.ab.calendar.testing.BrowserTestCase):

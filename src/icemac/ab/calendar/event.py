@@ -69,6 +69,13 @@ class RecurringEvent(Event):
     icemac.addressbook.schema.createFieldProperties(
         icemac.ab.calendar.interfaces.IRecurrence)
 
+    def get_events(self, interval_start, interval_end):
+        """Get the events computed from recurrence in the interval."""
+        recurrence_dates = icemac.ab.calendar.recurrence.get_recurrences(
+            self.datetime, self.period, interval_start, interval_end)
+        for datetime in recurrence_dates:
+            yield RecurredEvent.create_from(self, datetime)
+
 
 recurring_event_entity = icemac.addressbook.entities.create_entity(
     _(u'recurring event'), icemac.ab.calendar.interfaces.IRecurringEvent,
@@ -80,3 +87,20 @@ recurring_event_entity = icemac.addressbook.entities.create_entity(
 def recurring_event_datetime(event):
     """Do not catalog datetime of recurring event."""
     return None
+
+
+class RecurredEvent(object):
+    """An event computed from RecurringEvent."""
+
+    zope.interface.implements(icemac.ab.calendar.interfaces.IRecurredEvent)
+    icemac.addressbook.schema.createFieldProperties(
+        icemac.ab.calendar.interfaces.IRecurredEvent)
+
+    @classmethod
+    def create_from(cls, recurring_event, datetime):
+        """Constructor: Copy data from recurring event."""
+        event = cls()
+        for name in icemac.ab.calendar.interfaces.IEvent:
+            setattr(event, name, getattr(recurring_event, name))
+        event.datetime = datetime
+        return event

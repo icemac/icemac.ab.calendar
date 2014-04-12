@@ -185,3 +185,13 @@ class IRecurringDateTime(zope.interface.Interface):
 
 class IRecurringEvent(IEvent, IRecurrence):
     """An event recurring after a defined period."""
+
+    def get_events(interval_start, interval_end):
+        """Get the events computed from recurrence in the interval."""
+
+
+class IRecurredEvent(IEvent):
+    """An event computed from IRecurringEvent."""
+
+    def create_from(recurring_event, datetime):
+        "Create an instance with data from recurring event but for `datetime`."
