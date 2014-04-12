@@ -149,7 +149,7 @@ class RecurrencePeriodSource(icemac.addressbook.sources.TitleMappingSource):
     @zope.cachedescriptors.property.Lazy
     def _mapping(self):
         names_and_adapters = zope.component.getAdapters(
-            [datetime.date.today()], IRecurringDate)
+            [datetime.datetime.now()], IRecurringDateTime)
         return collections.OrderedDict(
             (name, adapter.title)
             for name, adapter in sorted(
@@ -165,10 +165,10 @@ class IRecurrence(zope.interface.Interface):
         title=_('recurrence period'), source=recurrence_period_source)
 
 
-class IRecurringDate(zope.interface.Interface):
-    """Recurring of a date.
+class IRecurringDateTime(zope.interface.Interface):
+    """Recurring of a datetime.
 
-    Period and date are defined in class implementing the interface.
+    Period and base datetime are defined in class implementing the interface.
 
     """
     title = zope.interface.Attribute('Display title in RecurrencePeriodSource')
@@ -176,8 +176,11 @@ class IRecurringDate(zope.interface.Interface):
         'RecurrencePeriodSource uses `weight` to sort.')
 
     def __call__(interval_start, interval_end):
-        """Iterable of `datetime.date` objects in the interval which are
-           recurrences of date."""
+        """Iterable of recurrences of base datetime in the interval.
+
+        interval_start, interval_end ... `datetime.date` objects
+
+        """
 
 
 class IRecurringEvent(IEvent, IRecurrence):

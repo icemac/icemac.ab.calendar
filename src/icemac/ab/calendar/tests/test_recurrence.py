@@ -1,11 +1,11 @@
 import icemac.ab.calendar.testing
-from datetime import date
+from datetime import date, datetime
 
 
 class RecurrenceTests(icemac.ab.calendar.testing.ZCMLTestCase):
     """Testing ..recurrence.*"""
 
-    recurrence_start = date(2013, 5, 3)
+    recurrence_start = datetime(2013, 5, 3, 21, 45)
     interval_start = date(2014, 4, 1)
     interval_end = date(2014, 4, 30)
 
@@ -14,17 +14,18 @@ class RecurrenceTests(icemac.ab.calendar.testing.ZCMLTestCase):
         from icemac.ab.calendar.recurrence import get_recurrings
         return list(get_recurrings(date, adapter_name, start, end))
 
-    def test_Weekly_fulfills_IRecurringDate_interface(self):
+    def test_Weekly_fulfills_IRecurringDateTime_interface(self):
         from zope.interface.verify import verifyObject
-        from ..interfaces import IRecurringDate
+        from ..interfaces import IRecurringDateTime
         from ..recurrence import Weekly
-        self.assertTrue(verifyObject(IRecurringDate, Weekly(None)))
+        self.assertTrue(verifyObject(IRecurringDateTime, Weekly(None)))
 
     def test_weekly_returns_all_dates_in_interval_for_same_weekday(self):
-        self.assertEqual([date(2014, 4, 4),
-                          date(2014, 4, 11),
-                          date(2014, 4, 18),
-                          date(2014, 4, 25)], self.callFUT('weekly'))
+        self.assertEqual(
+            [datetime(2014, 4, 4, 21, 45),
+             datetime(2014, 4, 11, 21, 45),
+             datetime(2014, 4, 18, 21, 45),
+             datetime(2014, 4, 25, 21, 45)], self.callFUT('weekly'))
         self.assertEqual(self.recurrence_start.isoweekday(),
                          self.callFUT('weekly')[0].isoweekday())
 
@@ -36,6 +37,6 @@ class RecurrenceTests(icemac.ab.calendar.testing.ZCMLTestCase):
 
     def test_weekly_interval_start_belongs_to_interval(self):
         self.assertEqual(
-            [date(2014, 4, 4)],
+            [datetime(2014, 4, 4, 21, 45)],
             self.callFUT(
                 'weekly', start=date(2014, 4, 4), end=date(2014, 4, 5)))

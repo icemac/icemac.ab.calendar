@@ -1,5 +1,5 @@
 from icemac.addressbook.i18n import _
-from datetime import timedelta
+from datetime import timedelta, datetime
 import grokcore.component as grok
 import icemac.ab.calendar.interfaces
 import zope.component
@@ -20,15 +20,15 @@ def get_recurrings(date, period, interval_start, interval_end):
 
     """
     recurring = zope.component.getAdapter(
-        date, icemac.ab.calendar.interfaces.IRecurringDate, name=period)
+        date, icemac.ab.calendar.interfaces.IRecurringDateTime, name=period)
     return recurring(interval_start, interval_end)
 
 
-class RecurringDate(grok.Adapter):
-    """Base class for recurring dates."""
+class RecurringDateTime(grok.Adapter):
+    """Base class for recurring datestimes."""
 
-    grok.context(zope.interface.common.idatetime.IDate)
-    grok.implements(icemac.ab.calendar.interfaces.IRecurringDate)
+    grok.context(zope.interface.common.idatetime.IDateTime)
+    grok.implements(icemac.ab.calendar.interfaces.IRecurringDateTime)
     grok.baseclass()
 
     def __call__(self, interval_start, interval_end):
@@ -40,7 +40,7 @@ class RecurringDate(grok.Adapter):
         raise NotImplementedError('Implement in subclass!')
 
 
-class Weekly(RecurringDate):
+class Weekly(RecurringDateTime):
     """Recurring weekly on the same weekday."""
 
     grok.name('weekly')
@@ -49,9 +49,10 @@ class Weekly(RecurringDate):
 
     def compute(self):
         weekday = self.context.isoweekday()
+        time = self.context.time()
         current_date = self.interval_start
         while current_date.isoweekday() != weekday:
             current_date += ONE_DAY
         while current_date < self.interval_end:
-            yield current_date
+            yield datetime.combine(current_date, time)
             current_date += ONE_WEEK
