@@ -145,11 +145,7 @@ class IRecurringEvents(zope.interface.Interface):
 
 
 class RecurrencePeriodSource(icemac.addressbook.sources.TitleMappingSource):
-    """Periods after which an event is repeated.
-
-    Values are the names of registered utilities.  # XXX name the util iface!
-
-    """
+    """Periods after which an event is repeated."""
     @zope.cachedescriptors.property.Lazy
     def _mapping(self):
         names_and_adapters = zope.component.getAdapters(
