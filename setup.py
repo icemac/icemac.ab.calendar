@@ -53,6 +53,7 @@ setuptools.setup(
         'grokcore.annotation',
         'icemac.addressbook >= 2.5.0.dev0',
         'setuptools',
+        'zope.cachedescriptors',
         ],
     extras_require = dict(
         test=[

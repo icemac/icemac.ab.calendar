@@ -2,11 +2,13 @@
 # See also LICENSE.txt
 from icemac.addressbook.i18n import _
 import collections
+import datetime
 import gocept.reference.field
 import icemac.addressbook.fieldsource
 import icemac.addressbook.interfaces
 import icemac.addressbook.sources
 import zc.sourcefactory.basic
+import zope.cachedescriptors.property
 import zope.component
 import zope.interface
 
@@ -148,9 +150,14 @@ class RecurrencePeriodSource(icemac.addressbook.sources.TitleMappingSource):
     Values are the names of registered utilities.  # XXX name the util iface!
 
     """
-    _mapping = collections.OrderedDict(
-        (('week', _(u'weekly')),
-         ))
+    @zope.cachedescriptors.property.Lazy
+    def _mapping(self):
+        names_and_adapters = zope.component.getAdapters(
+            [datetime.date.today()], IRecurringDate)
+        return collections.OrderedDict(
+            (name, adapter.title)
+            for name, adapter in sorted(
+                names_and_adapters, key=lambda x: x[1].weight))
 
 recurrence_period_source = RecurrencePeriodSource()
 
@@ -160,6 +167,21 @@ class IRecurrence(zope.interface.Interface):
 
     period = zope.schema.Choice(
         title=_('recurrence period'), source=recurrence_period_source)
+
+
+class IRecurringDate(zope.interface.Interface):
+    """Recurring of a date.
+
+    Period and date are defined in class implementing the interface.
+
+    """
+    title = zope.interface.Attribute('Display title in RecurrencePeriodSource')
+    weight = zope.interface.Attribute(
+        'RecurrencePeriodSource uses `weight` to sort.')
+
+    def __call__(interval_start, interval_end):
+        """Iterable of `datetime.date` objects in the interval which are
+           recurrences of date."""
 
 
 class IRecurringEvent(IEvent, IRecurrence):
