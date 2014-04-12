@@ -9,10 +9,10 @@ class RecurrenceTests(icemac.ab.calendar.testing.ZCMLTestCase):
     interval_start = date(2014, 4, 1)
     interval_end = date(2014, 4, 30)
 
-    def callFUT(self, adapter_name, date=recurrence_start,
+    def callFUT(self, adapter_name, datetime=recurrence_start,
                 start=interval_start, end=interval_end):
-        from icemac.ab.calendar.recurrence import get_recurrings
-        return list(get_recurrings(date, adapter_name, start, end))
+        from icemac.ab.calendar.recurrence import get_recurrences
+        return list(get_recurrences(datetime, adapter_name, start, end))
 
     def test_Weekly_fulfills_IRecurringDateTime_interface(self):
         from zope.interface.verify import verifyObject

@@ -10,9 +10,9 @@ ONE_DAY = timedelta(days=1)
 ONE_WEEK = timedelta(days=7)
 
 
-def get_recurrings(date, period, interval_start, interval_end):
-    """Convenience function to get an interable of date objects of recurrences
-    of `period` within the interval.
+def get_recurrences(datetime, period, interval_start, interval_end):
+    """Convenience function to get an interable of datetime objects of
+    recurrences of `period` within the interval.
 
     period ... string, name of an adapter, see below
     interval_start ... date, part of the interval
@@ -20,7 +20,8 @@ def get_recurrings(date, period, interval_start, interval_end):
 
     """
     recurring = zope.component.getAdapter(
-        date, icemac.ab.calendar.interfaces.IRecurringDateTime, name=period)
+        datetime, icemac.ab.calendar.interfaces.IRecurringDateTime,
+        name=period)
     return recurring(interval_start, interval_end)
 
 
