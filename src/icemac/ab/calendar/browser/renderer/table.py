@@ -109,7 +109,7 @@ class Table(Calendar):
         self.table_head()
         self.write('  <tbody>')
         today = datetime.date.today()
-        events = self.sort_events(self.clean_events(self.month_events()))
+        events = self.events
         for delta in xrange(self.num_of_days):
             if (delta % 7) == 0:
                 # week start

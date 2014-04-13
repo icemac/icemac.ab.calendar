@@ -21,7 +21,7 @@ class ICalendar(zope.interface.Interface):
     """Calender and storage for dates."""
 
     def get_events(month, timezone=None):
-        """Get all events which belong to `month`.
+        """Get all events which belong to `month` sorted by datetime.
 
         month ... ``gocept.month.Month`` object.
         timezone ... ``pytz.timezone`` object, None defaults to UTC.

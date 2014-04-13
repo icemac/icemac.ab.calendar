@@ -28,7 +28,8 @@ class Calendar(zope.container.btree.BTreeContainer):
         end = datetime.combine((month + 1).firstOfMonth(), midnight)
         # The values for the index are: min, max, min_exclude, max_exclude
         result_set = catalog.searchResults(
-            **{DATE_INDEX: {'between': (start, end, False, True)}})
+            **{DATE_INDEX: {'between': (start, end, False, True)},
+               '_sort_index': DATE_INDEX})
         return result_set
 
 

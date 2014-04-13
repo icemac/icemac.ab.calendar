@@ -28,14 +28,15 @@ class Calendar_get_events_FTests(icemac.ab.calendar.testing.ZODBTestCase):
 
     def setUp(self):
         super(Calendar_get_events_FTests, self).setUp()
-        self.create_event(alternative_title=u'end Jan 2013',
-                          datetime=self.get_datetime((2013, 1, 31, 23, 59)))
-        self.create_event(alternative_title=u'start Feb 2013',
-                          datetime=self.get_datetime((2013, 2, 1, 0)))
-        self.create_event(alternative_title=u'end Feb 2013',
-                          datetime=self.get_datetime((2013, 2, 28, 23, 59)))
+        # Order of creation is important to test that the results are sorted:
         self.create_event(alternative_title=u'start Mar 2013',
                           datetime=self.get_datetime((2013, 3, 1, 0)))
+        self.create_event(alternative_title=u'start Feb 2013',
+                          datetime=self.get_datetime((2013, 2, 1, 0)))
+        self.create_event(alternative_title=u'end Jan 2013',
+                          datetime=self.get_datetime((2013, 1, 31, 23, 59)))
+        self.create_event(alternative_title=u'end Feb 2013',
+                          datetime=self.get_datetime((2013, 2, 28, 23, 59)))
 
     def callMUT(self, month, year, timezone=None):
         from gocept.month import Month

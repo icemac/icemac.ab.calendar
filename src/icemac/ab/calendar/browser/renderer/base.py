@@ -24,19 +24,6 @@ class Calendar(grok.MultiAdapter):
         self.events = events
         self._fd = StringIO()
 
-    def month_events(self):
-        # events = []
-        # for event in self.events:
-        #     if isinstance(event, Event):
-        #         events.append(event)
-        #     else:
-        #         if self.only_single_events:
-        #             continue
-        #         for ev in event.create_events(self.month):
-        #             events.append(ev)
-        # return events
-        return self.events
-
     @property
     def max_date(self):
         "Date of the most future single event."
@@ -44,25 +31,6 @@ class Calendar(grok.MultiAdapter):
                        for x in self.events
                        if isinstance(x, Event)],
                       reverse=True)[0]
-
-    def clean_events(self, events):
-        result = []
-        for event in events[:]:
-            if event.datetime not in self.month:
-                continue
-            competitor_events = [ev for ev in events
-                                 if (ev != event and
-                                     ev.kind == event.kind and
-                                     ev.datetime == event.datetime)]
-            if any([ev.prio > event.prio for ev in competitor_events]):
-                continue
-            result.append(event)
-        return result
-
-    def sort_events(self, events):
-        return sorted(
-            events,
-            key=lambda ev: tuple(ev.datetime.timetuple())[:5] + (ev.prio,))
 
     def write(self, string, *args):
         """Store a string which might contain % marks which get replaced."""
