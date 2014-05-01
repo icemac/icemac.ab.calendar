@@ -4,6 +4,11 @@ import icemac.ab.calendar.testing
 import unittest
 
 
+MONTH_FOR_TEST = 'May'
+if datetime.date.today().month == 5:
+    MONTH_FOR_TEST = 'November'
+
+
 class CalendarSecurity(icemac.ab.calendar.testing.BrowserTestCase):
     """Security tests for the calendar."""
 
@@ -75,11 +80,12 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         # month name is not displayed:
         browser.addHeader('Accept-Language', 'en')
         browser.open('http://localhost/ab/++attribute++calendar')
-        browser.getControl('month').getControl('May').click()
+        browser.getControl('month').getControl(MONTH_FOR_TEST).click()
         browser.getControl('year').getControl('2024').click()
         browser.getControl('Apply').click()
         self.assertEqual(['Month changed.'], browser.get_messages())
-        self.assertEqual(['May'], browser.getControl('month').displayValue)
+        self.assertEqual(
+            [MONTH_FOR_TEST], browser.getControl('month').displayValue)
         self.assertEqual(['2024'], browser.getControl('year').displayValue)
 
     def test_keeps_month_switched_to(self):
@@ -89,12 +95,13 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         browser.addHeader('Accept-Language', 'en')
         calendar_url = 'http://localhost/ab/++attribute++calendar'
         browser.open(calendar_url)
-        browser.getControl('month').getControl('May').click()
+        browser.getControl('month').getControl(MONTH_FOR_TEST).click()
         browser.getControl('year').getControl('2024').click()
         browser.getControl('Apply').click()
         self.assertEqual(['Month changed.'], browser.get_messages())
         browser.open(calendar_url)
-        self.assertEqual(['May'], browser.getControl('month').displayValue)
+        self.assertEqual(
+            [MONTH_FOR_TEST], browser.getControl('month').displayValue)
         self.assertEqual(['2024'], browser.getControl('year').displayValue)
 
     def test_translates_months_in_dropdown(self):
@@ -156,7 +163,8 @@ class CalendarSTests(icemac.ab.calendar.testing.SeleniumTestCase):
         self.login()
         sel = self.selenium
         sel.open('/ab/++attribute++calendar')
-        sel.select('id=form-widgets-calendar_month', 'label=May')
+        sel.select(
+            'id=form-widgets-calendar_month', 'label=%s' % MONTH_FOR_TEST)
         sel.waitForPageToLoad()
         self.assertMessage(u'Month changed.')
 
