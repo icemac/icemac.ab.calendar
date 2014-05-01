@@ -52,11 +52,11 @@ class Calendar_get_events_FTests(icemac.ab.calendar.testing.ZODBTestCase):
                          self.callMUT(2, 2013))
 
     def test_respects_the_given_time_eastern_zone(self):
-        self.assertEqual([u'end Feb 2013', 'start Mar 2013'],
+        self.assertEqual([u'end Feb 2013', u'start Mar 2013'],
                          self.callMUT(2, 2013, 'Etc/GMT+1'))
 
     def test_respects_the_given_time_western_zone(self):
-        self.assertEqual([u'end Jan 2013', 'start Feb 2013'],
+        self.assertEqual([u'end Jan 2013', u'start Feb 2013'],
                          self.callMUT(2, 2013, 'Etc/GMT-1'))
 
 
