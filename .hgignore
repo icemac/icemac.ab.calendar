@@ -4,6 +4,7 @@ syntax: glob
 *.pyc
 *.sublime-project
 *.sublime-workspace
+.cache
 .installed.cfg
 .mr.developer.cfg
 bin

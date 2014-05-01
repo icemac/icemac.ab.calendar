@@ -13,6 +13,8 @@
 
 - Adapt tests and code to changes in `icemac.addressbook 2.5`.
 
+- Add py.test to run the tests.
+
 
 1.4.0 (2014-03-07)
 ==================
