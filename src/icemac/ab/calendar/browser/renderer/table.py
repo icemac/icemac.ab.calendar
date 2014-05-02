@@ -30,12 +30,9 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
     def time(self):
         if self.context.whole_day:  # and not event.has_text():
             return ''
-        timezone = pytz.timezone(
-            icemac.addressbook.preferences.utils.get_time_zone_name())
-        local_time = self.context.datetime.astimezone(timezone)
         formatter = self.request.locale.dates.getFormatter(
             'time', 'short')
-        time = formatter.format(local_time)
+        time = formatter.format(self.context.datetime)
         if self.request.locale.id.language == 'de':
             time += ' Uhr'
         return time

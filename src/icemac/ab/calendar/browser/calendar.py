@@ -17,6 +17,7 @@ import icemac.addressbook.interfaces
 import icemac.addressbook.preferences.utils
 import itertools
 import pyphen
+import pytz
 import z3c.form.field
 import z3c.formui.form
 import zc.sourcefactory.basic
@@ -151,7 +152,8 @@ class MonthCalendar(TabularCalendar):
     def update(self):
         super(MonthCalendar, self).update()
         events = [IEventDescription(x)
-                  for x in self.context.get_events(self.month)]
+                  for x in self.context.get_events(
+                      self.month, self.time_zone_name())]
         self.renderer = zope.component.getMultiAdapter(
             (self.month, self.request, events),
             icemac.ab.calendar.browser.renderer.interfaces.IRenderer,
@@ -270,7 +272,12 @@ class EventDescription(grok.Adapter):
     def __init__(self, context):
         super(EventDescription, self).__init__(context)
         self.kind = context.category
-        self.datetime = context.datetime
+        timezone = pytz.timezone(
+            icemac.addressbook.preferences.utils.get_time_zone_name())
+        if context.datetime is None:
+            self.datetime = None
+        else:
+            self.datetime = context.datetime.astimezone(timezone)
         self.prio = 0
         self.whole_day = False
         self.special_event = None

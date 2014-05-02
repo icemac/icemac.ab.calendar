@@ -17,6 +17,9 @@ Bug fixes
 - The calendar tab in the main menu is now highlighted when the calendar, an
   event or calendar masterdata is displayed.
 
+- Events are displayed on the correct local day (according to chosen time
+  zone) even if it is another one than the one in UTC.
+
 Other
 -----
 

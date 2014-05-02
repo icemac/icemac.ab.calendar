@@ -133,6 +133,32 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
             'http://localhost/ab/++preferences++/ab.timeZone',
             browser.getLink('Pacific/Fiji').url)
 
+    def test_shows_events_in_time_zone_selected_by_user(self):
+        from zope.component import getUtility
+        from zope.preference.interfaces import IDefaultPreferenceProvider
+        default_prefs = getUtility(IDefaultPreferenceProvider)
+        default_prefs.getDefaultPreferenceGroup('ab.timeZone').time_zone = (
+            'America/Los_Angeles')
+        self.create_event(
+            alternative_title=u'1st of april utc', datetime=self.get_datetime(
+                (2014, 4, 1, 0)))
+        self.create_event(
+            alternative_title=u'2nd of april utc', datetime=self.get_datetime(
+                (2014, 4, 2, 0)))
+        browser = self.get_browser('cal-visitor')
+        # We need to explicitly set the language here because otherwise the
+        # month name is not displayed:
+        browser.addHeader('Accept-Language', 'en')
+        browser.open('http://localhost/ab/++attribute++calendar')
+        browser.getControl('month').getControl('April').selected = True
+        browser.getControl('year').getControl('2014').selected = True
+        browser.getControl('Apply').click()
+        self.assertEqual(['Month changed.'], browser.get_messages())
+        # 1st of april 0:00 UTC is in march for Los Angeles timezone, so it
+        # does not show up here.
+        self.assertNotIn('1st of april utc', browser.contents)
+        self.assertIn('2nd of april utc', browser.contents)
+
     def test_can_switch_to_year_view(self):
         browser = self.get_browser('cal-visitor')
         # We need to explicitly set the language here because otherwise the
@@ -221,6 +247,10 @@ class EventDescriptionFTests(icemac.ab.calendar.testing.ZCMLTestCase):
 
 class EventDescriptionITests_getInfo(icemac.ab.calendar.testing.ZODBTestCase):
     """Integration testing ..calendar.EventDescription.getInfo()"""
+
+    def setUp(self):
+        super(EventDescriptionITests_getInfo, self).setUp()
+        self.patch_get_time_zone_name()
 
     def _make_one(self, **kw):
         from icemac.ab.calendar.browser.renderer.interfaces import (

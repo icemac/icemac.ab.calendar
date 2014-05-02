@@ -22,8 +22,8 @@ class Calendar(zope.container.btree.BTreeContainer):
         """Get all events which belong to `month`."""
         catalog = zope.component.getUtility(zope.catalog.interfaces.ICatalog)
         if timezone is None:
-            timezone = pytz.utc
-        midnight = time(tzinfo=timezone)
+            timezone = 'utc'
+        midnight = time(tzinfo=pytz.timezone(timezone))
         start = datetime.combine(month.firstOfMonth(), midnight)
         end = datetime.combine((month + 1).firstOfMonth(), midnight)
         # The values for the index are: min, max, min_exclude, max_exclude

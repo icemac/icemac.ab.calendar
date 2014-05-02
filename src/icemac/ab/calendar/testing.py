@@ -67,11 +67,20 @@ class TestMixIn(object):
             setattr(event, key, value)
         ICalendarDisplaySettings = (
             'icemac.ab.calendar.interfaces.ICalendarDisplaySettings')
-        with mock.patch(ICalendarDisplaySettings) as ICalendarDisplaySettings:
+        get_time_zone_name = (
+            'icemac.addressbook.preferences.utils.get_time_zone_name')
+        with mock.patch(ICalendarDisplaySettings) as ICalendarDisplaySettings,\
+                mock.patch('icemac.ab.calendar.interfaces.ICalendar'),\
+                mock.patch(get_time_zone_name, return_value='UTC'):
             ICalendarDisplaySettings.event_additional_fields = ()
-            with mock.patch('icemac.ab.calendar.interfaces.ICalendar'):
-                return icemac.ab.calendar.browser.calendar.EventDescription(
-                    event)
+            return icemac.ab.calendar.browser.calendar.EventDescription(event)
+
+    def patch_get_time_zone_name(self):
+        patcher = mock.patch(
+            'icemac.addressbook.preferences.utils.get_time_zone_name',
+            return_value='UTC')
+        patcher.start()
+        self.addCleanup(patcher.stop)
 
 
 class ZODBTestMixIn(object):

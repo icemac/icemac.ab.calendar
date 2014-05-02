@@ -40,10 +40,7 @@ class Calendar_get_events_FTests(icemac.ab.calendar.testing.ZODBTestCase):
 
     def callMUT(self, month, year, timezone=None):
         from gocept.month import Month
-        import pytz
         calendar = self.layer['addressbook'].calendar
-        if timezone is not None:
-            timezone = pytz.timezone(timezone)
         events = calendar.get_events(Month(month, year), timezone=timezone)
         return [x.alternative_title for x in events]
 
