@@ -49,11 +49,14 @@ class Weekly(RecurringDateTime):
     title = _(u'weekly, same weekday')
 
     def compute(self):
-        weekday = self.context.isoweekday()
-        time = self.context.time()
         current_date = self.interval_start
-        while current_date.isoweekday() != weekday:
-            current_date += ONE_DAY
+        if current_date <= self.context:
+            current_date = self.context
+        else:
+            weekday = self.context.isoweekday()
+            while current_date.isoweekday() != weekday:
+                current_date += ONE_DAY
+        time = self.context.timetz()
         while current_date < self.interval_end:
             yield datetime.combine(current_date, time)
             current_date += ONE_WEEK
