@@ -89,6 +89,14 @@ def recurring_event_datetime(event):
     return None
 
 
+@grok.adapter(icemac.ab.calendar.interfaces.IRecurringEvent)
+@grok.implementer(icemac.ab.calendar.interfaces.ICalendar)
+def calendar_of_recurring_event(recurring_event):
+    """Adapt the recurring event to its calendar."""
+    return icemac.ab.calendar.interfaces.ICalendar(
+        icemac.addressbook.interfaces.IAddressBook(None))
+
+
 class RecurredEvent(object):
     """An event computed from RecurringEvent."""
 
@@ -103,4 +111,6 @@ class RecurredEvent(object):
         for name in icemac.ab.calendar.interfaces.IEvent:
             setattr(event, name, getattr(recurring_event, name))
         event.datetime = datetime
+        event.__parent__ = icemac.ab.calendar.interfaces.ICalendar(
+            recurring_event)
         return event

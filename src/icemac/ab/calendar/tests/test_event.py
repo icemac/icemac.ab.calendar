@@ -88,6 +88,8 @@ class TestRecurrStarEvent(icemac.ab.calendar.testing.ZODBTestCase):
                       recurred_event.persons)
         self.assertEqual(
             self.recurring_event.category, recurred_event.category)
+        self.assertEqual(
+            self.layer['addressbook'].calendar, recurred_event.__parent__)
 
 
 class EventRTests(icemac.ab.calendar.testing.BrowserTestCase):
