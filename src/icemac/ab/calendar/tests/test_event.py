@@ -65,14 +65,14 @@ class TestRecurrStarEvent(icemac.ab.calendar.testing.ZODBTestCase):
         category = self.create_category('birthday')
         person = create_person(ab, ab, 'Tester')
         self.recurring_event = self.create_recurring_event(
-            datetime=self.get_datetime(), category=category, period='weekly',
-            persons=set([person]), text='foobar')
+            datetime=self.get_datetime((2014, 5, 2)), category=category,
+            period='weekly', persons=set([person]), text='foobar')
 
     def test_get_events_returns_iterable_of_RecurredEvent_instances(self):
         from ..event import RecurredEvent
         events = list(self.recurring_event.get_events(
-            self.get_datetime((2014, 5, 1, 0)).date(),
-            self.get_datetime((2014, 5, 8, 0)).date()))
+            self.get_datetime((2014, 5, 1, 0)),
+            self.get_datetime((2014, 5, 8, 0))))
         self.assertEqual(1, len(events))
         event = events[0]
         self.assertIsInstance(event, RecurredEvent)

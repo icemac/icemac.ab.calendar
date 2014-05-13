@@ -7,6 +7,7 @@ import grokcore.annotation as grok
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.fieldsource
 import icemac.addressbook.interfaces
+import itertools
 import pytz
 import zope.catalog.interfaces
 import zope.component
@@ -27,10 +28,14 @@ class Calendar(zope.container.btree.BTreeContainer):
         start = datetime.combine(month.firstOfMonth(), midnight)
         end = datetime.combine((month + 1).firstOfMonth(), midnight)
         # The values for the index are: min, max, min_exclude, max_exclude
-        result_set = catalog.searchResults(
-            **{DATE_INDEX: {'between': (start, end, False, True)},
-               '_sort_index': DATE_INDEX})
-        return result_set
+        single_events = catalog.searchResults(
+            **{DATE_INDEX: {'between': (start, end, False, True)}})
+        recurring_events = zope.component.getUtility(
+            icemac.ab.calendar.interfaces.IRecurringEvents).values()
+        recurred_events = [x.get_events(start, end) for x in recurring_events]
+        result_set = itertools.chain(
+            single_events, *recurred_events)
+        return sorted(result_set, key=lambda x: x.datetime)
 
 
 class CalendarDisplaySettings(grok.Annotation):
