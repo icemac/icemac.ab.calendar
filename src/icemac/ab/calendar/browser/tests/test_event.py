@@ -22,7 +22,7 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         browser.open('http://localhost/ab')
         browser.getLink('Calendar').click()
         self.assertEqual(
-            'http://localhost/ab/++attribute++calendar/month.html',
+            'http://localhost/ab/++attribute++calendar/@@month.html',
             browser.url)
 
     def test_event_can_be_added_and_is_shown_in_calendar(self):
@@ -36,7 +36,7 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         browser.getControl('event category').displayValue = ['wedding day']
         browser.getControl('Add', index=1).click()
         self.assertEqual(
-            'http://localhost/ab/++attribute++calendar/month.html',
+            'http://localhost/ab/++attribute++calendar/@@month.html',
             browser.url)
         self.assertEqual(['"wedding day" added.'], browser.get_messages())
         # New event shows up in calendar:
@@ -56,7 +56,7 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertEqual(
             ['Data successfully updated.'], browser.get_messages())
         self.assertEqual(
-            'http://localhost/ab/++attribute++calendar/month.html',
+            'http://localhost/ab/++attribute++calendar/@@month.html',
             browser.url)
         browser.getLink('wedding day').click()
         self.assertEqual(['wedding day'],
@@ -73,7 +73,7 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         browser.getControl('Yes').click()
         self.assertEqual(['"event" deleted.'], browser.get_messages())
         self.assertEqual(
-            'http://localhost/ab/++attribute++calendar/month.html',
+            'http://localhost/ab/++attribute++calendar/@@month.html',
             browser.url)
 
     def test_event_can_be_cloned_after_confirmation(self):

@@ -25,7 +25,7 @@ class CalendarSecurity(icemac.ab.calendar.testing.BrowserTestCase):
         browser.open('http://localhost/ab')
         browser.getLink('Calendar').click()
         self.assertEqual(
-            'http://localhost/ab/++attribute++calendar/month.html',
+            'http://localhost/ab/++attribute++calendar/@@month.html',
             browser.url)
         self.assertIn('Sunday', browser.contents)
         self.assertIn(hyphenate("Cousin's Birthday", Pyphen(lang='en')),
@@ -167,7 +167,7 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         calendar_url = 'http://localhost/ab/++attribute++calendar'
         browser.open(calendar_url)
         browser.getLink('Year').click()
-        self.assertEqual(calendar_url + '/year.html', browser.url)
+        self.assertEqual(calendar_url + '/@@year.html', browser.url)
         year = datetime.date.today().year
         self.assertIn('January {}'.format(year), browser.contents)
         self.assertIn('December {}'.format(year), browser.contents)
@@ -177,9 +177,9 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         calendar_url = 'http://localhost/ab/++attribute++calendar'
         browser.open(calendar_url)
         browser.getLink('Year').click()
-        self.assertEqual(calendar_url + '/year.html', browser.url)
+        self.assertEqual(calendar_url + '/@@year.html', browser.url)
         browser.open(calendar_url)
-        self.assertEqual(calendar_url + '/year.html', browser.url)
+        self.assertEqual(calendar_url + '/@@year.html', browser.url)
 
 
 class CalendarSTests(icemac.ab.calendar.testing.SeleniumTestCase):
