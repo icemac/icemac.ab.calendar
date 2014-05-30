@@ -121,6 +121,18 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertIn('foo bär', browser.contents)
         self.assertNotIn('baz qux', browser.contents)
 
+    def test_shows_recurred_events_as_links(self):
+        self.create_recurring_event(
+            alternative_title=u'foo bär', datetime=self.get_datetime(),
+            period=u'weekly', category=self.create_category(u'bat'))
+        browser = self.get_browser('cal-visitor')
+        browser.open('http://localhost/ab/++attribute++calendar')
+        self.assertEqual(
+            'http://localhost/ab/++attribute++calendar/'
+            '@@customize-recurred-event?date=%s&event=RecurringEvent' %
+            datetime.date.today().isoformat(),
+            browser.getLink('foo bär').url)
+
     def test_renders_time_zone_user_has_set_in_prefs_as_link(self):
         from zope.component import getUtility
         from zope.preference.interfaces import IDefaultPreferenceProvider

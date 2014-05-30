@@ -104,6 +104,9 @@ class RecurredEvent(object):
     icemac.addressbook.schema.createFieldProperties(
         icemac.ab.calendar.interfaces.IRecurredEvent)
 
+    __parent__ = None
+    recurring_event = None
+
     @classmethod
     def create_from(cls, recurring_event, datetime):
         """Constructor: Copy data from recurring event."""
@@ -113,4 +116,5 @@ class RecurredEvent(object):
         event.datetime = datetime
         event.__parent__ = icemac.ab.calendar.interfaces.ICalendar(
             recurring_event)
+        event.recurring_event = recurring_event
         return event

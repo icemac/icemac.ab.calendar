@@ -197,5 +197,9 @@ class IRecurringEvent(IEvent, IRecurrence):
 class IRecurredEvent(IEvent):
     """An event computed from IRecurringEvent."""
 
+    __parent__ = zope.interface.Attribute('Calendar the event belongs to')
+    recurring_event = zope.interface.Attribute(
+        'RecurringEvent which was the source for the RecurredEvent.')
+
     def create_from(recurring_event, datetime):
         "Create an instance with data from recurring event but for `datetime`."

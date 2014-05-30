@@ -124,4 +124,11 @@
       component="icemac.ab.calendar.event.recurring_event_entity"
       name="icemac.ab.calendar.event.RecurringEvent" />
 
+  <!-- RecurredEvent -->
+  <class class=".event.RecurredEvent">
+    <require
+       permission="icemac.ab.calendar.ViewEvent"
+       interface=".interfaces.IRecurredEvent" />
+  </class>
+
 </configure>

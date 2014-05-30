@@ -4,6 +4,7 @@ import icemac.addressbook.browser.base
 import icemac.addressbook.browser.metadata
 import z3c.form.button
 import z3c.form.form
+import zope.traversing.browser
 
 
 class Add(icemac.addressbook.browser.base.BaseAddForm):
@@ -52,3 +53,15 @@ class Clone(icemac.addressbook.browser.base.BaseCloneForm):
     label = _(u'Do you really want to clone this event?')
     interface = icemac.ab.calendar.interfaces.IEvent
     field_names = ('datetime', 'category', 'alternative_title')
+
+
+class RecurredEventAbsoluteURL(zope.traversing.browser.AbsoluteURL,
+                               icemac.addressbook.browser.base.BaseView):
+    """URL to customize a recurred event."""
+
+    def __str__(self):
+        return self.url(self.context.__parent__, 'customize-recurred-event',
+                        event=self.context.recurring_event.__name__,
+                        date=self.context.datetime.date().isoformat())
+
+    __call__ = __str__

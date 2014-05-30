@@ -48,4 +48,21 @@
      permission="icemac.ab.calendar.CloneEvent"
      />
 
+  <view
+      for="icemac.ab.calendar.interfaces.IRecurredEvent"
+      name="absolute_url"
+      factory=".event.RecurredEventAbsoluteURL"
+      type="zope.publisher.interfaces.http.IHTTPRequest"
+      permission="zope.Public"
+      allowed_interface="zope.traversing.browser.interfaces.IAbsoluteURL"
+      />
+
+  <view
+      for="icemac.ab.calendar.interfaces.IRecurredEvent"
+      factory=".event.RecurredEventAbsoluteURL"
+      type="zope.publisher.interfaces.http.IHTTPRequest"
+      permission="zope.Public"
+      provides="zope.traversing.browser.interfaces.IAbsoluteURL"
+      />
+
 </configure>
