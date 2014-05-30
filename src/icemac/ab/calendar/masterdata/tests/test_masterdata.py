@@ -5,9 +5,7 @@ class MasterDataSecurity(icemac.ab.calendar.testing.BrowserTestCase):
     """Security tests for master data."""
 
     def test_visitor_is_able_to_access_calendar_master_data(self):
-        from icemac.addressbook.testing import Browser
-        browser = Browser()
-        browser.login('cal-visitor')
+        browser = self.get_browser('cal-visitor')
         browser.open('http://localhost/ab')
         browser.getLink('Master data').click()
         browser.getLink('Calendar', index=1).click()
@@ -16,9 +14,8 @@ class MasterDataSecurity(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertIn('Edit calendar master data', browser.contents)
 
     def test_anonymous_is_not_able_to_access_calendar_master_data(self):
-        from icemac.addressbook.testing import Browser
         from zope.security.interfaces import Unauthorized
-        browser = Browser()
+        browser = self.get_browser()
         browser.handleErrors = False  # needed to catch exception
         with self.assertRaises(Unauthorized):
             browser.open('http://localhost/ab/@@calendar-masterdata.html')
