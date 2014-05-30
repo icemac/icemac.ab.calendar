@@ -45,8 +45,7 @@ class Calendar_get_events_FTests(icemac.ab.calendar.testing.ZODBTestCase):
         if show_date:
             return [(x.alternative_title, x.datetime.date().isoformat())
                     for x in events]
-        else:
-            return [x.alternative_title for x in events]
+        return [x.alternative_title for x in events]
 
     def test_returns_only_events_in_month(self):
         self.assertEqual([u'start Feb 2013', u'end Feb 2013'],
@@ -75,7 +74,7 @@ class Calendar_get_events_FTests(icemac.ab.calendar.testing.ZODBTestCase):
                           (u'start Feb 2013', '2013-02-01'),
                           (u'each week', '2013-02-14'),
                           (u'each week', '2013-02-21')],
-                         self.callMUT(2, 2013, 'Etc/GMT-1'))
+                         self.callMUT(2, 2013, 'Etc/GMT-1', show_date=True))
 
 
 class CalendarDisplaySettingsTests(icemac.ab.calendar.testing.ZODBTestCase):

@@ -15,7 +15,7 @@ class CalendarSecurity(icemac.ab.calendar.testing.BrowserTestCase):
     def test_visitor_is_able_to_access_a_filled_calendar(self):
         from ..calendar import hyphenate
         from pyphen import Pyphen
-        event = self.create_event(
+        self.create_event(
             datetime=self.get_datetime(),
             alternative_title=u"Cousin's Birthday")
         browser = self.get_browser('cal-visitor')
