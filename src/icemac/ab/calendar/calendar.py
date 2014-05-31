@@ -21,21 +21,27 @@ class Calendar(zope.container.btree.BTreeContainer):
 
     def get_events(self, month, timezone=None):
         """Get all events which belong to `month`."""
-        catalog = zope.component.getUtility(zope.catalog.interfaces.ICatalog)
         if timezone is None:
             timezone = 'utc'
         midnight = time(tzinfo=pytz.timezone(timezone))
         start = datetime.combine(month.firstOfMonth(), midnight)
         end = datetime.combine((month + 1).firstOfMonth(), midnight)
-        # The values for the index are: min, max, min_exclude, max_exclude
-        single_events = catalog.searchResults(
-            **{DATE_INDEX: {'between': (start, end, False, True)}})
+
         recurring_events = zope.component.getUtility(
             icemac.ab.calendar.interfaces.IRecurringEvents).values()
         recurred_events = [x.get_events(start, end) for x in recurring_events]
-        result_set = itertools.chain(
-            single_events, *recurred_events)
-        return sorted(result_set, key=lambda x: x.datetime)
+        events_map = {(x.category, x.datetime): x
+                      for x in itertools.chain(*recurred_events)}
+
+        catalog = zope.component.getUtility(zope.catalog.interfaces.ICatalog)
+        # The values for the index are: min, max, min_exclude, max_exclude
+        single_events = catalog.searchResults(
+            **{DATE_INDEX: {'between': (start, end, False, True)}})
+        # A single_event with the same category and datetime overwrites the
+        # recurred event as it is its customization:
+        events_map.update({(x.category, x.datetime): x
+                           for x in single_events})
+        return sorted(events_map.values(), key=lambda x: x.datetime)
 
 
 class CalendarDisplaySettings(grok.Annotation):

@@ -76,6 +76,24 @@ class Calendar_get_events_FTests(icemac.ab.calendar.testing.ZODBTestCase):
                           (u'each week', '2013-02-21')],
                          self.callMUT(2, 2013, 'Etc/GMT-1', show_date=True))
 
+    def test_customized_recurred_event_hides_recurred_event(self):
+        from icemac.ab.calendar.event import (
+            get_event_data_from_recurring_event)
+        night_lunch = self.create_category(u'night lunch')
+        recurring_event = self.create_recurring_event(
+            alternative_title=u'each week',
+            datetime=self.get_datetime((2013, 3, 14, 23, 0)),
+            period=u'weekly',
+            category=night_lunch)
+        event_data = get_event_data_from_recurring_event(
+            recurring_event, self.get_datetime((2013, 3, 21, 0)).date())
+        event_data['alternative_title'] = u'this week'
+        self.create_event(**event_data)
+        self.assertEqual([(u'each week', '2013-03-14'),
+                          (u'this week', '2013-03-21'),
+                          (u'each week', '2013-03-28')],
+                         self.callMUT(3, 2013, 'Etc/GMT+1', show_date=True))
+
 
 class CalendarDisplaySettingsTests(icemac.ab.calendar.testing.ZODBTestCase):
     """Testing ..calendar.CalendarDisplaySettings."""

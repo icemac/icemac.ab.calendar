@@ -82,6 +82,21 @@ recurring_event_entity = icemac.addressbook.entities.create_entity(
     RecurringEvent)
 
 
+def get_event_data_from_recurring_event(recurring_event, date):
+    """Get the event data from a recurring event
+
+    This data can be written as the `__dict__` of the event.
+
+    """
+    event_entity = icemac.addressbook.interfaces.IEntity(
+        icemac.ab.calendar.interfaces.IEvent)
+    data = {key: field.bind(recurring_event).get(recurring_event)
+            for key, field in event_entity.getFields(sorted=False)}
+    data['datetime'] = data['datetime'].replace(
+        year=date.year, month=date.month, day=date.day)
+    return data
+
+
 @grok.adapter(icemac.ab.calendar.interfaces.IRecurringEvent)
 @grok.implementer(icemac.ab.calendar.interfaces.IEventDateTime)
 def recurring_event_datetime(event):

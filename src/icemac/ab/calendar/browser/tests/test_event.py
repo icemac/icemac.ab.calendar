@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import icemac.ab.calendar.testing
 
 
@@ -110,3 +111,54 @@ class EventSecurity(icemac.ab.calendar.testing.BrowserTestCase):
         # There are no fields to edit and no delete button:
         self.assertEqual(['form.buttons.apply', 'form.buttons.cancel'],
                          browser.get_all_control_names())
+
+
+class AddFromRecurredEventTests(icemac.ab.calendar.testing.BrowserTestCase):
+    """Testing ..event.AddFromRecurredEvent."""
+
+    def setUp(self):
+        super(AddFromRecurredEventTests, self).setUp()
+        self.create_category(u'aaz')
+        bar = self.create_category(u'bar')
+        self.create_person(u'Bester')
+        tester = self.create_person(u'Tester')
+        recurring_event = self.create_recurring_event(
+            category=bar, datetime=self.get_datetime((2014, 5, 24, 10, 30)),
+            alternative_title=u'foo bär', period=u'weekly',
+            persons=set([tester]), external_persons=[u'Mr. Developer'],
+            text=u'Important')
+        self.browser = self.get_browser('cal-editor')
+        self.browser.open(
+            'http://localhost/ab/++attribute++calendar/'
+            '@@customize-recurred-event?event=%s&date=2014-05-31' %
+            recurring_event.__name__)
+
+    def test_prefills_form_from_recurring_event(self):
+        browser = self.browser
+        self.assertEqual(['bar'],
+                         browser.getControl('event category').displayValue)
+        self.assertEqual('14/05/31 10:30',
+                         browser.getControl('datetime').value)
+        self.assertEqual(
+            'foo bär',
+            browser.getControl('alternative title to category').value)
+        self.assertEqual(['Tester'],
+                         browser.getControl('persons').displayValue)
+        self.assertEqual(
+            'Mr. Developer',
+            browser.getControl(name='form.widgets.external_persons.0').value)
+        self.assertEqual('Important', browser.getControl('notes').value)
+
+    def test_saves_changes_made_in_form(self):
+        browser = self.browser
+        browser.getControl('alternative title to category').value = 'birthday'
+        browser.getControl('Apply').click()
+        self.assertEqual(['"birthday" added.'], browser.get_messages())
+        browser.getLink('birthday').click()
+        self.assertEqual('birthday', browser.getControl('alternative').value)
+
+    def test_cancel_does_not_change_anything(self):
+        browser = self.browser
+        browser.getControl('Cancel').click()
+        self.assertEqual(['Addition canceled.'], browser.get_messages())
+        self.assertEqual(0, len(self.layer['addressbook'].calendar))

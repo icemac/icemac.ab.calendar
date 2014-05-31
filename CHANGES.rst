@@ -8,8 +8,7 @@
 Features
 --------
 
-- Add concept of recurring events, in user interface see master data of
-  calendar.
+- Add concept of recurring events, see master data of calendar to configure them.
 
 Bug fixes
 ---------
