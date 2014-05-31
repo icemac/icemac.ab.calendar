@@ -103,7 +103,7 @@ class AddFromRecurredEvent(icemac.ab.calendar.browser.base.View,
 
 
 class RecurredEventAbsoluteURL(zope.traversing.browser.AbsoluteURL,
-                               icemac.addressbook.browser.base.BaseView):
+                               icemac.ab.calendar.browser.base.View):
     """URL to customize a recurred event."""
 
     def __str__(self):
