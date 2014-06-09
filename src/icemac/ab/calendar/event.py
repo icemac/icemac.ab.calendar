@@ -3,6 +3,7 @@ import gocept.reference
 import grokcore.component as grok
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.entities
+import icemac.addressbook.utils
 import persistent
 import zope.annotation.interfaces
 import zope.container.btree
@@ -127,11 +128,12 @@ class RecurredEvent(object):
     @classmethod
     def create_from(cls, recurring_event, datetime):
         """Constructor: Copy data from recurring event."""
-        event = cls()
-        for name in icemac.ab.calendar.interfaces.IEvent:
-            setattr(event, name, getattr(recurring_event, name))
-        event.datetime = datetime
-        event.__parent__ = icemac.ab.calendar.interfaces.ICalendar(
-            recurring_event)
-        event.recurring_event = recurring_event
-        return event
+        data = {name: getattr(recurring_event, name)
+                for name in icemac.ab.calendar.interfaces.IEvent}
+        data.update({
+            'datetime': datetime,
+            '__parent__': icemac.ab.calendar.interfaces.ICalendar(
+                recurring_event),
+            'recurring_event': recurring_event})
+
+        return icemac.addressbook.utils.create_obj(cls, **data)
