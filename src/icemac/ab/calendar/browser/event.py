@@ -33,13 +33,13 @@ class Edit(icemac.addressbook.browser.base.GroupEditForm):
         _('Clone event'), name='clone_event',
         condition=icemac.addressbook.browser.base.can_access('@@clone.html'))
     def handleCloneEvent(self, action):
-        self.redirect_to_next_url('object', '@@clone.html')
+        self.redirect_to_next_url('object', 'clone.html')
 
     @z3c.form.button.buttonAndHandler(
         _(u'Delete'), name='delete',
         condition=icemac.addressbook.browser.base.can_access('@@delete.html'))
     def handleDelete(self, action):
-        self.redirect_to_next_url('object', '@@delete.html')
+        self.redirect_to_next_url('object', 'delete.html')
 
 
 class Delete(icemac.addressbook.browser.base.BaseDeleteForm):

@@ -66,7 +66,7 @@ class Edit(icemac.addressbook.browser.base.GroupEditForm):
     @z3c.form.button.buttonAndHandler(
         _(u'Delete'), name='delete', condition=can_delete_category)
     def handleDelete(self, action):
-        self.redirect_to_next_url('object', '@@delete.html')
+        self.redirect_to_next_url('object', 'delete.html')
 
 
 class Delete(icemac.addressbook.browser.base.BaseDeleteForm):
