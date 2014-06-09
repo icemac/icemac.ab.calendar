@@ -70,17 +70,8 @@ class CustomizeRecurredEvent(icemac.ab.calendar.browser.base.View):
         return ''
 
 
-class AddFromRecurredEvent(icemac.ab.calendar.browser.base.View,
-                           icemac.addressbook.browser.base.BaseAddForm):
-    """Add form for changing a recurred event."""
-
-    label = _(u'Edit recurred event')
-    interface = icemac.ab.calendar.interfaces.IEvent
-    class_ = icemac.ab.calendar.event.Event
-    next_url = 'parent'
-    ignoreContext = False
-    buttons = z3c.form.button.Buttons()
-    handlers = z3c.form.button.Handlers()
+class RecurredEventFormMixIn(object):
+    """Mix-In providing data of recurred event from session."""
 
     def getContent(self):
         recurring_events = zope.component.getUtility(
@@ -92,14 +83,54 @@ class AddFromRecurredEvent(icemac.ab.calendar.browser.base.View,
             recurring_event, date)
         return data
 
+
+class AddFromRecurredEvent(icemac.ab.calendar.browser.base.View,
+                           RecurredEventFormMixIn,
+                           icemac.addressbook.browser.base.BaseAddForm):
+    """Add form for changing a recurred event."""
+
+    label = _(u'Edit recurred event')
+    interface = icemac.ab.calendar.interfaces.IEvent
+    class_ = icemac.ab.calendar.event.Event
+    next_url = 'parent'
+    ignoreContext = False
+    buttons = z3c.form.button.Buttons()
+    handlers = z3c.form.button.Handlers()
+
+    # Rename `Add` button to `Apply`.
     @z3c.form.button.buttonAndHandler(_('Apply'), name='add')
     def handleAdd(self, action):
         super(AddFromRecurredEvent, self).handleAdd(self, action)
+
+    @z3c.form.button.buttonAndHandler(_('Delete'), name='delete')
+    def handleDelete(self, action):
+        self.request.response.redirect(
+            self.url(self.context, 'delete-recurred-event.html'))
 
     # Copy over the cancel button and handler:
     buttons += icemac.addressbook.browser.base.BaseAddForm.buttons.select(
         'cancel')
     handlers += icemac.addressbook.browser.base.BaseAddForm.handlers.copy()
+
+
+class DeleteRecurredEvent(icemac.ab.calendar.browser.base.View,
+                          RecurredEventFormMixIn,
+                          icemac.addressbook.browser.base.BaseDeleteForm):
+    """Add form for deleting a recurred event."""
+
+    label = _(u'Do you really want to delete this recurred event?')
+    interface = icemac.ab.calendar.interfaces.IEvent
+    field_names = ('category', 'alternative_title', 'datetime')
+
+    def _handle_action(self):
+        content = self.getContent()
+        icemac.addressbook.utils.create_and_add(
+            self.context, icemac.ab.calendar.event.Event,
+            category=content['category'], datetime=content['datetime'],
+            deleted=True)
+        title = content['alternative_title'] or content['category']
+        self.status = _('"${title}" deleted.', mapping=dict(title=title))
+        self.redirect_to_next_url('object')
 
 
 class RecurredEventAbsoluteURL(zope.traversing.browser.AbsoluteURL,

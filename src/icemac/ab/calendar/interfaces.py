@@ -137,6 +137,9 @@ class IEvent(zope.interface.Interface):
         value_type=zope.schema.TextLine(title=_('person name')))
     text = zope.schema.Text(title=_('notes'), required=False)
 
+    deleted = zope.interface.Attribute(
+        'Event has been deleted. Used to support deletion of recurred events.')
+
 
 class IEventDateTime(zope.interface.Interface):
     """Datetime of an event, used for cataloging the event."""

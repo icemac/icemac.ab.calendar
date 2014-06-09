@@ -94,6 +94,14 @@ class Calendar_get_events_FTests(icemac.ab.calendar.testing.ZODBTestCase):
                           (u'each week', '2013-03-28')],
                          self.callMUT(3, 2013, 'Etc/GMT+1', show_date=True))
 
+    def test_does_not_return_deleted_events(self):
+        self.create_event(
+            alternative_title=u'deleted start of March 2013',
+            datetime=self.get_datetime((2013, 3, 1, 5)),
+            deleted=True)
+        self.assertEqual([u'start Mar 2013'],
+                         self.callMUT(3, 2013, 'Etc/GMT'))
+
 
 class CalendarDisplaySettingsTests(icemac.ab.calendar.testing.ZODBTestCase):
     """Testing ..calendar.CalendarDisplaySettings."""

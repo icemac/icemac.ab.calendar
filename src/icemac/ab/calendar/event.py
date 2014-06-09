@@ -23,6 +23,7 @@ class Event(persistent.Persistent,
     category = gocept.reference.Reference('category', ensure_integrity=True)
     persons = gocept.reference.ReferenceCollection(
         'persons', ensure_integrity=True)
+    deleted = False
 
     def __init__(self):
         # prevent AttributeErrors on first read
@@ -121,6 +122,7 @@ class RecurredEvent(object):
 
     __parent__ = None
     recurring_event = None
+    deleted = False
 
     @classmethod
     def create_from(cls, recurring_event, datetime):

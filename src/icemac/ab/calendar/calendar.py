@@ -41,7 +41,9 @@ class Calendar(zope.container.btree.BTreeContainer):
         # recurred event as it is its customization:
         events_map.update({(x.category, x.datetime): x
                            for x in single_events})
-        return sorted(events_map.values(), key=lambda x: x.datetime)
+        # Filter out deleted recurred events and sort:
+        return sorted(filter(lambda x: not x.deleted, events_map.values()),
+                      key=lambda x: x.datetime)
 
 
 class CalendarDisplaySettings(grok.Annotation):

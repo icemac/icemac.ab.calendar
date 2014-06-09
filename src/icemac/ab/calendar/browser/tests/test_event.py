@@ -130,15 +130,17 @@ class AddFromRecurredEventTests(icemac.ab.calendar.testing.BrowserTestCase):
         self.browser = self.get_browser('cal-editor')
         self.browser.open(
             'http://localhost/ab/++attribute++calendar/'
-            '@@customize-recurred-event?event=%s&date=2014-05-31' %
-            recurring_event.__name__)
+            '@@customize-recurred-event?event=%s&date=%s' % (
+                recurring_event.__name__,
+                get_datetime_today_8_32_am().date().isoformat()))
 
     def test_prefills_form_from_recurring_event(self):
         browser = self.browser
         self.assertEqual(['bar'],
                          browser.getControl('event category').displayValue)
-        self.assertEqual('14/05/31 10:30',
-                         browser.getControl('datetime').value)
+        self.assertEqual(
+            '%s 10:30' % self.get_datetime().date().strftime('%y/%m/%d'),
+            browser.getControl('datetime').value)
         self.assertEqual(
             'foo bär',
             browser.getControl('alternative title to category').value)
@@ -162,3 +164,12 @@ class AddFromRecurredEventTests(icemac.ab.calendar.testing.BrowserTestCase):
         browser.getControl('Cancel').click()
         self.assertEqual(['Addition canceled.'], browser.get_messages())
         self.assertEqual(0, len(self.layer['addressbook'].calendar))
+
+    def test_delete_removes_recurred_event_after_confirmation(self):
+        browser = self.browser
+        browser.getControl('Delete').click()
+        self.assertIn('Do you really want to delete this recurred event?',
+                      browser.contents)
+        browser.getControl('Yes').click()
+        self.assertEqual([u'"foo bär" deleted.'], browser.get_messages())
+        self.assertTrue(self.layer['addressbook'].calendar['Event'].deleted)

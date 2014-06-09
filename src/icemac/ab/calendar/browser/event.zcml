@@ -80,4 +80,11 @@
      class=".event.AddFromRecurredEvent"
      permission="icemac.ab.calendar.AddEvent" />
 
+  <z3c:pagelet
+     for="icemac.ab.calendar.interfaces.ICalendar"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="delete-recurred-event.html"
+     class=".event.DeleteRecurredEvent"
+     permission="icemac.ab.calendar.AddEvent" />
+
 </configure>
