@@ -1,6 +1,5 @@
 # Copyright (c) 2013-2014 Michael Howitz
 # See also LICENSE.txt
-from __future__ import unicode_literals
 import icemac.ab.calendar.testing
 import icemac.addressbook.testing
 import unittest
@@ -62,11 +61,11 @@ class TestRecurrStarEvent(icemac.ab.calendar.testing.ZODBTestCase):
         from icemac.addressbook.testing import create_person
         super(TestRecurrStarEvent, self).setUp()
         ab = self.layer['addressbook']
-        category = self.create_category('birthday')
-        person = create_person(ab, ab, 'Tester')
+        category = self.create_category(u'birthday')
+        person = create_person(ab, ab, u'Tester')
         self.recurring_event = self.create_recurring_event(
             datetime=self.get_datetime((2014, 5, 2)), category=category,
-            period='weekly', persons=set([person]), text='foobar')
+            period='weekly', persons=set([person]), text=u'foobar')
 
     def test_get_events_returns_iterable_of_RecurredEvent_instances(self):
         from ..event import RecurredEvent
