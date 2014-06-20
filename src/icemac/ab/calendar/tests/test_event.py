@@ -92,6 +92,87 @@ class TestRecurrStarEvent(icemac.ab.calendar.testing.ZODBTestCase):
         self.assertEqual(self.recurring_event, recurred_event.recurring_event)
 
 
+class GetFieldNameOnIEventTests(icemac.ab.calendar.testing.ZODBTestCase):
+    """Testing ..event._get_field_name_on_IEvent()."""
+
+    def callFUT(self, field_name):
+        from ..event import _get_field_name_on_IEvent
+        from ..interfaces import IEvent, IRecurringEvent
+        from icemac.addressbook.interfaces import IEntity
+        field = IEntity(IRecurringEvent).getRawField(field_name)
+        return _get_field_name_on_IEvent(field, IEntity(IEvent))
+
+    def create_field(self, interface, title, type, values=None):
+        from icemac.addressbook.testing import create_field
+        ab = self.layer['addressbook']
+        return create_field(ab, interface, type, title, values=values)
+
+    def test_only_returns_field_name_if_matching_on_title_type_and_value(self):
+        from ..interfaces import IRecurringEvent, IEvent
+        event_field = self.create_field(IEvent, u'foo', u'Bool')
+        revent_field = self.create_field(IRecurringEvent, u'foo', u'Bool')
+        self.assertEqual(event_field, self.callFUT(revent_field))
+
+    def test_returns_None_if_field_does_not_exactly_match(self):
+        from ..interfaces import IRecurringEvent, IEvent
+        self.create_field(IEvent, u'foo', u'Choice', values=[u'a'])
+        revent_field = self.create_field(
+            IRecurringEvent, u'foo', u'Choice', values=[u'a', u'b'])
+        self.assertIsNone(self.callFUT(revent_field))
+
+    def test_returns_field_name_for_field_not_defined_on_IBaseEvent(self):
+        self.assertEqual('category', self.callFUT('category'))
+
+    def test_returns_None_for_field_not_defined_on_IBaseEvent(self):
+        self.assertIsNone(self.callFUT('period'))
+
+
+class GetEventDataFromRecurringEventTests(
+        icemac.ab.calendar.testing.ZODBTestCase):
+    """Testing ..event.get_event_data_from_recurring_event()."""
+
+    def callFUT(self, recurring_event, datetime):
+        from ..event import get_event_data_from_recurring_event
+        return get_event_data_from_recurring_event(recurring_event, datetime)
+
+    def test_returns_dict_of_event_data_and_datetime(self):
+        category = self.create_category(u'bar')
+        recurring_event = self.create_recurring_event(
+            category=category,
+            datetime=self.get_datetime((2014, 5, 24, 10, 30)),
+            alternative_title=u'foo bar')
+        self.assertEqual(
+            {'alternative_title': u'foo bar',
+             'category': category,
+             'datetime': self.get_datetime((2000, 1, 1, 10, 30)),
+             'external_persons': None,
+             'persons': None,
+             'text': None},
+            self.callFUT(recurring_event, self.get_datetime((2000, 1, 1, 0))))
+
+    def test_returns_appropriate_user_defined_fields(self):
+        from icemac.addressbook.testing import create_field, create
+        from icemac.ab.calendar.interfaces import IEvent, IRecurringEvent
+        ab = self.layer['addressbook']
+        revent_foo = create_field(ab, IRecurringEvent, u'Text', u'foo')
+        revent_bar = create_field(ab, IRecurringEvent, u'Text', u'bar')
+        create_field(ab, IEvent, u'Text', u'foo')
+        recurring_event = create(
+            ab, ab.calendar_recurring_events,
+            'icemac.ab.calendar.event.RecurringEvent', return_obj=True,
+            **{revent_foo: u'asdf', revent_bar: u'qwe',
+               'datetime': self.get_datetime((2014, 5, 24, 10, 30))})
+        self.assertEqual(
+            {'Field-3': 'asdf',
+             'alternative_title': None,
+             'category': None,
+             'datetime': self.get_datetime((2000, 1, 1, 10, 30)),
+             'external_persons': None,
+             'persons': None,
+             'text': None},
+            self.callFUT(recurring_event, self.get_datetime((2000, 1, 1, 0))))
+
+
 class EventRTests(icemac.ab.calendar.testing.BrowserTestCase):
     """Regression testing ..event.Event."""
 

@@ -117,16 +117,24 @@ class AddFromRecurredEventTests(icemac.ab.calendar.testing.BrowserTestCase):
     """Testing ..event.AddFromRecurredEvent."""
 
     def setUp(self):
+        from icemac.addressbook.testing import create_field, create
+        from icemac.ab.calendar.interfaces import IEvent, IRecurringEvent
         super(AddFromRecurredEventTests, self).setUp()
         self.create_category(u'aaz')
         bar = self.create_category(u'bar')
         self.create_person(u'Bester')
         tester = self.create_person(u'Tester')
-        recurring_event = self.create_recurring_event(
-            category=bar, datetime=self.get_datetime((2014, 5, 24, 10, 30)),
-            alternative_title=u'foo bär', period=u'weekly',
-            persons=set([tester]), external_persons=[u'Mr. Developer'],
-            text=u'Important')
+        ab = self.layer['addressbook']
+        create_field(ab, IEvent, u'Text', u'foobar')
+        foobar = create_field(ab, IRecurringEvent, u'Text', u'foobar')
+        recurring_event = create(
+            ab, ab.calendar_recurring_events,
+            'icemac.ab.calendar.event.RecurringEvent', return_obj=True,
+            **{'category': bar, foobar: u'qux',
+               'datetime': self.get_datetime((2014, 5, 24, 10, 30)),
+               'alternative_title': u'foo bär', 'period': u'weekly',
+               'persons': set([tester]),
+               'external_persons': [u'Mr. Developer'], 'text': u'Important'})
         self.browser = self.get_browser('cal-editor')
         self.browser.open(
             'http://localhost/ab/++attribute++calendar/'
@@ -150,6 +158,7 @@ class AddFromRecurredEventTests(icemac.ab.calendar.testing.BrowserTestCase):
             'Mr. Developer',
             browser.getControl(name='form.widgets.external_persons.0').value)
         self.assertEqual('Important', browser.getControl('notes').value)
+        self.assertEqual('qux', browser.getControl('foobar').value)
 
     def test_saves_changes_made_in_form(self):
         browser = self.browser

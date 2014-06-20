@@ -91,6 +91,21 @@ recurring_event_entity = icemac.addressbook.entities.create_entity(
     RecurringEvent)
 
 
+def _get_field_name_on_IEvent(field, event_entity):
+    """Get the name of the appropriate field on IEvent."""
+    if not icemac.addressbook.interfaces.IField.providedBy(field):
+        if field.__name__ in icemac.ab.calendar.interfaces.IBaseEvent:
+            return field.__name__  # common field
+        return None  # no-common field
+    for name, recurring_field in event_entity.getRawFields(sorted=False):
+        if (icemac.addressbook.interfaces.IField.providedBy(recurring_field)
+                and field.title == recurring_field.title
+                and field.type == recurring_field.type
+                and field.values == recurring_field.values):
+            return name
+    return None
+
+
 def get_event_data_from_recurring_event(recurring_event, date):
     """Get the event data from a recurring event
 
@@ -99,9 +114,17 @@ def get_event_data_from_recurring_event(recurring_event, date):
     """
     event_entity = icemac.addressbook.interfaces.IEntity(
         icemac.ab.calendar.interfaces.IEvent)
-    data = {key: field.bind(recurring_event).get(recurring_event)
-            for key, field in event_entity.getFields(sorted=False)}
-    data['datetime'] = data['datetime'].replace(
+    revent_entity = icemac.addressbook.interfaces.IEntity(
+        icemac.ab.calendar.interfaces.IRecurringEvent)
+    data = {}
+    for name, field in revent_entity.getRawFields(sorted=False):
+        key = _get_field_name_on_IEvent(field, event_entity)
+        if key is not None:
+            bound_field = icemac.addressbook.entities.get_bound_schema_field(
+                recurring_event, revent_entity, field)
+            data[key] = bound_field.get(bound_field.context)
+
+    data[u'datetime'] = data[u'datetime'].replace(
         year=date.year, month=date.month, day=date.day)
     return data
 
