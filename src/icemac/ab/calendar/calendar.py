@@ -61,10 +61,11 @@ class CalendarDisplaySettings(grok.Annotation):
     @event_additional_fields.setter
     def event_additional_fields(self, fields):
         values = []
+        event_entity = icemac.addressbook.interfaces.IEntity(
+            icemac.ab.calendar.interfaces.IEvent)
         for field in fields:
             values.append(icemac.addressbook.fieldsource.tokenize(
-                icemac.addressbook.interfaces.IEntity(field.interface),
-                field.__name__))
+                event_entity, field.__name__))
         self._event_additional_fields = values
 
 

@@ -35,11 +35,14 @@ class ICalendar(zope.interface.Interface):
 class EventFieldsSource(zc.sourcefactory.basic.BasicSourceFactory):
     """Fields of an event for display in calendar view."""
 
+    @property
+    def event_entity(self):
+        return icemac.addressbook.interfaces.IEntity(IEvent)
+
     def getValues(self):
-        event_entity = icemac.addressbook.interfaces.IEntity(IEvent)
         # We need the default and user defined fields but not the ones which
         # are always displayed or handeled in a specfic way:
-        for field_name, field in event_entity.getRawFields():
+        for field_name, field in self.event_entity.getRawFields():
             if field_name in ('datetime', 'category', 'alternative_title',
                               'external_persons'):
                 continue
@@ -47,8 +50,7 @@ class EventFieldsSource(zc.sourcefactory.basic.BasicSourceFactory):
 
     def getToken(self, value):
         return icemac.addressbook.fieldsource.tokenize(
-            icemac.addressbook.interfaces.IEntity(value.interface),
-            value.__name__)
+            self.event_entity, value.__name__)
 
     def getTitle(self, value):
         return value.title
@@ -119,8 +121,8 @@ class PersonSource(zc.sourcefactory.basic.BasicSourceFactory):
 person_source = PersonSource()
 
 
-class IEvent(zope.interface.Interface):
-    """A single event in the calendar."""
+class IBaseEvent(zope.interface.Interface):
+    """Base of single, recurring and recurred events."""
 
     category = zope.schema.Choice(
         title=_('event category'), source=category_source)
@@ -136,6 +138,10 @@ class IEvent(zope.interface.Interface):
         title=_('other persons'), required=False,
         value_type=zope.schema.TextLine(title=_('person name')))
     text = zope.schema.Text(title=_('notes'), required=False)
+
+
+class IEvent(IBaseEvent):
+    """A single event in the calendar."""
 
     deleted = zope.interface.Attribute(
         'Event has been deleted. Used to support deletion of recurred events.')
@@ -190,14 +196,14 @@ class IRecurringDateTime(zope.interface.Interface):
         """
 
 
-class IRecurringEvent(IEvent, IRecurrence):
+class IRecurringEvent(IBaseEvent, IRecurrence):
     """An event recurring after a defined period."""
 
     def get_events(interval_start, interval_end):
         """Get the events computed from recurrence in the interval."""
 
 
-class IRecurredEvent(IEvent):
+class IRecurredEvent(IBaseEvent):
     """An event computed from IRecurringEvent."""
 
     __parent__ = zope.interface.Attribute('Calendar the event belongs to')

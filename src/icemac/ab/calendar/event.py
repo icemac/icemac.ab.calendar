@@ -48,7 +48,14 @@ def title(event):
 
 @grok.adapter(icemac.ab.calendar.interfaces.IEvent)
 @grok.implementer(icemac.ab.calendar.interfaces.ICalendar)
-def calendar(event):
+def calendar_of_IEvent(event):
+    """Adapt the event to its calendar."""
+    return event.__parent__
+
+
+@grok.adapter(icemac.ab.calendar.interfaces.IRecurredEvent)
+@grok.implementer(icemac.ab.calendar.interfaces.ICalendar)
+def calendar_of_IRecurredEvent(event):
     """Adapt the event to its calendar."""
     return event.__parent__
 

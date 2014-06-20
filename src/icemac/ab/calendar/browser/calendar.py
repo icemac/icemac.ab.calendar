@@ -265,7 +265,7 @@ def hyphenated(func, context, lang=None):
 class EventDescription(grok.Adapter):
     """Adapter from Event to EventDescription needed by renderer."""
 
-    grok.context(icemac.ab.calendar.interfaces.IEvent)
+    grok.context(icemac.ab.calendar.interfaces.IBaseEvent)
     grok.implements(
         icemac.ab.calendar.browser.renderer.interfaces.IEventDescription)
 
