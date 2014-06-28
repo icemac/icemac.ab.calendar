@@ -70,7 +70,7 @@
      layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
      name="customize-recurred-event"
      class=".event.CustomizeRecurredEvent"
-     permission="icemac.ab.calendar.AddEvent"
+     permission="icemac.ab.calendar.ViewEvent"
      />
 
   <z3c:pagelet
@@ -79,6 +79,13 @@
      name="addFromRecurredEvent.html"
      class=".event.AddFromRecurredEvent"
      permission="icemac.ab.calendar.AddEvent" />
+
+  <z3c:pagelet
+     for="icemac.ab.calendar.interfaces.ICalendar"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="viewRecurredEvent.html"
+     class=".event.ViewRecurredEvent"
+     permission="icemac.ab.calendar.ViewEvent" />
 
   <z3c:pagelet
      for="icemac.ab.calendar.interfaces.ICalendar"

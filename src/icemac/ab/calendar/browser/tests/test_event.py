@@ -92,6 +92,16 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
                          browser.url)
 
 
+def get_customize_recurred_event_url(recurring_event):
+    return ('http://localhost/ab/++attribute++calendar/'
+            '@@customize-recurred-event?event=%s&date=%s' % (
+                recurring_event.__name__,
+                get_datetime_today_8_32_am().date().isoformat()))
+
+ADD_FROM_RECURRED_EVENT_URL = (
+    'http://localhost/ab/++attribute++calendar/@@addFromRecurredEvent.html')
+
+
 class EventSecurity(icemac.ab.calendar.testing.BrowserTestCase):
     """Security tests for categories."""
 
@@ -109,6 +119,25 @@ class EventSecurity(icemac.ab.calendar.testing.BrowserTestCase):
         browser.open(
             'http://localhost/ab/++attribute++calendar/%s' % event.__name__)
         # There are no fields to edit and no delete button:
+        self.assertEqual(['form.buttons.apply', 'form.buttons.cancel'],
+                         browser.get_all_control_names())
+
+    def test_visitor_not_able_to_customize_recurred_event_even_knowing_the_url(
+            self):
+        from mechanize import HTTPError
+        browser = self.get_browser('cal-visitor')
+        with self.assertRaises(HTTPError) as err:
+            browser.open(ADD_FROM_RECURRED_EVENT_URL)
+        self.assertEqual('HTTP Error 403: Forbidden', str(err.exception))
+
+    def test_visitor_sees_display_form_when_looking_at_recurrend_event_details(
+            self):
+        recurring_event = self.create_recurring_event(
+            datetime=get_datetime_today_8_32_am(),
+            alternative_title=u'recurred event')
+        browser = self.get_browser('cal-visitor')
+        browser.handleErrors = False
+        browser.open(get_customize_recurred_event_url(recurring_event))
         self.assertEqual(['form.buttons.apply', 'form.buttons.cancel'],
                          browser.get_all_control_names())
 
@@ -136,14 +165,11 @@ class AddFromRecurredEventTests(icemac.ab.calendar.testing.BrowserTestCase):
                'persons': set([tester]),
                'external_persons': [u'Mr. Developer'], 'text': u'Important'})
         self.browser = self.get_browser('cal-editor')
-        self.browser.open(
-            'http://localhost/ab/++attribute++calendar/'
-            '@@customize-recurred-event?event=%s&date=%s' % (
-                recurring_event.__name__,
-                get_datetime_today_8_32_am().date().isoformat()))
+        self.browser.open(get_customize_recurred_event_url(recurring_event))
 
     def test_prefills_form_from_recurring_event(self):
         browser = self.browser
+        self.assertEqual(ADD_FROM_RECURRED_EVENT_URL, browser.url)
         self.assertEqual(['bar'],
                          browser.getControl('event category').displayValue)
         self.assertEqual(

@@ -6,6 +6,7 @@ import icemac.addressbook.browser.base
 import icemac.addressbook.browser.metadata
 import z3c.form.button
 import z3c.form.form
+import z3c.form.interfaces
 import zope.component
 import zope.traversing.browser
 
@@ -65,8 +66,12 @@ class CustomizeRecurredEvent(icemac.ab.calendar.browser.base.View):
         self.session['recurring-event-name'] = self.request.form['event']
         self.session['recurred-event-date'] = date(
             *tuple(int(x) for x in self.request.form['date'].split('-')))
-        self.request.response.redirect(
-            self.url(self.context, 'addFromRecurredEvent.html'))
+        if icemac.addressbook.browser.base.can_access_uri_part(
+                self.context, self.request, 'addFromRecurredEvent.html'):
+            target_view = 'addFromRecurredEvent.html'
+        else:
+            target_view = 'viewRecurredEvent.html'
+        self.request.response.redirect(self.url(self.context, target_view))
         return ''
 
 
@@ -111,6 +116,17 @@ class AddFromRecurredEvent(icemac.ab.calendar.browser.base.View,
     buttons += icemac.addressbook.browser.base.BaseAddForm.buttons.select(
         'cancel')
     handlers += icemac.addressbook.browser.base.BaseAddForm.handlers.copy()
+
+
+class ViewRecurredEvent(icemac.ab.calendar.browser.base.View,
+                        RecurredEventFormMixIn,
+                        icemac.addressbook.browser.base.BaseEditForm):
+    """View form for a recurred event."""
+
+    label = _(u'View recurred event')
+    interface = icemac.ab.calendar.interfaces.IEvent
+    mode = z3c.form.interfaces.DISPLAY_MODE
+    next_url = 'parent'
 
 
 class DeleteRecurredEvent(icemac.ab.calendar.browser.base.View,
