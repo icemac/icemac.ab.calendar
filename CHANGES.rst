@@ -49,14 +49,6 @@ Other
 - Allow calendar users to edit their username and/or password in master data.
 
 
-1.2.0 (2014-01-02)
-==================
-
-- Selected month is kept in session, to ease editing in another month than
-  the current one. (requiring at least `icemac.addressbook 2.2`)
-
-- Bugfix: empty field values are no longer displayed in the calendar.
-
 Older versions
 ==============
 

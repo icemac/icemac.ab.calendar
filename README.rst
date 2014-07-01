@@ -17,8 +17,8 @@ Get the source code::
 
 or fork me on: https://bitbucket.org/icemac/icemac.ab.calendar
 
-Running Tests
-=============
+Running the tests
+=================
 
 .. Currently the tests on Travis-CI are not run:
 .. .. image:: https://secure.travis-ci.org/icemac/icemac.ab.calendar.png
