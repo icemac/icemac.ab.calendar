@@ -41,7 +41,7 @@ class TableFTests(icemac.ab.calendar.testing.ZCMLTestCase):
         get_time_zone_name = (
             'icemac.addressbook.preferences.utils.get_time_zone_name')
         with patch(action_url), \
-             patch(get_time_zone_name) as get_time_zone_name:
+                patch(get_time_zone_name) as get_time_zone_name:
             get_time_zone_name.return_value = 'UTC'
             result = self.callVUT([event1, event2])
         self.assertEqual(1, len(self.getETree(result).xpath('//dt')))

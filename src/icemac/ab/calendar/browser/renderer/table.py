@@ -8,8 +8,6 @@ from icemac.addressbook.i18n import _
 import datetime
 import grokcore.component as grok
 import icemac.addressbook.browser.base
-import icemac.addressbook.preferences.utils
-import pytz
 import zope.component
 
 
