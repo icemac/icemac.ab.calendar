@@ -58,7 +58,7 @@ class Weekly(RecurringDateTime):
 
     grok.name('weekly')
     weight = 10
-    title = _(u'weekly, same weekday')
+    title = _('weekly, same weekday')
 
     def compute(self):
         current_date = self.interval_start
