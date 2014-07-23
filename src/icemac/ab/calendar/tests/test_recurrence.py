@@ -1,4 +1,5 @@
 import icemac.ab.calendar.testing
+import unittest
 
 
 class RecurrenceMixIn(object):
@@ -62,3 +63,32 @@ class WeeklyTests(RecurrenceMixIn, icemac.ab.calendar.testing.ZCMLTestCase):
             self.callFUT(
                 'weekly', start=self.get_datetime((2014, 4, 4)),
                 end=self.get_datetime((2014, 4, 5))))
+
+
+class NextDateOfSameWeekdayTests(unittest.TestCase,
+                                 icemac.ab.calendar.testing.TestMixIn):
+    """Testing ..recurrence.next_date_of_same_weekday()."""
+
+    def callFUT(self, wd_src, base_date):
+        from ..recurrence import next_date_of_same_weekday
+        return next_date_of_same_weekday(wd_src, base_date)
+
+    def test_weekday_of_wd_src_smaller_than_weekday_of_base_date(self):
+        self.assertEqual(self.get_datetime((2014, 7, 28, 10)),
+                         self.callFUT(self.get_datetime((2014, 7, 21, 10)),
+                                      self.get_datetime((2014, 7, 23, 10))))
+
+    def test_weekday_of_wd_src_greater_than_weekday_of_base_date(self):
+        # Weekday of 2014-07-20 is 7 (Sunday)
+        self.assertEqual(self.get_datetime((2014, 7, 27, 10)),
+                         self.callFUT(self.get_datetime((2014, 7, 20, 10)),
+                                      self.get_datetime((2014, 7, 23, 10))))
+
+    def test_weekday_of_wd_src_equal_to_weekday_of_base_date(self):
+        self.assertEqual(self.get_datetime((2014, 7, 17, 10)),
+                         self.callFUT(self.get_datetime((2014, 7, 10, 10)),
+                                      self.get_datetime((2014, 7, 17, 10))))
+
+    def test_wd_src_equal_to_base_date(self):
+        dt = self.get_datetime((2014, 7, 23, 17))
+        self.assertEqual(dt, self.callFUT(dt, dt))

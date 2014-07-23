@@ -25,6 +25,18 @@ def get_recurrences(datetime, period, interval_start, interval_end):
     return recurring(interval_start, interval_end)
 
 
+def next_date_of_same_weekday(wd_src, base_date):
+    """Compute next day with the same weekday as `wd_src` from `base_date` on.
+
+    If `wd_src` and `base_date` have the same weekday `base_date` is returned.
+
+    """
+    add_days = 7 - (base_date.isoweekday() - wd_src.isoweekday())
+    if add_days >= 7:
+        add_days -= 7
+    return base_date + add_days * ONE_DAY
+
+
 class RecurringDateTime(grok.Adapter):
     """Base class for recurring datestimes."""
 
@@ -53,9 +65,7 @@ class Weekly(RecurringDateTime):
         if current_date <= self.context:
             current_date = self.context
         else:
-            weekday = self.context.isoweekday()
-            while current_date.isoweekday() != weekday:
-                current_date += ONE_DAY
+            current_date = next_date_of_same_weekday(self.context, current_date)
         time = self.context.timetz()
         while current_date < self.interval_end:
             yield datetime.combine(current_date, time)
