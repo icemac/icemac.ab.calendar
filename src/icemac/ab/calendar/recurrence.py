@@ -1,7 +1,9 @@
-from icemac.addressbook.i18n import _
 from datetime import timedelta, datetime
+from icemac.addressbook.i18n import _
+import gocept.month
 import grokcore.component as grok
 import icemac.ab.calendar.interfaces
+import math
 import zope.component
 import zope.interface.common.idatetime
 
@@ -25,16 +27,18 @@ def get_recurrences(datetime, period, interval_start, interval_end):
     return recurring(interval_start, interval_end)
 
 
-def next_date_of_same_weekday(wd_src, base_date):
+def next_date_of_same_weekday(wd_src, base_date, additional_weeks=0):
     """Compute next day with the same weekday as `wd_src` from `base_date` on.
 
+    If `additional_weeks` is not zero, its number of weeks are added
+    afterwards.
     If `wd_src` and `base_date` have the same weekday `base_date` is returned.
 
     """
     add_days = 7 - (base_date.isoweekday() - wd_src.isoweekday())
     if add_days >= 7:
         add_days -= 7
-    return base_date + add_days * ONE_DAY
+    return base_date + (add_days + additional_weeks * 7) * ONE_DAY
 
 
 class RecurringDateTime(grok.Adapter):
@@ -71,3 +75,33 @@ class Weekly(RecurringDateTime):
         while current_date < self.interval_end:
             yield datetime.combine(current_date, time)
             current_date += ONE_WEEK
+
+
+class MonthlyNthWeekday(RecurringDateTime):
+    """Recurring monthly on same recurrence of the weekday in the month as in
+       `self.context`.
+
+    """
+    grok.name('nth weekday of month')
+    weight = 20
+    title = _('nth recurrence of the weekday of the date in month')
+
+    def compute(self):
+        if self.context > self.interval_end:
+            return  # no need to compute: there will be no results
+        n = int(math.ceil(self.context.day / 7.0)) - 1
+        month = gocept.month.IMonth(self.interval_start.date())
+        time = self.context.timetz()
+        while True:
+            result = next_date_of_same_weekday(
+                self.context, datetime.combine(month.firstOfMonth(), time), n)
+            try:
+                if result.month != month.month:
+                    continue  # result has swapped into next month
+            finally:
+                month += 1
+            if result >= self.interval_end:
+                break
+            if result < self.context:
+                continue
+            yield result

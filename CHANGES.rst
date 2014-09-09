@@ -5,7 +5,7 @@
 1.6.0 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Add new recurrence for recurring events: "monthly, same weekday".
 
 
 1.5.0 (2014-07-01)
