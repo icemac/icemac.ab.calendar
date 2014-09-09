@@ -30,7 +30,7 @@ class Table(icemac.addressbook.browser.table.Table):
             z3c.table.column.addColumn(
                 self, icemac.addressbook.browser.table.TruncatedContentColumn,
                 'notes', header=_('notes'), attrName='text', weight=30),
-            ]
+        ]
 
     @property
     def values(self):
