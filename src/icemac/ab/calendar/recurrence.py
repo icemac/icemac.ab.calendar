@@ -65,7 +65,8 @@ class Weekly(RecurringDateTime):
         if current_date <= self.context:
             current_date = self.context
         else:
-            current_date = next_date_of_same_weekday(self.context, current_date)
+            current_date = next_date_of_same_weekday(
+                self.context, current_date)
         time = self.context.timetz()
         while current_date < self.interval_end:
             yield datetime.combine(current_date, time)
