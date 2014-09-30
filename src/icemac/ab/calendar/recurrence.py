@@ -62,7 +62,7 @@ class Weekly(RecurringDateTime):
 
     grok.name('weekly')
     weight = 10
-    title = _('weekly, same weekday')
+    title = _('weekly, same weekday (e. g. each Friday)')
 
     def compute(self):
         current_date = self.interval_start
@@ -84,7 +84,7 @@ class MonthlyNthWeekday(RecurringDateTime):
     """
     grok.name('nth weekday of month')
     weight = 20
-    title = _('nth recurrence of the weekday of the date in month')
+    title = _('monthly, same weekday (e. g. each 3rd Sunday)')
 
     def compute(self):
         if self.context > self.interval_end:
