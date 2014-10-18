@@ -126,7 +126,7 @@ class MonthlyNthWeekdayTests(RecurrenceMixIn,
                 'nth weekday of month',
                 datetime=self.get_datetime((2014, 5, 1, 21, 45))))
 
-    def test_returns_all_first_of_month_in_interval_for_same_weekday(self):
+    def test_returns_all_nth_of_month_in_interval_for_same_weekday(self):
         self.assertEqual(
             [self.get_datetime((2014, 4, 17, 21, 45)),
              self.get_datetime((2014, 5, 15, 21, 45)),
