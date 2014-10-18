@@ -13,6 +13,30 @@ class RecurrenceMixIn(object):
         return list(get_recurrences(datetime, adapter_name, start, end))
 
 
+class InterfaceTests(unittest.TestCase):
+    """Testing interfaces in ..recurrence.*"""
+
+    def test_Weekly_fulfills_IRecurringDateTime_interface(self):
+        from zope.interface.verify import verifyObject
+        from ..interfaces import IRecurringDateTime
+        from ..recurrence import Weekly
+        self.assertTrue(
+            verifyObject(IRecurringDateTime, Weekly(None)))
+
+    def test_MonthlyNthWeekday_fulfills_IRecurringDateTime_interface(self):
+        from zope.interface.verify import verifyObject
+        from ..interfaces import IRecurringDateTime
+        from ..recurrence import MonthlyNthWeekday
+        self.assertTrue(
+            verifyObject(IRecurringDateTime, MonthlyNthWeekday(None)))
+
+    def test_Yearly_instance_fulfills_IRecurringDateTime_interface(self):
+        from zope.interface.verify import verifyObject
+        from ..interfaces import IRecurringDateTime
+        from ..recurrence import Yearly
+        self.assertTrue(verifyObject(IRecurringDateTime, Yearly(None)))
+
+
 class WeeklyTests(RecurrenceMixIn, icemac.ab.calendar.testing.ZCMLTestCase):
     """Testing ..recurrence.Weekly"""
 
@@ -21,12 +45,6 @@ class WeeklyTests(RecurrenceMixIn, icemac.ab.calendar.testing.ZCMLTestCase):
         self.recurrence_start = self.get_datetime((2013, 5, 3, 21, 45))
         self.interval_start = self.get_datetime((2014, 4, 1))
         self.interval_end = self.get_datetime((2014, 4, 30))
-
-    def test_instance_fulfills_IRecurringDateTime_interface(self):
-        from zope.interface.verify import verifyObject
-        from ..interfaces import IRecurringDateTime
-        from ..recurrence import Weekly
-        self.assertTrue(verifyObject(IRecurringDateTime, Weekly(None)))
 
     def test_returns_all_dates_in_interval_for_same_weekday(self):
         self.assertEqual(
@@ -75,13 +93,6 @@ class MonthlyNthWeekdayTests(RecurrenceMixIn,
         self.recurrence_start = self.get_datetime((2013, 3, 21, 21, 45))
         self.interval_start = self.get_datetime((2014, 4, 1, 0))
         self.interval_end = self.get_datetime((2014, 4, 30, 0))
-
-    def test_instance_fulfills_IRecurringDateTime_interface(self):
-        from zope.interface.verify import verifyObject
-        from ..interfaces import IRecurringDateTime
-        from ..recurrence import MonthlyNthWeekday
-        self.assertTrue(
-            verifyObject(IRecurringDateTime, MonthlyNthWeekday(None)))
 
     def test_returns_empty_interval_if_datetime_after_interval_end(self):
         self.assertEqual(
@@ -141,12 +152,6 @@ class YearlyTests(RecurrenceMixIn, icemac.ab.calendar.testing.ZCMLTestCase):
         self.recurrence_start = self.get_datetime((2013, 12, 24, 15))
         self.interval_start = self.get_datetime((2014, 1, 1))
         self.interval_end = self.get_datetime((2014, 12, 31))
-
-    def test_instance_fulfills_IRecurringDateTime_interface(self):
-        from zope.interface.verify import verifyObject
-        from ..interfaces import IRecurringDateTime
-        from ..recurrence import Yearly
-        self.assertTrue(verifyObject(IRecurringDateTime, Yearly(None)))
 
     def test_returns_all_dates_in_interval_with_same_day_and_month(self):
         self.assertEqual(
