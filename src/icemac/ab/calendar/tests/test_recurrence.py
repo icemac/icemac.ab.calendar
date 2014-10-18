@@ -122,7 +122,7 @@ class MonthlyNthWeekdayTests(RecurrenceMixIn,
 
     def setUp(self):
         super(RecurrenceMixIn, self).setUp()
-        # 3rd Thuesday in month
+        # 3rd Thursday in month
         self.recurrence_start = self.get_datetime((2013, 3, 21, 21, 45))
         self.interval_start = self.get_datetime((2014, 4, 1, 0))
         self.interval_end = self.get_datetime((2014, 4, 30, 0))
@@ -183,7 +183,7 @@ class BiMonthlyNthWeekdayTests(RecurrenceMixIn,
 
     def setUp(self):
         super(RecurrenceMixIn, self).setUp()
-        # 3rd Thuesday in month
+        # 3rd Thursday in month
         self.recurrence_start = self.get_datetime((2013, 3, 21, 21, 45))
         self.interval_start = self.get_datetime((2014, 4, 1, 0))
         self.interval_end = self.get_datetime((2014, 6, 30, 17))
