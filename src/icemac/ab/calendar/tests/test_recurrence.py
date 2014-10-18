@@ -23,6 +23,13 @@ class InterfaceTests(unittest.TestCase):
         self.assertTrue(
             verifyObject(IRecurringDateTime, Weekly(None)))
 
+    def test_BiWeekly_fulfills_IRecurringDateTime_interface(self):
+        from zope.interface.verify import verifyObject
+        from ..interfaces import IRecurringDateTime
+        from ..recurrence import BiWeekly
+        self.assertTrue(
+            verifyObject(IRecurringDateTime, BiWeekly(None)))
+
     def test_MonthlyNthWeekday_fulfills_IRecurringDateTime_interface(self):
         from zope.interface.verify import verifyObject
         from ..interfaces import IRecurringDateTime
@@ -81,6 +88,25 @@ class WeeklyTests(RecurrenceMixIn, icemac.ab.calendar.testing.ZCMLTestCase):
             self.callFUT(
                 'weekly', start=self.get_datetime((2014, 4, 4)),
                 end=self.get_datetime((2014, 4, 5))))
+
+
+class BiWeeklyTests(RecurrenceMixIn, icemac.ab.calendar.testing.ZCMLTestCase):
+    """Testing ..recurrence.BiWeekly"""
+
+    def setUp(self):
+        super(RecurrenceMixIn, self).setUp()
+        self.recurrence_start = self.get_datetime((2013, 5, 3, 21, 45))
+        self.interval_start = self.get_datetime((2014, 4, 1))
+        self.interval_end = self.get_datetime((2014, 4, 30))
+
+    def test_returns_all_dates_in_interval_for_same_weekday_every_other_week(
+            self):
+        self.assertEqual(
+            [self.get_datetime((2014, 4, 4, 21, 45)),
+             self.get_datetime((2014, 4, 18, 21, 45))],
+            self.callFUT('biweekly'))
+        self.assertEqual(self.recurrence_start.isoweekday(),
+                         self.callFUT('biweekly')[0].isoweekday())
 
 
 class MonthlyNthWeekdayTests(RecurrenceMixIn,

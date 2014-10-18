@@ -10,6 +10,7 @@ import zope.interface.common.idatetime
 
 ONE_DAY = timedelta(days=1)
 ONE_WEEK = timedelta(days=7)
+TWO_WEEKS = timedelta(days=14)
 
 
 def get_recurrences(datetime, period, interval_start, interval_end):
@@ -66,12 +67,11 @@ class RecurringDateTime(grok.Adapter):
         raise NotImplementedError('Implement in subclass!')
 
 
-class Weekly(RecurringDateTime):
-    """Recurring weekly on the same weekday."""
+class SameWeekdayBase(RecurringDateTime):
+    """Base class for recurrences on the same weekday."""
 
-    grok.name('weekly')
-    weight = 10
-    title = _('weekly, same weekday (e. g. each Friday)')
+    grok.baseclass()
+    interval = NotImplemented
 
     def compute(self):
         current_date = self.interval_start
@@ -83,7 +83,25 @@ class Weekly(RecurringDateTime):
         time = self.context.timetz()
         while current_date < self.interval_end:
             yield datetime.combine(current_date, time)
-            current_date += ONE_WEEK
+            current_date += self.interval
+
+
+class Weekly(SameWeekdayBase):
+    """Recurring weekly on the same weekday."""
+
+    grok.name('weekly')
+    weight = 10
+    title = _('weekly, same weekday (e. g. each Friday)')
+    interval = ONE_WEEK
+
+
+class BiWeekly(SameWeekdayBase):
+    """Recurring biweekly on the same weekday."""
+
+    grok.name('biweekly')
+    weight = 11
+    title = _('every other week, same weekday (e. g. each second Friday)')
+    interval = TWO_WEEKS
 
 
 class MonthlyNthWeekday(RecurringDateTime):
