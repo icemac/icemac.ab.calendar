@@ -174,7 +174,7 @@ class BiMonthlyNthWeekday(SameNthWeekdayFromBeginningInMonthBase):
 
     """
     grok.name('nth weekday every other month')
-    weight = 22
+    weight = 25
     title = _('every other month, same weekday '
               '(e. g. each 3rd Sunday in other month)')
     month_interval = 2
@@ -208,6 +208,18 @@ class MonthlyNthWeekdayFromEnd(SameNthWeekdayFromEndInMonthBase):
     title = _('monthly, same weekday counted from the end of the month '
               '(e. g. each last but one Sunday)')
     month_interval = 1
+
+
+class BiMonthlyNthWeekdayFromEnd(SameNthWeekdayFromEndInMonthBase):
+    """Recurring monthly on same recurrence of the weekday in the month as in
+       `self.context` but only each other month.
+
+    """
+    grok.name('nth weekday from end of other month')
+    weight = 26
+    title = _('every other month on same weekday counted from the end of the '
+              'month (e. g. each last but one Sunday every other month)')
+    month_interval = 2
 
 
 class Yearly(RecurringDateTime):

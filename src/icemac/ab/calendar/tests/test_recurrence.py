@@ -52,6 +52,14 @@ class InterfaceTests(unittest.TestCase):
         self.assertTrue(
             verifyObject(IRecurringDateTime, MonthlyNthWeekdayFromEnd(None)))
 
+    def test_BiMonthlyNthWeekdayFromEnd_fulfills_IRecurringDateTime_interface(
+            self):
+        from zope.interface.verify import verifyObject
+        from ..interfaces import IRecurringDateTime
+        from ..recurrence import BiMonthlyNthWeekdayFromEnd
+        self.assertTrue(
+            verifyObject(IRecurringDateTime, BiMonthlyNthWeekdayFromEnd(None)))
+
     def test_Yearly_instance_fulfills_IRecurringDateTime_interface(self):
         from zope.interface.verify import verifyObject
         from ..interfaces import IRecurringDateTime
@@ -260,6 +268,30 @@ class MonthlyNthWeekdayFromEndTests(RecurrenceMixIn,
                 datetime=self.get_datetime((2014, 5, 3, 0)),
                 start=self.get_datetime((2014, 5, 1, 0)),
                 end=self.get_datetime((2014, 8, 31, 0))))
+
+
+class BiMonthlyNthWeekdayFromEndTests(RecurrenceMixIn,
+                                      icemac.ab.calendar.testing.ZCMLTestCase):
+    """Testing ..recurrence.BiMonthlyNthWeekdayFromEnd"""
+
+    def setUp(self):
+        super(RecurrenceMixIn, self).setUp()
+        # last but one Thursday in month
+        self.recurrence_start = self.get_datetime((2013, 3, 21, 21, 45))
+        self.interval_start = self.get_datetime((2014, 4, 1, 0))
+        self.interval_end = self.get_datetime((2014, 4, 30, 0))
+
+    def test_returns_all_nth_from_end_of_month_in_interval_for_same_weekday(
+            self):
+        self.assertEqual(
+            [self.get_datetime((2014, 4, 17, 21, 45)),
+             self.get_datetime((2014, 6, 19, 21, 45))],
+            self.callFUT('nth weekday from end of other month',
+                         end=self.get_datetime((2014, 6, 30, 17))))
+        self.assertEqual(
+            self.recurrence_start.isoweekday(),
+            self.callFUT(
+                'nth weekday from end of other month')[0].isoweekday())
 
 
 class YearlyTests(RecurrenceMixIn, icemac.ab.calendar.testing.ZCMLTestCase):
