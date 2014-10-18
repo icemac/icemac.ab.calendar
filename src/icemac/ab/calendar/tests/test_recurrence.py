@@ -269,3 +269,33 @@ class NextDateOfSameWeekdayTests(unittest.TestCase,
         self.assertEqual(self.get_datetime((2014, 9, 9, 15)),
                          self.callFUT(self.get_datetime((2014, 9, 2, 15)),
                                       self.get_datetime((2014, 9, 1, 15)), 1))
+
+
+class RecurrencesOfWeekdayInMonthTests(unittest.TestCase,
+                                       icemac.ab.calendar.testing.TestMixIn):
+    """Tesing ..recurrence.recurrences_of_weekday_in_month()."""
+
+    def callFUT(self, date, month):
+        from ..recurrence import recurrences_of_weekday_in_month
+        from gocept.month import Month
+        date = self.get_datetime(date)
+        month = Month(*month)
+        return recurrences_of_weekday_in_month(date, month)
+
+    def test_4_recurrences_of_monday(self):
+        self.assertEqual(4, self.callFUT((2014, 8, 4), (7, 2014)))
+
+    def test_4_recurrences_of_thursday(self):
+        self.assertEqual(4, self.callFUT((2014, 8, 21), (6, 2014)))
+
+    def test_4_recurrences_of_suday(self):
+        self.assertEqual(4, self.callFUT((2014, 8, 17), (7, 2014)))
+
+    def test_5_recurrences_of_monday(self):
+        self.assertEqual(5, self.callFUT((2014, 8, 4), (6, 2014)))
+
+    def test_5_recurrences_of_thursday(self):
+        self.assertEqual(5, self.callFUT((2014, 8, 21), (7, 2014)))
+
+    def test_5_recurrences_of_sunday(self):
+        self.assertEqual(5, self.callFUT((2014, 8, 17), (6, 2014)))

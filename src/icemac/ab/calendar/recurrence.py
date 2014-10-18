@@ -28,6 +28,14 @@ def get_recurrences(datetime, period, interval_start, interval_end):
     return recurring(interval_start, interval_end)
 
 
+def _get_isoweekday_difference(date1, date2):
+    """Difference of isoweekdays between days."""
+    days = 7 - (date1.isoweekday() - date2.isoweekday())
+    if days >= 7:
+        days -= 7
+    return days
+
+
 def next_date_of_same_weekday(wd_src, base_date, additional_weeks=0):
     """Compute next day with the same weekday as `wd_src` from `base_date` on.
 
@@ -36,10 +44,14 @@ def next_date_of_same_weekday(wd_src, base_date, additional_weeks=0):
     If `wd_src` and `base_date` have the same weekday `base_date` is returned.
 
     """
-    add_days = 7 - (base_date.isoweekday() - wd_src.isoweekday())
-    if add_days >= 7:
-        add_days -= 7
+    add_days = _get_isoweekday_difference(base_date, wd_src)
     return base_date + (add_days + additional_weeks * 7) * ONE_DAY
+
+
+def recurrences_of_weekday_in_month(date, month):
+    """Return number of recurrences of weekday of `date` in `month`."""
+    minus_days = _get_isoweekday_difference(month.firstOfMonth(), date)
+    return int(math.ceil((month.lastOfMonth().day - minus_days) / 7.0))
 
 
 def add_years(date, years):
