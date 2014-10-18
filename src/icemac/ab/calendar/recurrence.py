@@ -41,6 +41,15 @@ def next_date_of_same_weekday(wd_src, base_date, additional_weeks=0):
     return base_date + (add_days + additional_weeks * 7) * ONE_DAY
 
 
+def add_years(date, years):
+    """Add `years` number of years to date."""
+    try:
+        return date.replace(year=date.year + years)
+    except ValueError:
+        # Handle 29th of february as 28th in non-leap years:
+        return date.replace(year=date.year + years, day=date.day - 1)
+
+
 class RecurringDateTime(grok.Adapter):
     """Base class for recurring datestimes."""
 
@@ -105,3 +114,24 @@ class MonthlyNthWeekday(RecurringDateTime):
             if result < self.context:
                 continue
             yield result
+
+
+class Yearly(RecurringDateTime):
+    """Recurring on the same date each year."""
+
+    grok.name('yearly')
+    weight = 100
+    title = _('yearly (e. g. 24th of December)')
+
+    def compute(self):
+        if self.context > self.interval_end:
+            return  # no need to compute: there will be no results
+        date = self.context
+        index = 0
+        while date < self.interval_start:
+            index += 1
+            date = add_years(self.context, index)
+        while date < self.interval_end:
+            yield date
+            index += 1
+            date = add_years(self.context, index)

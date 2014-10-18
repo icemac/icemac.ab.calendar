@@ -132,7 +132,53 @@ class MonthlyNthWeekdayTests(RecurrenceMixIn,
                 start=self.get_datetime((2014, 5, 1, 0)),
                 end=self.get_datetime((2014, 8, 31, 0))))
 
-    # Test: 5. Sonntag im Monat faellt manchmal aus!
+
+class YearlyTests(RecurrenceMixIn, icemac.ab.calendar.testing.ZCMLTestCase):
+    """Testing ..recurrence.Yearly"""
+
+    def setUp(self):
+        super(RecurrenceMixIn, self).setUp()
+        self.recurrence_start = self.get_datetime((2013, 12, 24, 15))
+        self.interval_start = self.get_datetime((2014, 1, 1))
+        self.interval_end = self.get_datetime((2014, 12, 31))
+
+    def test_instance_fulfills_IRecurringDateTime_interface(self):
+        from zope.interface.verify import verifyObject
+        from ..interfaces import IRecurringDateTime
+        from ..recurrence import Yearly
+        self.assertTrue(verifyObject(IRecurringDateTime, Yearly(None)))
+
+    def test_returns_all_dates_in_interval_with_same_day_and_month(self):
+        self.assertEqual(
+            [self.get_datetime((2013, 12, 24, 15)),
+             self.get_datetime((2014, 12, 24, 15))],
+            self.callFUT('yearly', start=self.get_datetime((2012, 1, 1)),
+                         end=self.get_datetime((2015, 1, 1))))
+
+    def test_returns_empty_interval_if_datetime_after_interval_end(self):
+        self.assertEqual(
+            [], self.callFUT('yearly', end=self.get_datetime((2012, 5, 1))))
+
+    def test_interval_end_does_not_belong_to_interval(self):
+        self.assertEqual(
+            [], self.callFUT(
+                'yearly', end=self.get_datetime((2014, 12, 24, 15))))
+
+    def test_interval_start_belongs_to_interval(self):
+        self.assertEqual(
+            [self.get_datetime((2014, 12, 24, 15))],
+            self.callFUT(
+                'yearly', start=self.get_datetime((2014, 12, 24, 15))))
+
+    def test_handles_29th_of_february_as_28th_of_february_in_non_leap_year(
+            self):
+        self.assertEqual(
+            [self.get_datetime((2011, 2, 28, 15)),
+             self.get_datetime((2012, 2, 29, 15))],
+            self.callFUT(
+                'yearly', datetime=self.get_datetime((2008, 2, 29, 15)),
+                start=self.get_datetime((2011, 1, 1)),
+                end=self.get_datetime((2013, 1, 1))))
 
 
 class NextDateOfSameWeekdayTests(unittest.TestCase,
