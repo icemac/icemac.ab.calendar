@@ -150,8 +150,6 @@ class MonthlyNthWeekdayTests(RecurrenceMixIn,
             self.callFUT('nth weekday of month',
                          datetime=self.get_datetime((2014, 5, 4, 21, 45)),
                          end=self.get_datetime((2014, 6, 30, 17))))
-        self.assertEqual(self.recurrence_start.isoweekday(),
-                         self.callFUT('nth weekday of month')[0].isoweekday())
 
     def test_interval_end_does_not_belong_to_interval(self):
         self.assertEqual(
