@@ -44,6 +44,14 @@ class InterfaceTests(unittest.TestCase):
         self.assertTrue(
             verifyObject(IRecurringDateTime, BiMonthlyNthWeekday(None)))
 
+    def test_MonthlyNthWeekdayFromEnd_fulfills_IRecurringDateTime_interface(
+            self):
+        from zope.interface.verify import verifyObject
+        from ..interfaces import IRecurringDateTime
+        from ..recurrence import MonthlyNthWeekdayFromEnd
+        self.assertTrue(
+            verifyObject(IRecurringDateTime, MonthlyNthWeekdayFromEnd(None)))
+
     def test_Yearly_instance_fulfills_IRecurringDateTime_interface(self):
         from zope.interface.verify import verifyObject
         from ..interfaces import IRecurringDateTime
@@ -191,6 +199,67 @@ class BiMonthlyNthWeekdayTests(RecurrenceMixIn,
             [self.get_datetime((2014, 4, 17, 21, 45)),
              self.get_datetime((2014, 6, 19, 21, 45))],
             self.callFUT('nth weekday every other month'))
+
+
+class MonthlyNthWeekdayFromEndTests(RecurrenceMixIn,
+                                    icemac.ab.calendar.testing.ZCMLTestCase):
+    """Testing ..recurrence.MonthlyNthWeekdayFromEnd"""
+
+    def setUp(self):
+        super(RecurrenceMixIn, self).setUp()
+        # last but one Thursday in month
+        self.recurrence_start = self.get_datetime((2013, 3, 21, 21, 45))
+        self.interval_start = self.get_datetime((2014, 4, 1, 0))
+        self.interval_end = self.get_datetime((2014, 4, 30, 0))
+
+    def test_returns_empty_interval_if_datetime_after_interval_end(self):
+        self.assertEqual(
+            [], self.callFUT(
+                'nth weekday from end of month',
+                datetime=self.get_datetime((2014, 5, 1, 21, 45))))
+
+    def test_returns_all_nth_from_end_of_month_in_interval_for_same_weekday(
+            self):
+        self.assertEqual(
+            [self.get_datetime((2014, 4, 17, 21, 45)),
+             self.get_datetime((2014, 5, 22, 21, 45)),
+             self.get_datetime((2014, 6, 19, 21, 45))],
+            self.callFUT('nth weekday from end of month',
+                         end=self.get_datetime((2014, 6, 30, 17))))
+        self.assertEqual(
+            self.recurrence_start.isoweekday(),
+            self.callFUT('nth weekday from end of month')[0].isoweekday())
+
+    def test_does_not_start_before_datetime(self):
+        self.assertEqual(
+            [self.get_datetime((2014, 5, 4, 21, 45)),
+             self.get_datetime((2014, 6, 8, 21, 45))],
+            self.callFUT('nth weekday from end of month',
+                         datetime=self.get_datetime((2014, 5, 4, 21, 45)),
+                         end=self.get_datetime((2014, 6, 30, 17))))
+
+    def test_interval_end_does_not_belong_to_interval(self):
+        self.assertEqual(
+            [], self.callFUT('nth weekday from end of month',
+                             datetime=self.get_datetime((2014, 4, 30, 0))))
+
+    def test_interval_start_belongs_to_interval(self):
+        self.assertEqual(
+            [self.get_datetime((2014, 4, 1, 0))],
+            self.callFUT(
+                'nth weekday from end of month',
+                datetime=self.get_datetime((2014, 4, 1, 0))))
+
+    def test_does_not_swap_into_other_month_if_month_do_not_have_a_fifth_week(
+            self):
+        self.assertEqual(
+            [self.get_datetime((2014, 5, 3, 0)),
+             self.get_datetime((2014, 8, 2, 0))],
+            self.callFUT(
+                'nth weekday from end of month',
+                datetime=self.get_datetime((2014, 5, 3, 0)),
+                start=self.get_datetime((2014, 5, 1, 0)),
+                end=self.get_datetime((2014, 8, 31, 0))))
 
 
 class YearlyTests(RecurrenceMixIn, icemac.ab.calendar.testing.ZCMLTestCase):

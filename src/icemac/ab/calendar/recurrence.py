@@ -4,6 +4,7 @@ import gocept.month
 import grokcore.component as grok
 import icemac.ab.calendar.interfaces
 import math
+import zope.cachedescriptors.property
 import zope.component
 import zope.interface.common.idatetime
 
@@ -121,21 +122,23 @@ class SameNthWeekdayInMonthBase(RecurringDateTime):
 
     grok.baseclass()
     month_interval = NotImplemented
+    n = NotImplemented
 
     def compute(self):
         if self.context > self.interval_end:
             return  # no need to compute: there will be no results
-        n = int(math.ceil(self.context.day / 7.0)) - 1
-        month = gocept.month.IMonth(self.interval_start.date())
+        self.current_month = gocept.month.IMonth(self.interval_start.date())
         time = self.context.timetz()
         while True:
             result = next_date_of_same_weekday(
-                self.context, datetime.combine(month.firstOfMonth(), time), n)
+                self.context,
+                datetime.combine(self.current_month.firstOfMonth(), time),
+                self.n)
             try:
-                if result.month != month.month:
+                if result.month != self.current_month.month:
                     continue  # result has swapped into next month
             finally:
-                month += self.month_interval
+                self.current_month += self.month_interval
             if result >= self.interval_end:
                 break
             if result < self.context:
@@ -143,7 +146,18 @@ class SameNthWeekdayInMonthBase(RecurringDateTime):
             yield result
 
 
-class MonthlyNthWeekday(SameNthWeekdayInMonthBase):
+class SameNthWeekdayFromBeginningInMonthBase(SameNthWeekdayInMonthBase):
+    """Base class for recurrings on the same day nth weekday in month counting
+    from the beginning of the month."""
+
+    grok.baseclass()
+
+    @zope.cachedescriptors.property.Lazy
+    def n(self):
+        return int(math.ceil(self.context.day / 7.0)) - 1
+
+
+class MonthlyNthWeekday(SameNthWeekdayFromBeginningInMonthBase):
     """Recurring monthly on same recurrence of the weekday in the month as in
        `self.context`.
 
@@ -154,16 +168,46 @@ class MonthlyNthWeekday(SameNthWeekdayInMonthBase):
     month_interval = 1
 
 
-class BiMonthlyNthWeekday(SameNthWeekdayInMonthBase):
+class BiMonthlyNthWeekday(SameNthWeekdayFromBeginningInMonthBase):
     """Recurring monthly on same recurrence of the weekday in the month as in
        `self.context` but only every other month.
 
     """
     grok.name('nth weekday every other month')
-    weight = 21
+    weight = 22
     title = _('every other month, same weekday '
               '(e. g. each 3rd Sunday in other month)')
     month_interval = 2
+
+
+class SameNthWeekdayFromEndInMonthBase(SameNthWeekdayInMonthBase):
+    """Base class for recurrings on the same day nth weekday in month counting
+    from the end of the month."""
+
+    grok.baseclass()
+
+    @zope.cachedescriptors.property.Lazy
+    def n_from_end(self):
+        last_of_month = gocept.month.IMonth(self.context).lastOfMonth()
+        return int(
+            math.ceil((last_of_month.day - (self.context.day - 1)) / 7.0))
+
+    @property
+    def n(self):
+        return recurrences_of_weekday_in_month(
+            self.context, self.current_month) - self.n_from_end
+
+
+class MonthlyNthWeekdayFromEnd(SameNthWeekdayFromEndInMonthBase):
+    """Recurring monthly on same recurrence of the weekday in the month as in
+       `self.context`.
+
+    """
+    grok.name('nth weekday from end of month')
+    weight = 21
+    title = _('monthly, same weekday counted from the end of the month '
+              '(e. g. each last but one Sunday)')
+    month_interval = 1
 
 
 class Yearly(RecurringDateTime):
