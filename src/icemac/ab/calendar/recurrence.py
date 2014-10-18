@@ -104,14 +104,11 @@ class BiWeekly(SameWeekdayBase):
     interval = TWO_WEEKS
 
 
-class MonthlyNthWeekday(RecurringDateTime):
-    """Recurring monthly on same recurrence of the weekday in the month as in
-       `self.context`.
+class SameNthWeekdayInMonthBase(RecurringDateTime):
+    """Base class for recurrings on the same day nth weekday in month."""
 
-    """
-    grok.name('nth weekday of month')
-    weight = 20
-    title = _('monthly, same weekday (e. g. each 3rd Sunday)')
+    grok.baseclass()
+    month_interval = NotImplemented
 
     def compute(self):
         if self.context > self.interval_end:
@@ -126,12 +123,35 @@ class MonthlyNthWeekday(RecurringDateTime):
                 if result.month != month.month:
                     continue  # result has swapped into next month
             finally:
-                month += 1
+                month += self.month_interval
             if result >= self.interval_end:
                 break
             if result < self.context:
                 continue
             yield result
+
+
+class MonthlyNthWeekday(SameNthWeekdayInMonthBase):
+    """Recurring monthly on same recurrence of the weekday in the month as in
+       `self.context`.
+
+    """
+    grok.name('nth weekday of month')
+    weight = 20
+    title = _('monthly, same weekday (e. g. each 3rd Sunday)')
+    month_interval = 1
+
+
+class BiMonthlyNthWeekday(SameNthWeekdayInMonthBase):
+    """Recurring monthly on same recurrence of the weekday in the month as in
+       `self.context` but only every other month.
+
+    """
+    grok.name('nth weekday every other month')
+    weight = 21
+    title = _('every other month, same weekday '
+              '(e. g. each 3rd Sunday in other month)')
+    month_interval = 2
 
 
 class Yearly(RecurringDateTime):

@@ -37,6 +37,13 @@ class InterfaceTests(unittest.TestCase):
         self.assertTrue(
             verifyObject(IRecurringDateTime, MonthlyNthWeekday(None)))
 
+    def test_BiMonthlyNthWeekday_fulfills_IRecurringDateTime_interface(self):
+        from zope.interface.verify import verifyObject
+        from ..interfaces import IRecurringDateTime
+        from ..recurrence import BiMonthlyNthWeekday
+        self.assertTrue(
+            verifyObject(IRecurringDateTime, BiMonthlyNthWeekday(None)))
+
     def test_Yearly_instance_fulfills_IRecurringDateTime_interface(self):
         from zope.interface.verify import verifyObject
         from ..interfaces import IRecurringDateTime
@@ -168,6 +175,24 @@ class MonthlyNthWeekdayTests(RecurrenceMixIn,
                 datetime=self.get_datetime((2014, 5, 31, 0)),
                 start=self.get_datetime((2014, 5, 1, 0)),
                 end=self.get_datetime((2014, 8, 31, 0))))
+
+
+class BiMonthlyNthWeekdayTests(RecurrenceMixIn,
+                               icemac.ab.calendar.testing.ZCMLTestCase):
+    """Testing ..recurrence.BiMonthlyNthWeekday"""
+
+    def setUp(self):
+        super(RecurrenceMixIn, self).setUp()
+        # 3rd Thuesday in month
+        self.recurrence_start = self.get_datetime((2013, 3, 21, 21, 45))
+        self.interval_start = self.get_datetime((2014, 4, 1, 0))
+        self.interval_end = self.get_datetime((2014, 6, 30, 17))
+
+    def test_returns_all_nth_of_month_in_interval_every_other_month(self):
+        self.assertEqual(
+            [self.get_datetime((2014, 4, 17, 21, 45)),
+             self.get_datetime((2014, 6, 19, 21, 45))],
+            self.callFUT('nth weekday every other month'))
 
 
 class YearlyTests(RecurrenceMixIn, icemac.ab.calendar.testing.ZCMLTestCase):
