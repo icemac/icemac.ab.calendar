@@ -7,6 +7,8 @@
 
 - Add new recurrence for recurring events: "monthly, same weekday".
 
+- Display actual recurrences in recurrence event listing in master data.
+
 
 1.5.0 (2014-07-01)
 ==================

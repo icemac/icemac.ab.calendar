@@ -108,10 +108,11 @@ class ZODBTestMixIn(object):
         return self._create(icemac.ab.calendar.event.Event,
                             parent='calendar', **kw)
 
-    def create_recurring_event(self, **kw):
+    def create_recurring_event(self, period='weekly', **kw):
         """Create a new recurring event in master data."""
         return self._create(icemac.ab.calendar.event.RecurringEvent,
-                            parent='calendar_recurring_events', **kw)
+                            parent='calendar_recurring_events', period=period,
+                            **kw)
 
 
 class UnitTestCase(unittest.TestCase, TestMixIn):

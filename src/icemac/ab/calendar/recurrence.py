@@ -14,6 +14,13 @@ ONE_WEEK = timedelta(days=7)
 TWO_WEEKS = timedelta(days=14)
 
 
+def get_recurring(datetime, period):
+    """Convenience function to get the recurring adapter named `period`."""
+    return zope.component.getAdapter(
+        datetime, icemac.ab.calendar.interfaces.IRecurringDateTime,
+        name=period)
+
+
 def get_recurrences(datetime, period, interval_start, interval_end):
     """Convenience function to get an interable of datetime objects of
     recurrences of `period` within the interval.
@@ -23,10 +30,7 @@ def get_recurrences(datetime, period, interval_start, interval_end):
     interval_end ... date, _not_ part of the interval
 
     """
-    recurring = zope.component.getAdapter(
-        datetime, icemac.ab.calendar.interfaces.IRecurringDateTime,
-        name=period)
-    return recurring(interval_start, interval_end)
+    return get_recurring(datetime, period)(interval_start, interval_end)
 
 
 def _get_isoweekday_difference(date1, date2):
@@ -70,6 +74,7 @@ class RecurringDateTime(grok.Adapter):
     grok.context(zope.interface.common.idatetime.IDateTime)
     grok.implements(icemac.ab.calendar.interfaces.IRecurringDateTime)
     grok.baseclass()
+    info = u''
 
     def __call__(self, interval_start, interval_end):
         self.interval_start = interval_start
@@ -78,6 +83,15 @@ class RecurringDateTime(grok.Adapter):
 
     def compute(self):
         raise NotImplementedError('Implement in subclass!')
+
+    @property
+    def _weekday(self):
+        request = zope.globalrequest.getRequest()
+        weekday = self.context.isoweekday()
+        if request is not None:
+            calendar = request.locale.dates.calendars['gregorian']
+            return calendar.getDayNames()[weekday - 1]
+        return weekday
 
 
 class SameWeekdayBase(RecurringDateTime):
@@ -107,6 +121,11 @@ class Weekly(SameWeekdayBase):
     title = _('weekly, same weekday (e. g. each Friday)')
     interval = ONE_WEEK
 
+    @property
+    def info(self):
+        return _('${weekday} every week',
+                 mapping={'weekday': self._weekday})
+
 
 class BiWeekly(SameWeekdayBase):
     """Recurring biweekly on the same weekday."""
@@ -115,6 +134,11 @@ class BiWeekly(SameWeekdayBase):
     weight = 11
     title = _('every other week, same weekday (e. g. each second Friday)')
     interval = TWO_WEEKS
+
+    @property
+    def info(self):
+        return _('${weekday} every other week',
+                 mapping={'weekday': self._weekday})
 
 
 class SameNthWeekdayInMonthBase(RecurringDateTime):
@@ -152,9 +176,21 @@ class SameNthWeekdayFromBeginningInMonthBase(SameNthWeekdayInMonthBase):
 
     grok.baseclass()
 
+    n_mapping = {0: _('1st'),
+                 1: _('2nd'),
+                 2: _('3rd'),
+                 3: _('4th'),
+                 4: _('5th')}
+
     @zope.cachedescriptors.property.Lazy
     def n(self):
         return int(math.ceil(self.context.day / 7.0)) - 1
+
+    @property
+    def info(self):
+        return _(self.message_id,
+                 mapping={'recurrence': self.n_mapping[self.n],
+                          'weekday': self._weekday})
 
 
 class MonthlyNthWeekday(SameNthWeekdayFromBeginningInMonthBase):
@@ -166,6 +202,7 @@ class MonthlyNthWeekday(SameNthWeekdayFromBeginningInMonthBase):
     weight = 20
     title = _('monthly, same weekday (e. g. each 3rd Sunday)')
     month_interval = 1
+    message_id = _('${recurrence} ${weekday} every month')
 
 
 class BiMonthlyNthWeekday(SameNthWeekdayFromBeginningInMonthBase):
@@ -178,6 +215,7 @@ class BiMonthlyNthWeekday(SameNthWeekdayFromBeginningInMonthBase):
     title = _('every other month, same weekday '
               '(e. g. each 3rd Sunday in other month)')
     month_interval = 2
+    message_id = _('${recurrence} ${weekday} every other month')
 
 
 class SameNthWeekdayFromEndInMonthBase(SameNthWeekdayInMonthBase):
@@ -185,6 +223,12 @@ class SameNthWeekdayFromEndInMonthBase(SameNthWeekdayInMonthBase):
     from the end of the month."""
 
     grok.baseclass()
+
+    n_mapping = {1: _('last'),
+                 2: _('last but one'),
+                 3: _('last but two'),
+                 4: _('last but three'),
+                 5: _('last but four')}
 
     @zope.cachedescriptors.property.Lazy
     def n_from_end(self):
@@ -197,6 +241,12 @@ class SameNthWeekdayFromEndInMonthBase(SameNthWeekdayInMonthBase):
         return recurrences_of_weekday_in_month(
             self.context, self.current_month) - self.n_from_end
 
+    @property
+    def info(self):
+        return _(self.message_id,
+                 mapping={'recurrence': self.n_mapping[self.n_from_end],
+                          'weekday': self._weekday})
+
 
 class MonthlyNthWeekdayFromEnd(SameNthWeekdayFromEndInMonthBase):
     """Recurring monthly on same recurrence of the weekday in the month as in
@@ -208,6 +258,7 @@ class MonthlyNthWeekdayFromEnd(SameNthWeekdayFromEndInMonthBase):
     title = _('monthly, same weekday counted from the end of the month '
               '(e. g. each last but one Sunday)')
     month_interval = 1
+    message_id = _('${recurrence} ${weekday} every month')
 
 
 class BiMonthlyNthWeekdayFromEnd(SameNthWeekdayFromEndInMonthBase):
@@ -220,6 +271,7 @@ class BiMonthlyNthWeekdayFromEnd(SameNthWeekdayFromEndInMonthBase):
     title = _('every other month on same weekday counted from the end of the '
               'month (e. g. each last but one Sunday every other month)')
     month_interval = 2
+    message_id = _('${recurrence} ${weekday} every other month')
 
 
 class Yearly(RecurringDateTime):
@@ -241,3 +293,8 @@ class Yearly(RecurringDateTime):
             yield date
             index += 1
             date = add_years(self.context, index)
+
+    @property
+    def info(self):
+        return _('${date} every year',
+                 mapping={'date': self.context.strftime('%d.%m.')})

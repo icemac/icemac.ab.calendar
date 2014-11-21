@@ -73,10 +73,10 @@ class RecurringEventSecurity(icemac.ab.calendar.testing.BrowserTestCase):
             self):
         from mechanize import LinkNotFoundError
 
-        self.create_recurring_event(alternative_title='birthday')
+        self.create_recurring_event(alternative_title='birthday',
+                                    datetime=self.get_datetime())
         browser = self.get_browser('cal-visitor')
         browser.open('http://localhost/ab/@@calendar-masterdata.html')
-        browser.handleErrors = False
         browser.getLink('Recurring Events').click()
         self.assertEqual(
             'http://localhost/ab/++attribute++calendar_recurring_events',
