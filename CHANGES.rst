@@ -12,6 +12,8 @@
 - If there are two reccurred events matching in date, time and category only
   the one is rendered thats recurring event occurres more seldomly.
 
+- Day numbers are now add-links to create a new event for the day.
+
 
 1.5.0 (2014-07-01)
 ==================

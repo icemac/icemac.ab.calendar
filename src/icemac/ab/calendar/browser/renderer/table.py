@@ -7,7 +7,9 @@ from .interfaces import AUSFALL, INTERN, UnknownLanguageError
 from icemac.addressbook.i18n import _
 import datetime
 import grokcore.component as grok
+import icemac.ab.calendar.interfaces
 import icemac.addressbook.browser.base
+import icemac.addressbook.interfaces
 import zope.component
 
 
@@ -105,6 +107,12 @@ class Table(Calendar):
         self.write('  <tbody>')
         today = datetime.date.today()
         events = self.events
+        calendar = icemac.ab.calendar.interfaces.ICalendar(
+            icemac.addressbook.interfaces.IAddressBook(None))
+        can_add_event = icemac.addressbook.browser.base.can_access_uri_part(
+            calendar, self.request, 'addEvent.html')
+        if can_add_event:
+            add_url = self.url(calendar, 'addEvent.html')
         for delta in xrange(self.num_of_days):
             if (delta % 7) == 0:
                 # week start
@@ -119,7 +127,14 @@ class Table(Calendar):
                 css_classes.append('today')
             self.write('<td class="%s">', ' '.join(css_classes))
             if day in self.month:
+                if can_add_event:
+                    self.write(
+                        '<a href="%s?date=%s" title="%s">', add_url,
+                        day.isoformat(), self.translate(
+                            _('Add new event for this day.')))
                 self.write('<span class="number">%s</span>', day.day)
+                if can_add_event:
+                    self.write('</a>')
                 found_events_for_day = False
                 for ev in events[:]:
                     if ev.datetime.date() != day:

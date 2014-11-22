@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime, time
 from icemac.addressbook.i18n import _
 import icemac.ab.calendar.browser.base
 import icemac.ab.calendar.event
@@ -29,6 +29,16 @@ class Add(icemac.addressbook.browser.base.BaseAddForm):
     interface = icemac.ab.calendar.interfaces.IEvent
     class_ = icemac.ab.calendar.event.Event
     next_url = 'parent'
+    ignoreContext = False
+
+    def getContent(self):
+        date = date_from_iso_string(self.request.get('date'))
+        if date is not None:
+            selected_datetime = datetime.combine(date, time(0, 0))
+        else:
+            selected_datetime = None
+        data = {'datetime': selected_datetime}
+        return data
 
 
 class Edit(icemac.addressbook.browser.base.GroupEditForm):

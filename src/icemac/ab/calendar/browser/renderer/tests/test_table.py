@@ -13,42 +13,21 @@ class TableUTests(unittest.TestCase):
         self.assertTrue(verifyObject(IRenderer, Table(None, None, None)))
 
 
-class TableFTests(icemac.ab.calendar.testing.ZCMLTestCase):
-    """Functional testing ..table.Table."""
-
-    def setUp(self):
-        super(TableFTests, self).setUp()
-        self.request = self.get_request()
-
-    def callVUT(self, events):
-        from ..table import Table
-        from gocept.month import Month
-        table = Table(Month(2, 2013), self.request, events)
-        return table()
-
-    def getETree(self, html):
-        from lxml.etree import HTML
-        sugared_value = u'<div>' + html + u'</div>'
-        return HTML(sugared_value)
-
-    def test_two_events_at_the_same_time_are_rendered_with_one_time_dt(self):
-        event1 = self.get_event_description(
-            (2013, 2, 22, 16, 14), alternative_title='event1')
-        event2 = self.get_event_description(
-            (2013, 2, 22, 16, 14), alternative_title='event2')
-        action_url = (
-            'icemac.ab.calendar.browser.renderer.table.TableEvent.action_url')
-        get_time_zone_name = (
-            'icemac.addressbook.preferences.utils.get_time_zone_name')
-        with patch(action_url), \
-                patch(get_time_zone_name) as get_time_zone_name:
-            get_time_zone_name.return_value = 'UTC'
-            result = self.callVUT([event1, event2])
-        self.assertEqual(1, len(self.getETree(result).xpath('//dt')))
-
-
 class TableITests(icemac.ab.calendar.testing.BrowserTestCase):
     """Integraion testing ..table.Table."""
+
+    def test_two_events_at_the_same_time_are_rendered_with_one_time_dt(self):
+        from datetime import date
+        today = date.today()
+        self.create_event(
+            datetime=self.get_datetime((today.year, today.month, 22, 16, 14)),
+            alternative_title=u'event1')
+        self.create_event(
+            datetime=self.get_datetime((today.year, today.month, 22, 16, 14)),
+            alternative_title=u'event2')
+        browser = self.get_browser('cal-visitor')
+        browser.open('http://localhost/ab/++attribute++calendar')
+        self.assertEqual(1, len(browser.etree.xpath('//dt')))
 
     def test_weekdays_are_translated_to_language_of_customer(self):
         browser = self.get_browser('cal-visitor')
@@ -57,6 +36,24 @@ class TableITests(icemac.ab.calendar.testing.BrowserTestCase):
         browser.addHeader('Accept-Language', 'de-DE')
         browser.reload()
         self.assertIn('Sonntag', browser.contents)  # German locale
+
+    def test_day_numbers_are_add_event_links_able_to_add_a_new_event(self):
+        from datetime import date
+        self.create_category(u'example')
+        browser = self.get_browser('cal-editor')
+        browser.open('http://localhost/ab/++attribute++calendar')
+        browser.getLink('15').click()
+        self.assertEqual('%s/15 00:00' % date.today().strftime('%y/%m'),
+                         browser.getControl('datetime').value)
+        browser.getControl('Add', index=1).click()
+        self.assertEqual(['"example" added.'], browser.get_messages())
+
+    def test_day_numbers_are_text_for_visitors(self):
+        from mechanize import LinkNotFoundError
+        browser = self.get_browser('cal-visitor')
+        browser.open('http://localhost/ab/++attribute++calendar')
+        with self.assertRaises(LinkNotFoundError):
+            browser.getLink('15')
 
 
 class TableEvent_text_Tests(icemac.ab.calendar.testing.UnitTestCase):

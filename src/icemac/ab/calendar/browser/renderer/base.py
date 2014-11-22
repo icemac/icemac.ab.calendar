@@ -4,11 +4,14 @@
 from cStringIO import StringIO
 import gocept.month
 import grokcore.component as grok
+import icemac.ab.calendar.browser.base
 import icemac.ab.calendar.browser.renderer.interfaces
 import icemac.addressbook.browser.interfaces
+import zope.i18n
 
 
-class Calendar(grok.MultiAdapter):
+class Calendar(grok.MultiAdapter,
+               icemac.ab.calendar.browser.base.View):
     """Base of calendar view."""
 
     grok.baseclass()
@@ -41,6 +44,9 @@ class Calendar(grok.MultiAdapter):
 
     def render(self):
         raise NotImplementedError()
+
+    def translate(self, message_id):
+        return zope.i18n.translate(message_id, self.request)
 
     def __call__(self):
         self.update()

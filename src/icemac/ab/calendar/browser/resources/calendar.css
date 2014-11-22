@@ -95,6 +95,15 @@ body.main {
     font-weight: bold;
 }
 
+#calendar table td a .number {
+    color: black;
+}
+
+#calendar table td a .number:hover {
+    color: blue;
+    text-decoration: underline;
+}
+
 #calendar table td dl {
     clear: right;
 }
