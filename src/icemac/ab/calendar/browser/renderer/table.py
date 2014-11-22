@@ -15,7 +15,7 @@ SPECIAL_CLASS_MAPPING = {
     True: 'red',
     AUSFALL: 'gray',
     INTERN: '',
-    }
+}
 
 
 class TableEvent(icemac.addressbook.browser.base.BaseView):
@@ -125,7 +125,7 @@ class Table(Calendar):
                     if ev.datetime.date() != day:
                         # events are sorted, so we can break on day in future
                         break
-                    # remove day from list to print to keep for loop short
+                    # remove day from list to print to keep for-loop short
                     events.pop(events.index(ev))
                     if not found_events_for_day:
                         self.write('<dl>')
