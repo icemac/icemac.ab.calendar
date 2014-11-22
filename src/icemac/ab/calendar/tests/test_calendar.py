@@ -94,6 +94,25 @@ class Calendar_get_events_FTests(icemac.ab.calendar.testing.ZODBTestCase):
                           (u'each week', '2013-03-28')],
                          self.callMUT(3, 2013, 'Etc/GMT+1', show_date=True))
 
+    def test_recurring_events_with_higher_prio_overrule(self):
+        category = self.create_category(u'night lunch')
+        self.create_recurring_event(
+            alternative_title=u'monthly lunch',
+            datetime=self.get_datetime((2013, 3, 10, 12)),
+            period=u'nth weekday of month',
+            category=category)
+        self.create_recurring_event(
+            alternative_title=u'weekly lunch',
+            datetime=self.get_datetime((2013, 3, 3, 12)),
+            period=u'weekly',
+            category=category)
+        self.assertEqual([(u'weekly lunch', '2013-03-03'),
+                          (u'monthly lunch', '2013-03-10'),
+                          (u'weekly lunch', '2013-03-17'),
+                          (u'weekly lunch', '2013-03-24'),
+                          (u'weekly lunch', '2013-03-31')],
+                         self.callMUT(3, 2013, 'Etc/GMT+1', show_date=True))
+
     def test_does_not_return_deleted_events(self):
         self.create_event(
             alternative_title=u'deleted start of March 2013',

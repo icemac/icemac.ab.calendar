@@ -71,6 +71,9 @@ class RecurringEventContainer(zope.container.btree.BTreeContainer):
     """A container for recurring events."""
     zope.interface.implements(icemac.ab.calendar.interfaces.IRecurringEvents)
 
+    def get_events(self):
+        return sorted(self.values(), key=lambda x: x.priority)
+
 
 class RecurringEvent(Event):
     """An event which repeats after a defined period."""
@@ -84,6 +87,11 @@ class RecurringEvent(Event):
             self.datetime, self.period, interval_start, interval_end)
         for datetime in recurrence_dates:
             yield RecurredEvent.create_from(self, datetime)
+
+    @property
+    def priority(self):
+        return icemac.ab.calendar.recurrence.get_recurring(
+            self.datetime, self.period).weight
 
 
 recurring_event_entity = icemac.addressbook.entities.create_entity(

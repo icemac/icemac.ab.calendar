@@ -156,6 +156,9 @@ class IEventDateTime(zope.interface.Interface):
 class IRecurringEvents(zope.interface.Interface):
     """Container for recurrign events."""
 
+    def get_events():
+        """Return the events sorted by priority (ascending)."""
+
 
 class RecurrencePeriodSource(icemac.addressbook.sources.TitleMappingSource):
     """Periods after which an event is repeated."""
@@ -200,6 +203,9 @@ class IRecurringDateTime(zope.interface.Interface):
 
 class IRecurringEvent(IBaseEvent, IRecurrence):
     """An event recurring after a defined period."""
+
+    priority = zope.interface.Attribute(
+        'Weight of the selected recurrence period.')
 
     def get_events(interval_start, interval_end):
         """Get the events computed from recurrence in the interval."""

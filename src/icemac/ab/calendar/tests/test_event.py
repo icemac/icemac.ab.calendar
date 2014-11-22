@@ -2,15 +2,12 @@
 # See also LICENSE.txt
 import icemac.ab.calendar.testing
 import icemac.addressbook.testing
-import unittest
 import zope.catalog.interfaces
 import zope.component
 
 
-class EventUTests(unittest.TestCase):
+class EventUTests(icemac.ab.calendar.testing.ZCMLTestCase):
     """Testing ..event.Event."""
-
-    layer = icemac.addressbook.testing.ADDRESS_BOOK_UNITTESTS
 
     def test_event_implements_IEvent_interface(self):
         from gocept.reference.verify import verifyObject
@@ -29,7 +26,10 @@ class EventUTests(unittest.TestCase):
         from gocept.reference.verify import verifyObject
         from icemac.ab.calendar.interfaces import IRecurringEvent
         from icemac.ab.calendar.event import RecurringEvent
-        self.assertTrue(verifyObject(IRecurringEvent, RecurringEvent()))
+        revent = RecurringEvent()
+        revent.datetime = self.get_datetime()
+        revent.period = u'weekly'
+        self.assertTrue(verifyObject(IRecurringEvent, revent))
 
     def test_recurred_event_implements_IRecurredEvent_interface(self):
         from gocept.reference.verify import verifyObject
@@ -52,6 +52,33 @@ class EventCatalogTests(icemac.ab.calendar.testing.ZODBTestCase):
         catalog = zope.component.getUtility(zope.catalog.interfaces.ICatalog)
         results = catalog.searchResults(**{DATE_INDEX: {'any': None}})
         self.assertEqual([self.event], list(results))
+
+
+class RecurringEventContainerTests(icemac.ab.calendar.testing.ZODBTestCase):
+    """Testing ..event.RecurringEventContainer"""
+
+    def setUp(self):
+        super(RecurringEventContainerTests, self).setUp()
+        self.create_recurring_event(
+            datetime=self.get_datetime(), alternative_title=u'weekly',
+            period='weekly')
+        self.create_recurring_event(
+            datetime=self.get_datetime(), alternative_title=u'yearly',
+            period='yearly')
+        self.create_recurring_event(
+            datetime=self.get_datetime(), alternative_title=u'biweekly',
+            period='biweekly')
+        self.create_recurring_event(
+            datetime=self.get_datetime(),
+            alternative_title=u'nth weekday of month',
+            period='nth weekday of month')
+
+    def test_get_events_sorts_by_weight(self):
+        from icemac.ab.calendar.interfaces import IRecurringEvents
+        recurring_events = zope.component.getUtility(IRecurringEvents)
+        self.assertEqual(
+            [u'weekly', u'biweekly', u'nth weekday of month', u'yearly'],
+            [x.alternative_title for x in recurring_events.get_events()])
 
 
 class TestRecurrStarEvent(icemac.ab.calendar.testing.ZODBTestCase):

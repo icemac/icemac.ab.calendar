@@ -9,6 +9,9 @@
 
 - Display actual recurrences in recurrence event listing in master data.
 
+- If there are two reccurred events matching in date, time and category only
+  the one is rendered thats recurring event occurres more seldomly.
+
 
 1.5.0 (2014-07-01)
 ==================
