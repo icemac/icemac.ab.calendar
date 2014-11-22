@@ -11,6 +11,17 @@ import zope.component
 import zope.traversing.browser
 
 
+def date_from_iso_string(string):
+    """Convert an YYYY-MM-DD string to a python date object.
+
+    Returns `None` if the string is `None`.
+
+    """
+    if string is None:
+        return None
+    return date(*tuple(int(x) for x in string.split('-')))
+
+
 class Add(icemac.addressbook.browser.base.BaseAddForm):
     """Add form for an event."""
 
@@ -64,8 +75,8 @@ class CustomizeRecurredEvent(icemac.ab.calendar.browser.base.View):
 
     def __call__(self):
         self.session['recurring-event-name'] = self.request.form['event']
-        self.session['recurred-event-date'] = date(
-            *tuple(int(x) for x in self.request.form['date'].split('-')))
+        self.session['recurred-event-date'] = date_from_iso_string(
+            self.request.form['date'])
         if icemac.addressbook.browser.base.can_access_uri_part(
                 self.context, self.request, 'addFromRecurredEvent.html'):
             target_view = 'addFromRecurredEvent.html'
