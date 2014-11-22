@@ -24,14 +24,6 @@ class Calendar(grok.MultiAdapter):
         self.events = events
         self._fd = StringIO()
 
-    @property
-    def max_date(self):
-        "Date of the most future single event."
-        return sorted([x.date
-                       for x in self.events
-                       if isinstance(x, Event)],
-                      reverse=True)[0]
-
     def write(self, string, *args):
         """Store a string which might contain % marks which get replaced."""
         text = string % args
