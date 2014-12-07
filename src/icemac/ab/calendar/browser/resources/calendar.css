@@ -14,8 +14,8 @@ body.main {
 
 #timezone {
     position: absolute;
-    right: 90px;
-    margin-top: 9px;
+    right: 152px;
+    margin-top: 10px;
 }
 
 #calendar .header {
@@ -25,8 +25,8 @@ body.main {
 #calendar .header .NW {
     background: url(img/bg-calendar.png) no-repeat;
     background-position: top left;
-    width: 74px;
-    height: 116px;
+    width: 139px;
+    height: 126px;
     float: left;
 }
 
@@ -35,21 +35,22 @@ body.main {
     float: left;
     margin-right: -148px;
     width: 50%;
-    height: 116px;
+    height: 126px;
 }
 
 #calendar .header .NNW {
-    background: url(img/bg-cal-NNW-NNO.png) repeat;
+    background: url(img/bg-vertical.png) repeat;
+    background-position: top;
     margin-right: 148px;
     margin-left: 74px;
-    height: 116px;
+    height: 126px;
 }
 
 #calendar .header .center {
     background: url(img/bg-calendar.png) no-repeat;
     background-position: -108px 0px;
     width: 296px;
-    height: 116px;
+    height: 126px;
     float: left;
 }
 
@@ -57,21 +58,21 @@ body.main {
     float: right;
     margin-left: -148px;
     width: 50%;
-    height: 116px;
+    height: 126px;
 }
 
 #calendar .header .NNO {
-    background: url(img/bg-cal-NNW-NNO.png) repeat;
+    background: url(img/bg-vertical.png) repeat;
     margin-left: 148px;
     margin-right: 74px;
-    height: 116px;
+    height: 126px;
 }
 
 #calendar .header .NO {
     background: url(img/bg-calendar.png) no-repeat;
     background-position: top right;
-    width: 74px;
-    height: 116px;
+    width: 139px;
+    height: 126px;
     float: right;
 }
 
@@ -92,8 +93,8 @@ body.main {
 }
 
 #calendar .footer .S {
-    background: url(img/bg-cal-S.png) repeat;
-    background-position: bottom right;
+    background: url(img/bg-vertical.png) repeat;
+    background-position: bottom;
     height: 113px;
     margin-right: 75px;
     margin-left: 75px;
@@ -107,14 +108,15 @@ body.main {
 #calendar .body .W {
     width: 49px;
     min-height: 274px;
-    background: url(img/bg-cal-W.png) repeat;
+    background: url(img/bg-horizontal.png) repeat;
     float: left;
 }
 
 #calendar .body .O {
     width: 49px;
     min-height: 273px;
-    background: url(img/bg-cal-O.png) repeat;
+    background: url(img/bg-horizontal.png) repeat;
+    background-position: right;
     float: right;
 }
 
@@ -171,6 +173,22 @@ body.main {
 
 #calendar table .day-0 {
     background-color: #F8E286;
+}
+
+#calendar table th.day-0 {
+    border-radius: 5px 0 0;
+}
+
+#calendar table th.day-6 {
+    border-radius: 0 5px 0 0;
+}
+
+#calendar table tr:last-child td:first-child {
+    border-radius: 0 0 0 5px;
+}
+
+#calendar table tr:last-child td:last-child {
+    border-radius: 0 0 5px 0;
 }
 
 #calendar table td.today {
