@@ -14,7 +14,108 @@ body.main {
 
 #timezone {
     position: absolute;
-    right: 15px;
+    right: 90px;
+    margin-top: 9px;
+}
+
+#calendar .header {
+    width: 100%;
+}
+
+#calendar .header .NW {
+    background: url(img/bg-calendar.png) no-repeat;
+    background-position: top left;
+    width: 74px;
+    height: 116px;
+    float: left;
+}
+
+
+#calendar .header .NW-container {
+    float: left;
+    margin-right: -148px;
+    width: 50%;
+    height: 116px;
+}
+
+#calendar .header .NNW {
+    background: url(img/bg-cal-NNW-NNO.png) repeat;
+    margin-right: 148px;
+    margin-left: 74px;
+    height: 116px;
+}
+
+#calendar .header .center {
+    background: url(img/bg-calendar.png) no-repeat;
+    background-position: -108px 0px;
+    width: 296px;
+    height: 116px;
+    float: left;
+}
+
+#calendar .header .NO-container {
+    float: right;
+    margin-left: -148px;
+    width: 50%;
+    height: 116px;
+}
+
+#calendar .header .NNO {
+    background: url(img/bg-cal-NNW-NNO.png) repeat;
+    margin-left: 148px;
+    margin-right: 74px;
+    height: 116px;
+}
+
+#calendar .header .NO {
+    background: url(img/bg-calendar.png) no-repeat;
+    background-position: top right;
+    width: 74px;
+    height: 116px;
+    float: right;
+}
+
+#calendar .footer .SW {
+    background: url(img/bg-calendar.png) no-repeat;
+    background-position: bottom left;
+    width: 75px;
+    height: 113px;
+    float: left;
+}
+
+#calendar .footer .SO {
+    background: url(img/bg-calendar.png) no-repeat;
+    background-position: bottom right;
+    width: 75px;
+    height: 113px;
+    float: right;
+}
+
+#calendar .footer .S {
+    background: url(img/bg-cal-S.png) repeat;
+    background-position: bottom right;
+    height: 113px;
+    margin-right: 75px;
+    margin-left: 75px;
+}
+
+
+#calendar .body {
+    clear: both;
+}
+
+#calendar .body .W {
+    width: 49px;
+    min-height: 274px;
+    background: url(img/bg-cal-W.png) repeat;
+    float: left;
+}
+
+#calendar .body .O {
+    width: 49px;
+    min-height: 273px;
+    background: url(img/bg-cal-O.png) repeat;
+    float: right;
 }
 
 #calendar #calendar-select-form {
@@ -40,7 +141,7 @@ body.main {
 }
 
 #calendar {
-    background: #eee url(img/bg-calendar.png) no-repeat;
+    background: #eee no-repeat;
     background-position: top center;
     clear: both;
 }
@@ -54,8 +155,7 @@ body.main {
 }
 
 #calendar table {
-    width: 100%;
-    margin-top: 30px;
+    background-color: white;
 }
 
 #calendar.year table {
@@ -65,8 +165,8 @@ body.main {
 #calendar table th,
 #calendar table td {
     border: 1px solid #000;
-    width: 14%;
-    max-width: 14%;
+    width: 10%;
+    max-width: 10%;
 }
 
 #calendar table .day-0 {
@@ -130,10 +230,10 @@ body.main {
 }
 
 #calendar .menu {
-    padding-top: 9px;
 }
 
 #calendar .menu ul {
+    padding-top: 9px;
     text-align: center;
 }
 
