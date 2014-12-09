@@ -11,6 +11,10 @@
           <div class="NW"></div>
           <div class="NNW"></div>
         </div>
+        <div class="NO-container">
+          <div class="NO"></div>
+          <div class="NNO"></div>
+        </div>
         <div class="center menu">
           <ul>
             <li>
@@ -26,15 +30,13 @@
           </ul>
           <div tal:replace="structure view/render_form"></div>
         </div>
-        <div class="NO-container">
-          <div class="NO"></div>
-          <div class="NNO"></div>
-        </div>
     </div>
     <div class="body">
         <div class="W border"></div>
         <div class="O border"></div>
-        <div tal:replace="structure view/render_calendar"></div>
+        <div class="table">
+          <div tal:replace="structure view/render_calendar"></div>
+        </div>
     </div>
     <div class="footer">
         <div class="SW"></div>
