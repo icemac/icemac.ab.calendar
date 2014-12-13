@@ -22,7 +22,8 @@ setuptools.setup(
     keywords='icemac.addressbook',
     author='Michael Howitz',
     author_email='icemac@gmx.net',
-    url='http://pypi.python.org/pypi/icemac.ab.calendar',
+    download_url='http://pypi.python.org/pypi/icemac.ab.calendar',
+    url='https://bitbucket.org/icemac/icemac.ab.calendar',
     license='ZPL 2.1',
     classifiers=[
         'Development Status :: 4 - Beta',
