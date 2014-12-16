@@ -274,8 +274,3 @@ div#content #calendar table td:last-child {
     background-color: #996633;
     color: #FFFFFF;
 }
-
-/* Fix IE 10 to not render helper fields hidden in all other browsers. */
-#form-widgets-persons-toDataContainer {
-    display: none;
-}
