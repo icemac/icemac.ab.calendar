@@ -2,7 +2,7 @@
  Changelog
 ===========
 
-1.6.0 (unreleased)
+1.6.0 (2014-12-16)
 ==================
 
 - Add new recurrences for recurring events:
