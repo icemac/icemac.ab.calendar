@@ -5,6 +5,23 @@
 Changelog of releases more than 3 versions behind current version.
 
 
+1.3.1 (2014-02-09)
+==================
+
+- Fix the widh of the calendar to the width of the window.
+
+
+1.3.0 (2014-02-08)
+==================
+
+- Made selection of month for display two drop downs for month and year.
+
+- Added calendar view displaying a whole year.
+
+- Allow calendar users to edit their username and/or password in master
+  data.
+
+
 1.2.0 (2014-01-02)
 ==================
 

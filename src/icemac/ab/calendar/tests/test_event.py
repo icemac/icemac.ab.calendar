@@ -1,7 +1,6 @@
 # Copyright (c) 2013-2014 Michael Howitz
 # See also LICENSE.txt
 import icemac.ab.calendar.testing
-import icemac.addressbook.testing
 import zope.catalog.interfaces
 import zope.component
 
