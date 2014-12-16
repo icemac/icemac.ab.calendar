@@ -5,7 +5,14 @@
 1.6.0 (unreleased)
 ==================
 
-- Add new recurrence for recurring events: "monthly, same weekday".
+- Add new recurrences for recurring events:
+
+  * biweekly,
+  * nth weekday of month,
+  * nth weekday every other month
+  * nth weekday from end of month
+  * nth weekday from end of other month
+  * yearly
 
 - Display actual recurrences in recurrence event listing in master data.
 
