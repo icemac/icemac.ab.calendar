@@ -5,7 +5,7 @@
 1.6.1 (unreleased)
 ==================
 
-- Nothing changed yet.
+- No longer use `unittest2` as it was included in Python 2.7.
 
 
 1.6.0 (2014-12-16)

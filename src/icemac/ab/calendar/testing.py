@@ -11,7 +11,7 @@ import icemac.addressbook.testing
 import icemac.addressbook.utils
 import mock
 import pytz
-import unittest2 as unittest
+import unittest
 import zope.publisher.browser
 
 
