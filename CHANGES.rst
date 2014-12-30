@@ -2,8 +2,17 @@
  Changelog
 ===========
 
-1.6.1 (unreleased)
+1.7.0 (unreleased)
 ==================
+
+Features
+--------
+
+- Add new `daily` recurrence for recurring events.
+
+
+Other
+-----
 
 - No longer use `unittest2` as it was included in Python 2.7.
 

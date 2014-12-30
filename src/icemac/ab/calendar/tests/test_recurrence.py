@@ -28,19 +28,23 @@ class InterfaceTests(icemac.ab.calendar.testing.ZCMLTestCase):
 
     now = datetime.date.today()
 
+    def test_Daily_fulfills_IRecurringDateTime_interface(self):
+        from zope.interface.verify import verifyObject
+        from ..interfaces import IRecurringDateTime
+        from ..recurrence import Daily
+        self.assertTrue(verifyObject(IRecurringDateTime, Daily(self.now)))
+
     def test_Weekly_fulfills_IRecurringDateTime_interface(self):
         from zope.interface.verify import verifyObject
         from ..interfaces import IRecurringDateTime
         from ..recurrence import Weekly
-        self.assertTrue(
-            verifyObject(IRecurringDateTime, Weekly(self.now)))
+        self.assertTrue(verifyObject(IRecurringDateTime, Weekly(self.now)))
 
     def test_BiWeekly_fulfills_IRecurringDateTime_interface(self):
         from zope.interface.verify import verifyObject
         from ..interfaces import IRecurringDateTime
         from ..recurrence import BiWeekly
-        self.assertTrue(
-            verifyObject(IRecurringDateTime, BiWeekly(self.now)))
+        self.assertTrue(verifyObject(IRecurringDateTime, BiWeekly(self.now)))
 
     def test_MonthlyNthWeekday_fulfills_IRecurringDateTime_interface(self):
         from zope.interface.verify import verifyObject
@@ -148,6 +152,26 @@ class BiWeeklyTests(RecurrenceMixIn, icemac.ab.calendar.testing.ZCMLTestCase):
             self.callFUT('biweekly'))
         self.assertEqual(self.recurrence_start.isoweekday(),
                          self.callFUT('biweekly')[0].isoweekday())
+
+
+class DailyTests(RecurrenceMixIn, icemac.ab.calendar.testing.ZCMLTestCase):
+    """Testing ..recurrence.Daily"""
+
+    def setUp(self):
+        super(RecurrenceMixIn, self).setUp()
+        self.recurrence_start = self.get_datetime((2013, 5, 3, 21, 45))
+        self.interval_start = self.get_datetime((2014, 4, 1))
+        self.interval_end = self.get_datetime((2014, 4, 4))
+
+    def test_info_renders_static_string(self):
+        self.assertEqual(u'each day', self.info('daily'))
+
+    def test_returns_all_dates_in_interval(self):
+        self.assertEqual(
+            [self.get_datetime((2014, 4, 1, 21, 45)),
+             self.get_datetime((2014, 4, 2, 21, 45)),
+             self.get_datetime((2014, 4, 3, 21, 45))],
+            self.callFUT('daily'))
 
 
 class MonthlyNthWeekdayTests(RecurrenceMixIn,

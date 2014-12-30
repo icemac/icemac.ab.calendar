@@ -74,7 +74,6 @@ class RecurringDateTime(grok.Adapter):
     grok.context(zope.interface.common.idatetime.IDateTime)
     grok.implements(icemac.ab.calendar.interfaces.IRecurringDateTime)
     grok.baseclass()
-    info = u''
 
     def __call__(self, interval_start, interval_end):
         self.interval_start = interval_start
@@ -94,23 +93,46 @@ class RecurringDateTime(grok.Adapter):
         return weekday
 
 
-class SameWeekdayBase(RecurringDateTime):
-    """Base class for recurrences on the same weekday."""
+class StaticIntervalBase(RecurringDateTime):
+    """Base class for recurrences of a fix interval e. g. 1 day or 1 week."""
 
     grok.baseclass()
     interval = NotImplemented
 
+    def _get_start_date(self):
+        raise NotImplementedError('Implement in subclass!')
+
     def compute(self):
-        current_date = self.interval_start
-        if current_date <= self.context:
+        if self.interval_start <= self.context:
             current_date = self.context
         else:
-            current_date = next_date_of_same_weekday(
-                self.context, current_date)
+            current_date = self._get_start_date()
         time = self.context.timetz()
         while current_date < self.interval_end:
             yield datetime.combine(current_date, time)
             current_date += self.interval
+
+
+class Daily(StaticIntervalBase):
+    """Recurring each day."""
+
+    grok.name('daily')
+    weight = 5
+    interval = ONE_DAY
+    title = _('daily')
+    info = _('each day')
+
+    def _get_start_date(self):
+        return self.interval_start
+
+
+class SameWeekdayBase(StaticIntervalBase):
+    """Base class for recurrences on the same weekday."""
+
+    grok.baseclass()
+
+    def _get_start_date(self):
+        return next_date_of_same_weekday(self.context, self.interval_start)
 
 
 class Weekly(SameWeekdayBase):
