@@ -10,6 +10,8 @@ Features
 
 - Add new `daily` recurrence for recurring events.
 
+- Add end date to recurring events.
+
 
 Other
 -----

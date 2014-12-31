@@ -32,6 +32,10 @@ class Table(icemac.addressbook.browser.table.Table):
                 header=_('datetime'), attrName='datetime',
                 formatterLength='short', weight=10),
             z3c.table.column.addColumn(
+                self, z3c.table.column.GetAttrFormatterColumn, 'end',
+                header=_('to'), attrName='end', formatterCategory='date',
+                formatterLength='short', weight=15),
+            z3c.table.column.addColumn(
                 self, RecurrenceColumn, 'period',
                 header=_('recurrence period'), weight=20),
             z3c.table.column.addColumn(

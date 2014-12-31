@@ -103,6 +103,17 @@ class TestRecurrStarEvent(icemac.ab.calendar.testing.ZODBTestCase):
         self.assertIsInstance(event, RecurredEvent)
         self.assertEqual('foobar', event.text)
 
+    def test_get_events_ends_recurrence_at_end_date(self):
+        self.recurring_event.end = self.get_datetime((2014, 5, 9, 0)).date()
+        events = list(self.recurring_event.get_events(
+            self.get_datetime((2014, 5, 1, 0)),
+            self.get_datetime((2014, 5, 31, 0))))
+        self.assertEqual(2, len(events))
+        self.assertEqual(
+            [self.get_datetime((2014, 5, 2, 12)),
+             self.get_datetime((2014, 5, 9, 12))],
+            [x.datetime for x in events])
+
     def test_RecurredEvent__create_from_copies_attributes_from_parameter(self):
         from ..event import RecurredEvent
         recurred_event = RecurredEvent.create_from(

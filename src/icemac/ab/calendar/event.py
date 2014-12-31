@@ -1,3 +1,4 @@
+from datetime import datetime, time
 from icemac.addressbook.i18n import _
 import gocept.reference
 import grokcore.component as grok
@@ -79,19 +80,26 @@ class RecurringEvent(Event):
     """An event which repeats after a defined period."""
     zope.interface.implements(icemac.ab.calendar.interfaces.IRecurringEvent)
     icemac.addressbook.schema.createFieldProperties(
-        icemac.ab.calendar.interfaces.IRecurrence)
+        icemac.ab.calendar.interfaces.IRecurringEventAdditionalSchema)
 
     def get_events(self, interval_start, interval_end):
         """Get the events computed from recurrence in the interval."""
+        if self.end is not None:
+            end_datetime = self._get_end_datetime(interval_end.tzinfo)
+            if end_datetime < interval_end:
+                interval_end = end_datetime
         recurrence_dates = icemac.ab.calendar.recurrence.get_recurrences(
             self.datetime, self.period, interval_start, interval_end)
-        for datetime in recurrence_dates:
-            yield RecurredEvent.create_from(self, datetime)
+        for dt in recurrence_dates:
+            yield RecurredEvent.create_from(self, dt)
 
     @property
     def priority(self):
         return icemac.ab.calendar.recurrence.get_recurring(
             self.datetime, self.period).weight
+
+    def _get_end_datetime(self, timzone):
+        return datetime.combine(self.end, time(23, 59, 59, tzinfo=timzone))
 
 
 recurring_event_entity = icemac.addressbook.entities.create_entity(

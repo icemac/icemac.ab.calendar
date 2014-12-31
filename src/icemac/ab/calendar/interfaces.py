@@ -201,7 +201,13 @@ class IRecurringDateTime(zope.interface.Interface):
         """
 
 
-class IRecurringEvent(IBaseEvent, IRecurrence):
+class IRecurringEventAdditionalSchema(IRecurrence):
+    """Additional schema fields for IRecurringEvent."""
+
+    end = zope.schema.Date(title=_('recurrence end'))
+
+
+class IRecurringEvent(IBaseEvent, IRecurringEventAdditionalSchema):
     """An event recurring after a defined period."""
 
     priority = zope.interface.Attribute(
