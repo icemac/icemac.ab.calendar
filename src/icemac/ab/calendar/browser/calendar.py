@@ -318,5 +318,8 @@ class EventDescription(grok.Adapter):
                 if value is not None:
                     value = unicode(value)
             if value:
-                info.append(value)
+                if field is icemac.ab.calendar.interfaces.IEvent['text']:
+                    info.extend(value.split('\n'))
+                else:
+                    info.append(value)
         return info

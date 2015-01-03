@@ -296,6 +296,11 @@ class EventDescriptionITests_getInfo(icemac.ab.calendar.testing.ZODBTestCase):
             **{'text': u'Event is not yet sure.', reservations_name: 50})
         self.assertEqual([u'Event is not yet sure.', u'50'], ed.getInfo())
 
+    def test_splits_the_text_field_at_line_endings(self):
+        self._set_settings('text')
+        ed = self._make_one(text=u'foo\nbar')
+        self.assertEqual([u'foo', u'bar'], ed.getInfo())
+
     def test_omits_fields_with_None_value(self):
         self._set_settings('text')
         ed = self._make_one()
