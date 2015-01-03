@@ -5,11 +5,14 @@ import icemac.ab.calendar.interfaces
 import icemac.addressbook.browser.base
 import icemac.addressbook.browser.metadata
 import icemac.addressbook.browser.table
+import icemac.addressbook.interfaces
 import z3c.table.column
 
 
 class RecurrenceColumn(z3c.table.column.I18nGetAttrColumn):
     """Column displaying the concrete recurrence of an event."""
+
+    header = _('recurrence period')
 
     def getValue(self, item):
         recurring = icemac.ab.calendar.recurrence.get_recurring(
@@ -41,12 +44,13 @@ class Table(icemac.addressbook.browser.table.Table):
                 header=_('datetime'), attrName='datetime',
                 formatterLength='short', weight=10),
             z3c.table.column.addColumn(
-                self, z3c.table.column.GetAttrFormatterColumn, 'end',
-                header=_('to'), attrName='end', formatterCategory='date',
-                formatterLength='short', weight=15),
+                self, RecurrenceColumn, 'period', weight=20),
             z3c.table.column.addColumn(
-                self, RecurrenceColumn, 'period',
-                header=_('recurrence period'), weight=20),
+                self, icemac.addressbook.browser.table.DateColumn, 'end',
+                header=_('to'), entity=icemac.addressbook.interfaces.IEntity(
+                    icemac.ab.calendar.interfaces.IRecurringEvent),
+                field=icemac.ab.calendar.interfaces.IRecurringEvent['end'],
+                weight=30),
             z3c.table.column.addColumn(
                 self, PersonsColumn, 'persons', weight=40),
             z3c.table.column.addColumn(

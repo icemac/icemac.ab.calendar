@@ -54,7 +54,7 @@ setuptools.setup(
         'decorator',
         'gocept.month >= 1.2',
         'grokcore.annotation',
-        'icemac.addressbook >= 2.5.0',
+        'icemac.addressbook >= 2.6.0.dev0',
         'setuptools',
         'zope.cachedescriptors',
     ],
