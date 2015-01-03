@@ -204,7 +204,7 @@ class IRecurringDateTime(zope.interface.Interface):
 class IRecurringEventAdditionalSchema(IRecurrence):
     """Additional schema fields for IRecurringEvent."""
 
-    end = zope.schema.Date(title=_('recurrence end'))
+    end = zope.schema.Date(title=_('recurrence end'), required=False)
 
 
 class IRecurringEvent(IBaseEvent, IRecurringEventAdditionalSchema):
