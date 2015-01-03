@@ -32,7 +32,7 @@ class Event(persistent.Persistent,
     zope.interface.implements(
         icemac.ab.calendar.interfaces.IEvent,
         zope.annotation.interfaces.IAttributeAnnotatable)
-    icemac.addressbook.schema.createFieldProperties(
+    zope.schema.fieldproperty.createFieldProperties(
         icemac.ab.calendar.interfaces.IEvent, omit=['category', 'persons'])
 
     category = gocept.reference.Reference('category', ensure_integrity=True)
@@ -92,7 +92,7 @@ class RecurringEventContainer(zope.container.btree.BTreeContainer):
 class RecurringEvent(Event):
     """An event which repeats after a defined period."""
     zope.interface.implements(icemac.ab.calendar.interfaces.IRecurringEvent)
-    icemac.addressbook.schema.createFieldProperties(
+    zope.schema.fieldproperty.createFieldProperties(
         icemac.ab.calendar.interfaces.IRecurringEventAdditionalSchema)
 
     def get_events(self, interval_start, interval_end):
@@ -177,7 +177,7 @@ class RecurredEvent(BaseEvent):
     """An event computed from RecurringEvent."""
 
     zope.interface.implements(icemac.ab.calendar.interfaces.IRecurredEvent)
-    icemac.addressbook.schema.createFieldProperties(
+    zope.schema.fieldproperty.createFieldProperties(
         icemac.ab.calendar.interfaces.IRecurredEvent)
 
     __parent__ = None

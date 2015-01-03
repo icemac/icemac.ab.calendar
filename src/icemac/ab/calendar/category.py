@@ -7,7 +7,7 @@ import persistent
 import zope.container.btree
 import zope.container.contained
 import zope.interface
-import icemac.addressbook.schema
+import zope.schema.fieldproperty
 
 
 class CategoryContainer(zope.container.btree.BTreeContainer):
@@ -19,7 +19,7 @@ class Category(persistent.Persistent,
                zope.container.contained.Contained):
     "A category of an event."
     zope.interface.implements(icemac.ab.calendar.interfaces.ICategory)
-    icemac.addressbook.schema.createFieldProperties(
+    zope.schema.fieldproperty.createFieldProperties(
         icemac.ab.calendar.interfaces.ICategory)
 
 
