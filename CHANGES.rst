@@ -18,6 +18,7 @@ Other
 
 - No longer use `unittest2` as it was included in Python 2.7.
 
+- Lint JS code.
 
 1.6.0 (2014-12-16)
 ==================
