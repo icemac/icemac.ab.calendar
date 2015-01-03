@@ -3,7 +3,7 @@ body.main {
 }
 
 #content {
-    background: #eee none;
+    background: #f6f6f6 none;
     border: 1px solid #999;
     padding: 5px;
     border-bottom-left-radius: 8px;
@@ -14,7 +14,7 @@ body.main {
 
 #timezone {
     position: absolute;
-    right: 152px;
+    right: 155px;
     margin-top: 10px;
 }
 
@@ -143,9 +143,7 @@ body.main {
 }
 
 #calendar {
-    background: #eee no-repeat;
-    background-position: top center;
-    clear: both;
+ clear: both;
 }
 
 #calendar.year h2 {
