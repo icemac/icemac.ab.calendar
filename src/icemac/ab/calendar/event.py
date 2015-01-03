@@ -5,6 +5,7 @@ import grokcore.component as grok
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.entities
 import icemac.addressbook.utils
+import itertools
 import persistent
 import zope.annotation.interfaces
 import zope.container.btree
@@ -12,8 +13,20 @@ import zope.container.contained
 import zope.interface
 
 
+class BaseEvent(object):
+    """Base class of all event classes."""
+
+    def listPersons(self):
+        """Sorted list of all persons incl. external ones as strings."""
+        return sorted(itertools.chain(
+            [icemac.addressbook.interfaces.IPersonName(x).get_name()
+             for x in (self.persons or [])],
+            (self.external_persons or [])))
+
+
 class Event(persistent.Persistent,
-            zope.container.contained.Contained):
+            zope.container.contained.Contained,
+            BaseEvent):
     """An event in the calendar."""
 
     zope.interface.implements(
@@ -160,7 +173,7 @@ def calendar_of_recurring_event(recurring_event):
         icemac.addressbook.interfaces.IAddressBook(None))
 
 
-class RecurredEvent(object):
+class RecurredEvent(BaseEvent):
     """An event computed from RecurringEvent."""
 
     zope.interface.implements(icemac.ab.calendar.interfaces.IRecurredEvent)

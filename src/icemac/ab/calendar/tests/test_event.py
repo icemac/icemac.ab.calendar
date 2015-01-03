@@ -36,6 +36,20 @@ class EventUTests(icemac.ab.calendar.testing.ZCMLTestCase):
         from icemac.ab.calendar.event import RecurredEvent
         self.assertTrue(verifyObject(IRecurredEvent, RecurredEvent()))
 
+    def test_listPersons_returns_list_of_persons_in_ab_and_externals(self):
+        from icemac.addressbook.person import Person
+        from icemac.addressbook.utils import create_obj
+        from icemac.ab.calendar.event import BaseEvent
+
+        p1 = create_obj(Person, last_name=u'Tester', first_name=u'Hans')
+        p2 = create_obj(Person, last_name=u'Koch', first_name=u'Fritz')
+        event = BaseEvent()
+        event.persons = set([p1, p2])
+        event.external_persons = [u'Klaus Arkpe', u'Heiner Myer']
+        self.assertEqual(
+            [u'Fritz Koch', u'Hans Tester', u'Heiner Myer', u'Klaus Arkpe'],
+            event.listPersons())
+
 
 class EventCatalogTests(icemac.ab.calendar.testing.ZODBTestCase):
     """Testing catatloging of events."""

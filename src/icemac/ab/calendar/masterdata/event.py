@@ -17,6 +17,15 @@ class RecurrenceColumn(z3c.table.column.I18nGetAttrColumn):
         return recurring.info
 
 
+class PersonsColumn(z3c.table.column.Column):
+    """Column displaying all persons assigned to an event."""
+
+    header = _('persons')
+
+    def renderCell(self, item):
+        return ', '.join(item.listPersons())
+
+
 class Table(icemac.addressbook.browser.table.Table):
     """List recurring events."""
 
@@ -39,8 +48,10 @@ class Table(icemac.addressbook.browser.table.Table):
                 self, RecurrenceColumn, 'period',
                 header=_('recurrence period'), weight=20),
             z3c.table.column.addColumn(
+                self, PersonsColumn, 'persons', weight=40),
+            z3c.table.column.addColumn(
                 self, icemac.addressbook.browser.table.TruncatedContentColumn,
-                'notes', header=_('notes'), attrName='text', weight=30),
+                'notes', header=_('notes'), attrName='text', weight=50),
         ]
 
     @property

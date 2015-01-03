@@ -53,7 +53,7 @@ class TestMixIn(object):
             skin=icemac.addressbook.browser.interfaces.IAddressBookLayer,
             **kw)
 
-    def get_event_description(self, time_tuple=(), **kw):
+    def get_event_description(self, time_tuple=(), event=None, **kw):
         """Get an icemac.ab.calendar.browser.calendar.EventDescription.
 
         time_tuple ... `now` if empty.
@@ -61,7 +61,8 @@ class TestMixIn(object):
         Does not actually create an event.
 
         """
-        event = mock.MagicMock()
+        if event is None:
+            event = mock.MagicMock()
         event.datetime = self.get_datetime(time_tuple)
         for key, value in kw.items():
             setattr(event, key, value)
@@ -127,7 +128,8 @@ class ZCMLTestCase(unittest.TestCase, TestMixIn):
 class ZODBTestCase(unittest.TestCase,
                    gocept.testing.assertion.Ellipsis,
                    TestMixIn,
-                   ZODBTestMixIn):
+                   ZODBTestMixIn,
+                   icemac.addressbook.testing.ZODBMixIn):
     """Test case for test which need the ZODB."""
     layer = ZODB_LAYER
 

@@ -15,7 +15,6 @@ import icemac.ab.calendar.interfaces
 import icemac.addressbook.browser.base
 import icemac.addressbook.interfaces
 import icemac.addressbook.preferences.utils
-import itertools
 import pyphen
 import pytz
 import z3c.form.field
@@ -282,10 +281,7 @@ class EventDescription(grok.Adapter):
         self.whole_day = False
         self.special_event = None
         self._text = context.alternative_title
-        self.persons = u', '.join(sorted(itertools.chain(
-            [icemac.addressbook.interfaces.IPersonName(x).get_name()
-             for x in (context.persons or [])],
-            (context.external_persons or []))))
+        self.persons = u', '.join(context.listPersons())
         calendar = icemac.ab.calendar.interfaces.ICalendar(context)
         # Without the following line we get a ForbidenError for
         # `__getitem__` when accessing the annotations where

@@ -238,19 +238,16 @@ class EventDescriptionUTests(icemac.ab.calendar.testing.UnitTestCase):
         self.assertTrue(verifyObject(IEventDescription, event_description))
 
 
-class EventDescriptionFTests(icemac.ab.calendar.testing.ZCMLTestCase):
+class EventDescriptionFTests(icemac.ab.calendar.testing.ZODBTestCase):
     """Functional testing ..calendar.EventDescription."""
 
     def test_persons_is_komma_separated_list_of_persons_in_ab_and_externals(
             self):
-        from icemac.addressbook.person import Person
-        from icemac.addressbook.utils import create_obj
-        p1 = create_obj(Person, last_name=u'Tester', first_name=u'Hans')
-        p2 = create_obj(Person, last_name=u'Koch', first_name=u'Fritz')
-        event_description = self.get_event_description(
-            persons=set([p1, p2]),
-            external_persons=[u'Klaus Arkpe', u'Heiner Myer'])
-        self.assertEqual(u'Fritz Koch, Hans Tester, Heiner Myer, Klaus Arkpe',
+        person = self.create_person(last_name=u'Tester', first_name=u'Hans')
+        event = self.create_event(
+            persons=set([person]), external_persons=[u'Heiner Myer'])
+        event_description = self.get_event_description(event=event)
+        self.assertEqual(u'Hans Tester, Heiner Myer',
                          event_description.persons)
 
     def test_persons_is_emtpty_string_if_there_are_no_persons_assigned(self):

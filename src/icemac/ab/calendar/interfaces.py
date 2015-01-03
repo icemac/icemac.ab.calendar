@@ -139,6 +139,9 @@ class IBaseEvent(zope.interface.Interface):
         value_type=zope.schema.TextLine(title=_('person name')))
     text = zope.schema.Text(title=_('notes'), required=False)
 
+    def listPersons():
+        """Sorted list of all persons incl. external ones as strings."""
+
 
 class IEvent(IBaseEvent):
     """A single event in the calendar."""
