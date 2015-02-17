@@ -86,11 +86,22 @@ def calendar_of_IRecurredEvent(event):
     return event.__parent__
 
 
-@grok.adapter(icemac.ab.calendar.interfaces.IEvent)
-@grok.implementer(icemac.ab.calendar.interfaces.IEventDateTime)
-def event_datetime(event):
+class EventDateTime(grok.Adapter):
     """Catalog datetime of event."""
-    return event
+
+    grok.context(icemac.ab.calendar.interfaces.IEvent)
+    grok.implements(icemac.ab.calendar.interfaces.IEventDateTime)
+
+    @property
+    def datetime(self):
+        """Date of the event always having a time for indexing."""
+        if self.context.whole_day_event:
+            if self.context.date_without_time is not None:
+                return datetime.combine(self.context.date_without_time,
+                                        time(12, 0, tzinfo=pytz.utc))
+            else:
+                return None
+        return self.context.datetime
 
 
 class RecurringEventContainer(zope.container.btree.BTreeContainer):

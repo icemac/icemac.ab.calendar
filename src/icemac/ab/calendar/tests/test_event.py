@@ -71,6 +71,24 @@ class EventUTests(icemac.ab.calendar.testing.ZCMLTestCase):
         self.assertEqual(tz.normalize(self.get_datetime((2015, 1, 5, 10))),
                          event.in_timezone(tz))
 
+
+class EventDateTimeTests(icemac.ab.calendar.testing.ZODBTestCase):
+    """Testing ..event.EventDateTime."""
+
+    def getAUT(self, date_tuple):
+        from datetime import date
+        from ..interfaces import IEventDateTime
+        event = self.create_event(
+            date_without_time=date(*date_tuple), whole_day_event=True)
+        return IEventDateTime(event)
+
+    def test_whole_day_event_gets_indexed_with_noon_utc(self):
+        from pytz import utc
+        adapter = self.getAUT((2015, 1, 5))
+        self.assertEqual(self.get_datetime((2015, 1, 5, 12)), adapter.datetime)
+        self.assertEqual(utc, adapter.datetime.tzinfo)
+
+
 class EventCatalogTests(icemac.ab.calendar.testing.ZODBTestCase):
     """Testing catatloging of events."""
 
