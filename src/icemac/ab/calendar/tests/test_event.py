@@ -241,6 +241,25 @@ class GetEventDataFromRecurringEventTests(
              'whole_day_event': False},
             self.callFUT(recurring_event, self.get_datetime((2000, 1, 1, 0))))
 
+    def test_returns_whole_day_events_as_date_without_time(self):
+        category = self.create_category(u'bar')
+        recurring_event = self.create_recurring_event(
+            category=category,
+            date_without_time=self.get_datetime((2014, 5, 24, 1)).date(),
+            whole_day_event=True,
+            alternative_title=u'foo bar')
+        self.assertEqual(
+            {'alternative_title': u'foo bar',
+             'category': category,
+             'datetime': None,
+             'date_without_time': self.get_datetime((2000, 1, 1, 0)).date(),
+             'external_persons': None,
+             'persons': None,
+             'text': None,
+             'whole_day_event': True},
+            self.callFUT(
+                recurring_event, self.get_datetime((2000, 1, 1, 0)).date()))
+
     def test_returns_appropriate_user_defined_fields(self):
         from icemac.addressbook.testing import create_field, create
         from icemac.ab.calendar.interfaces import IEvent, IRecurringEvent

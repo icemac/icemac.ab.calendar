@@ -175,9 +175,11 @@ def get_event_data_from_recurring_event(recurring_event, date):
             bound_field = icemac.addressbook.entities.get_bound_schema_field(
                 recurring_event, revent_entity, field)
             data[key] = bound_field.get(bound_field.context)
-
-    data[u'datetime'] = data[u'datetime'].replace(
-        year=date.year, month=date.month, day=date.day)
+    if data['whole_day_event']:
+        data['date_without_time'] = date
+    else:
+        data[u'datetime'] = data[u'datetime'].replace(
+            year=date.year, month=date.month, day=date.day)
     return data
 
 

@@ -278,7 +278,7 @@ class EventDescription(grok.Adapter):
         else:
             self.datetime = context.in_timezone(timezone)
         self.prio = 0
-        self.whole_day = False
+        self.whole_day = context.whole_day_event
         self.special_event = None
         self._text = context.alternative_title
         self.persons = u', '.join(context.listPersons())
