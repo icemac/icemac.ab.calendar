@@ -7,6 +7,7 @@ import icemac.addressbook.entities
 import icemac.addressbook.utils
 import itertools
 import persistent
+import pytz
 import zope.annotation.interfaces
 import zope.container.btree
 import zope.container.contained
@@ -22,6 +23,17 @@ class BaseEvent(object):
             [icemac.addressbook.interfaces.IPersonName(x).get_name()
              for x in (self.persons or [])],
             (self.external_persons or [])))
+
+    def in_timezone(self, timezone):
+        """Date of event normalized to `timezone`.
+
+        Whole day events are counted as midnight.
+
+        """
+        if self.whole_day_event:
+            return timezone.localize(
+                datetime.combine(self.date_without_time, time(0, 0)))
+        return timezone.normalize(self.datetime)
 
 
 class Event(persistent.Persistent,
@@ -187,8 +199,9 @@ class RecurredEvent(BaseEvent):
     @classmethod
     def create_from(cls, recurring_event, datetime):
         """Constructor: Copy data from recurring event."""
-        data = {name: getattr(recurring_event, name)
-                for name in icemac.ab.calendar.interfaces.IEvent}
+        field_names = zope.schema.getFieldNames(
+            icemac.ab.calendar.interfaces.IEvent)
+        data = {name: getattr(recurring_event, name) for name in field_names}
         data.update({
             'datetime': datetime,
             '__parent__': icemac.ab.calendar.interfaces.ICalendar(

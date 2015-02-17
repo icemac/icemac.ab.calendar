@@ -276,7 +276,7 @@ class EventDescription(grok.Adapter):
         if context.datetime is None:
             self.datetime = None
         else:
-            self.datetime = context.datetime.astimezone(timezone)
+            self.datetime = context.in_timezone(timezone)
         self.prio = 0
         self.whole_day = False
         self.special_event = None

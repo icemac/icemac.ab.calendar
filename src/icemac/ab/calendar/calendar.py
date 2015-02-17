@@ -30,7 +30,7 @@ class Calendar(zope.container.btree.BTreeContainer):
         recurring_events = zope.component.getUtility(
             icemac.ab.calendar.interfaces.IRecurringEvents).get_events()
         recurred_events = [x.get_events(start, end) for x in recurring_events]
-        events_map = {(x.category, x.datetime): x
+        events_map = {(x.category, x.in_timezone(timezone)): x
                       for x in itertools.chain(*recurred_events)}
 
         catalog = zope.component.getUtility(zope.catalog.interfaces.ICatalog)
@@ -39,11 +39,11 @@ class Calendar(zope.container.btree.BTreeContainer):
             **{DATE_INDEX: {'between': (start, end, False, True)}})
         # A single_event with the same category and datetime overwrites the
         # recurred event as it is its customization:
-        events_map.update({(x.category, x.datetime): x
+        events_map.update({(x.category, x.in_timezone(timezone)): x
                            for x in single_events})
         # Filter out deleted recurred events and sort:
         return sorted(filter(lambda x: not x.deleted, events_map.values()),
-                      key=lambda x: x.datetime)
+                      key=lambda x: x.in_timezone(timezone))
 
 
 class CalendarDisplaySettings(grok.Annotation):

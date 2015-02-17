@@ -50,6 +50,26 @@ class EventUTests(icemac.ab.calendar.testing.ZCMLTestCase):
             [u'Fritz Koch', u'Hans Tester', u'Heiner Myer', u'Klaus Arkpe'],
             event.listPersons())
 
+    def test_in_timezone_returns_whole_day_event_as_midnight_of_timezone(self):
+        from datetime import date
+        from icemac.ab.calendar.event import BaseEvent
+        from pytz import timezone
+        tz = timezone('Europe/Berlin')
+        event = BaseEvent()
+        event.whole_day_event = True
+        event.date_without_time = date(2015, 1, 5)
+        self.assertEqual(self.get_datetime((2015, 1, 5, 0), tz),
+                         event.in_timezone(tz))
+
+    def test_in_timezone_returns_datetime_of_non_whole_day_event(self):
+        from icemac.ab.calendar.event import BaseEvent
+        from pytz import timezone
+        tz = timezone('Europe/Berlin')
+        event = BaseEvent()
+        event.whole_day_event = False
+        event.datetime = self.get_datetime((2015, 1, 5, 10))  # UTC
+        self.assertEqual(tz.normalize(self.get_datetime((2015, 1, 5, 10))),
+                         event.in_timezone(tz))
 
 class EventCatalogTests(icemac.ab.calendar.testing.ZODBTestCase):
     """Testing catatloging of events."""

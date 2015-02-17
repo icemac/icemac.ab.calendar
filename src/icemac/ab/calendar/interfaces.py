@@ -145,6 +145,14 @@ class IBaseEvent(zope.interface.Interface):
     def listPersons():
         """Sorted list of all persons incl. external ones as strings."""
 
+    def in_timezone(timezone):
+        """Date of event normalized to `timezone`.
+
+        Whole day events are counted as midnight.
+
+        timezone ... str
+
+        """
 
     @zope.interface.invariant
     def on_whole_day_event_date_without_time_must_be_set(event):
