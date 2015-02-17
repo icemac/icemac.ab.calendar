@@ -196,9 +196,11 @@ class GetEventDataFromRecurringEventTests(
             {'alternative_title': u'foo bar',
              'category': category,
              'datetime': self.get_datetime((2000, 1, 1, 10, 30)),
+             'date_without_time': None,
              'external_persons': None,
              'persons': None,
-             'text': None},
+             'text': None,
+             'whole_day_event': False},
             self.callFUT(recurring_event, self.get_datetime((2000, 1, 1, 0))))
 
     def test_returns_appropriate_user_defined_fields(self):
@@ -218,9 +220,11 @@ class GetEventDataFromRecurringEventTests(
              'alternative_title': None,
              'category': None,
              'datetime': self.get_datetime((2000, 1, 1, 10, 30)),
+             'date_without_time': None,
              'external_persons': None,
              'persons': None,
-             'text': None},
+             'text': None,
+             'whole_day_event': False},
             self.callFUT(recurring_event, self.get_datetime((2000, 1, 1, 0))))
 
 
