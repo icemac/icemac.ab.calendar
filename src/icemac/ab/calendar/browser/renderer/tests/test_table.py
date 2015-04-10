@@ -144,7 +144,7 @@ class TableEventITests(icemac.ab.calendar.testing.ZODBTestCase):
         view = self.getVUT(event, request_kw={'HTTP_ACCEPT_LANGUAGE': 'de'})
         self.assertEqual(u'09:47 Uhr', view.time())
 
-    def test_time_renders_Uhr_if_requested_language_is_English(self):
+    def test_time_renders_AM_if_requested_language_is_English(self):
         event = self.create_event(
             datetime=self.get_datetime((2013, 11, 2, 9, 47)))
         view = self.getVUT(event, request_kw={'HTTP_ACCEPT_LANGUAGE': 'en'})
