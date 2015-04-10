@@ -22,10 +22,14 @@ class Calendar(zope.container.btree.BTreeContainer):
     def get_events(self, month, timezone=None):
         """Get all events which belong to `month`."""
         if timezone is None:
-            timezone = 'utc'
-        midnight = time(tzinfo=pytz.timezone(timezone))
-        start = datetime.combine(month.firstOfMonth(), midnight)
-        end = datetime.combine((month + 1).firstOfMonth(), midnight)
+            timezone = pytz.utc
+        else:
+            timezone = pytz.timezone(timezone)
+        midnight = time(tzinfo=timezone)
+        start = timezone.normalize(
+            datetime.combine(month.firstOfMonth(), midnight))
+        end = timezone.normalize(
+            datetime.combine((month + 1).firstOfMonth(), midnight))
 
         recurring_events = zope.component.getUtility(
             icemac.ab.calendar.interfaces.IRecurringEvents).get_events()

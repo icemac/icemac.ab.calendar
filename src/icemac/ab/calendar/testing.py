@@ -40,8 +40,10 @@ class TestMixIn(object):
         if tzinfo is None:
             tzinfo = pytz.utc
         if args:
-            return datetime.datetime(*args, tzinfo=tzinfo)
-        return datetime.datetime.now(tz=tzinfo)
+            dt = datetime.datetime(*args)
+        else:
+            dt = datetime.datetime.now()
+        return tzinfo.localize(dt)
 
     def format_datetime(self, datetime):
         """Format a datetime to the format needed in testbrowser."""
