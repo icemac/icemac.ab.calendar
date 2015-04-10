@@ -29,6 +29,17 @@ class PersonsColumn(z3c.table.column.Column):
         return ', '.join(item.listPersons())
 
 
+class LocalizedDateTimeColumn(z3c.table.column.GetAttrFormatterColumn):
+    """Column which localizes its datetime to selected timezone."""
+
+    def getValue(self, obj):
+        value = super(LocalizedDateTimeColumn, self).getValue(obj)
+        if value:
+            value = value.astimezone(
+                icemac.addressbook.preferences.utils.get_time_zone())
+        return value
+
+
 class Table(icemac.addressbook.browser.table.Table):
     """List recurring events."""
 
@@ -40,7 +51,7 @@ class Table(icemac.addressbook.browser.table.Table):
                 self, icemac.addressbook.browser.table.TitleLinkColumn,
                 'title'),
             z3c.table.column.addColumn(
-                self, z3c.table.column.GetAttrFormatterColumn, 'datetime',
+                self, LocalizedDateTimeColumn, 'datetime',
                 header=_('datetime'), attrName='datetime',
                 formatterLength='short', weight=10),
             z3c.table.column.addColumn(
