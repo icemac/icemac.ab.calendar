@@ -149,3 +149,10 @@ class TableEventITests(icemac.ab.calendar.testing.ZODBTestCase):
             datetime=self.get_datetime((2013, 11, 2, 9, 47)))
         view = self.getVUT(event, request_kw={'HTTP_ACCEPT_LANGUAGE': 'en'})
         self.assertEqual(u'9:47 AM', view.time())
+
+    def test_time_renders_no_time_for_whole_day_event(self):
+        event = self.create_event(
+            date_without_time=self.get_datetime((2013, 11, 2, 18)).date(),
+            whole_day_event=True)
+        view = self.getVUT(event)
+        self.assertEqual(u'', view.time())

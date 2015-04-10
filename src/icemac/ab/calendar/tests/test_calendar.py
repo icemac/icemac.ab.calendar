@@ -121,6 +121,19 @@ class Calendar_get_events_FTests(icemac.ab.calendar.testing.ZODBTestCase):
         self.assertEqual([u'start Mar 2013'],
                          self.callMUT(3, 2013, 'Etc/GMT'))
 
+    def test_whole_day_event_does_not_change_month_via_timezone(self):
+        self.create_event(
+            alternative_title=u'whole day',
+            date_without_time=self.get_datetime((2015, 4, 30, 18)).date(),
+            whole_day_event=True)
+        self.create_event(
+            alternative_title=u'day',
+            datetime=self.get_datetime((2015, 4, 30, 23)))
+        self.assertEqual([u'whole day', u'day'],
+                         self.callMUT(4, 2015, 'Etc/GMT+8'))
+        self.assertEqual([u'whole day'],
+                         self.callMUT(4, 2015, 'Etc/GMT-7'))
+
 
 class CalendarDisplaySettingsTests(icemac.ab.calendar.testing.ZODBTestCase):
     """Testing ..calendar.CalendarDisplaySettings."""
