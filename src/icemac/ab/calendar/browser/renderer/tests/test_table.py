@@ -4,6 +4,7 @@ import unittest
 
 
 class TableUTests(unittest.TestCase):
+
     """Unit testing ..table.Table."""
 
     def test_Table_fulfills_IRenderer_interface(self):
@@ -14,7 +15,8 @@ class TableUTests(unittest.TestCase):
 
 
 class TableITests(icemac.ab.calendar.testing.BrowserTestCase):
-    """Integraion testing ..table.Table."""
+
+    """Integration testing ..table.Table."""
 
     def test_two_events_at_the_same_time_are_rendered_with_one_time_dt(self):
         from datetime import date
@@ -57,6 +59,7 @@ class TableITests(icemac.ab.calendar.testing.BrowserTestCase):
 
 
 class TableEvent_text_Tests(icemac.ab.calendar.testing.UnitTestCase):
+
     """Testing ..table.TableEvent.text()."""
 
     def _make_one(self, text, lang):
@@ -82,6 +85,7 @@ class TableEvent_text_Tests(icemac.ab.calendar.testing.UnitTestCase):
 
 
 class TableEventITests(icemac.ab.calendar.testing.ZODBTestCase):
+
     """Integration testing ..table.TableEvent."""
 
     def setUp(self):

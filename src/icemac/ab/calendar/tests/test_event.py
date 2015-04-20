@@ -1,11 +1,10 @@
-# Copyright (c) 2013-2014 Michael Howitz
-# See also LICENSE.txt
 import icemac.ab.calendar.testing
 import zope.catalog.interfaces
 import zope.component
 
 
 class EventUTests(icemac.ab.calendar.testing.ZCMLTestCase):
+
     """Testing ..event.Event."""
 
     def test_event_implements_IEvent_interface(self):
@@ -51,7 +50,6 @@ class EventUTests(icemac.ab.calendar.testing.ZCMLTestCase):
             event.listPersons())
 
     def test_in_timezone_returns_whole_day_event_as_midnight_of_timezone(self):
-        from datetime import date
         from icemac.ab.calendar.event import BaseEvent
         from pytz import timezone
         tz = timezone('Europe/Berlin')
@@ -73,6 +71,7 @@ class EventUTests(icemac.ab.calendar.testing.ZCMLTestCase):
 
 
 class EventDateTimeTests(icemac.ab.calendar.testing.ZODBTestCase):
+
     """Testing ..event.EventDateTime."""
 
     def getAUT(self, date_tuple):
@@ -90,6 +89,7 @@ class EventDateTimeTests(icemac.ab.calendar.testing.ZODBTestCase):
 
 
 class EventCatalogTests(icemac.ab.calendar.testing.ZODBTestCase):
+
     """Testing catatloging of events."""
 
     def setUp(self):
@@ -106,7 +106,8 @@ class EventCatalogTests(icemac.ab.calendar.testing.ZODBTestCase):
 
 
 class RecurringEventContainerTests(icemac.ab.calendar.testing.ZODBTestCase):
-    """Testing ..event.RecurringEventContainer"""
+
+    """Testing ..event.RecurringEventContainer."""
 
     def setUp(self):
         super(RecurringEventContainerTests, self).setUp()
@@ -133,7 +134,8 @@ class RecurringEventContainerTests(icemac.ab.calendar.testing.ZODBTestCase):
 
 
 class TestRecurrStarEvent(icemac.ab.calendar.testing.ZODBTestCase):
-    """Testing ..event.RecurringEvent and ..event.RecurredEvent"""
+
+    """Testing ..event.RecurringEvent and ..event.RecurredEvent."""
 
     def setUp(self):
         from icemac.addressbook.testing import create_person
@@ -182,6 +184,7 @@ class TestRecurrStarEvent(icemac.ab.calendar.testing.ZODBTestCase):
 
 
 class GetFieldNameOnIEventTests(icemac.ab.calendar.testing.ZODBTestCase):
+
     """Testing ..event._get_field_name_on_IEvent()."""
 
     def callFUT(self, field_name):
@@ -218,6 +221,7 @@ class GetFieldNameOnIEventTests(icemac.ab.calendar.testing.ZODBTestCase):
 
 class GetEventDataFromRecurringEventTests(
         icemac.ab.calendar.testing.ZODBTestCase):
+
     """Testing ..event.get_event_data_from_recurring_event()."""
 
     def callFUT(self, recurring_event, datetime):
@@ -286,6 +290,7 @@ class GetEventDataFromRecurringEventTests(
 
 
 class EventRTests(icemac.ab.calendar.testing.BrowserTestCase):
+
     """Regression testing ..event.Event."""
 
     def test_person_referenced_on_an_event_can_still_become_a_principal(self):
@@ -305,6 +310,7 @@ class EventRTests(icemac.ab.calendar.testing.BrowserTestCase):
 
 
 class EventEntitySTests(icemac.ab.calendar.testing.BrowserTestCase):
+
     """Smoke testing event as an entity."""
 
     def setUp(self):
@@ -344,6 +350,7 @@ class EventEntitySTests(icemac.ab.calendar.testing.BrowserTestCase):
 
 
 class TitleTests(icemac.ab.calendar.testing.ZODBTestCase):
+
     """Testing ..event.title()."""
 
     def callAUT(self, **kw):
@@ -366,6 +373,7 @@ class TitleTests(icemac.ab.calendar.testing.ZODBTestCase):
 
 
 class GetCalendarITests(icemac.ab.calendar.testing.ZODBTestCase):
+
     """Testing ..event.get_calendar()."""
 
     def test_event_can_be_adapted_to_calendar(self):

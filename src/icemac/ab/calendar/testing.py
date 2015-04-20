@@ -27,6 +27,7 @@ SELENIUM_LAYER = icemac.addressbook.testing.SeleniumLayer(
 
 
 class TestMixIn(object):
+
     """Helper methods which might be useful in all tests."""
 
     def get_datetime(self, args=(), tzinfo=None):
@@ -87,6 +88,7 @@ class TestMixIn(object):
 
 
 class ZODBTestMixIn(object):
+
     """Mix-in methods for test cases using the ZODB."""
 
     def _create(self, class_, parent=None, **kw):
@@ -119,11 +121,14 @@ class ZODBTestMixIn(object):
 
 
 class UnitTestCase(unittest.TestCase, TestMixIn):
+
     """Test case for unittests."""
 
 
 class ZCMLTestCase(unittest.TestCase, TestMixIn):
+
     """Test case for test which only need the ZCML registrations."""
+
     layer = ZCML_LAYER
 
 
@@ -132,7 +137,9 @@ class ZODBTestCase(unittest.TestCase,
                    TestMixIn,
                    ZODBTestMixIn,
                    icemac.addressbook.testing.ZODBMixIn):
+
     """Test case for test which need the ZODB."""
+
     layer = ZODB_LAYER
 
 
@@ -141,10 +148,14 @@ class BrowserTestCase(unittest.TestCase,
                       TestMixIn,
                       ZODBTestMixIn,
                       icemac.addressbook.testing.ZODBMixIn):
+
     """Test case for browser tests."""
+
     layer = TEST_BROWSER_LAYER
 
 
 class SeleniumTestCase(icemac.addressbook.testing.SeleniumTestCase):
+
     """Test case for selenium tests."""
+
     layer = SELENIUM_LAYER

@@ -65,6 +65,7 @@ class Edit(icemac.addressbook.browser.base.GroupEditForm):
 
 
 class Delete(icemac.addressbook.browser.base.BaseDeleteForm):
+
     """Confirmation when deleting an event."""
 
     label = _(u'Do you really want to delete this event?')
@@ -73,6 +74,7 @@ class Delete(icemac.addressbook.browser.base.BaseDeleteForm):
 
 
 class Clone(icemac.addressbook.browser.base.BaseCloneForm):
+
     """Clone event with confirmation."""
 
     label = _(u'Do you really want to clone this event?')
@@ -81,6 +83,7 @@ class Clone(icemac.addressbook.browser.base.BaseCloneForm):
 
 
 class CustomizeRecurredEvent(icemac.ab.calendar.browser.base.View):
+
     """Prepare customization of a RecurredEvent."""
 
     def __call__(self):
@@ -97,6 +100,7 @@ class CustomizeRecurredEvent(icemac.ab.calendar.browser.base.View):
 
 
 class RecurredEventFormMixIn(object):
+
     """Mix-In providing data of recurred event from session."""
 
     def getContent(self):
@@ -113,6 +117,7 @@ class RecurredEventFormMixIn(object):
 class AddFromRecurredEvent(icemac.ab.calendar.browser.base.View,
                            RecurredEventFormMixIn,
                            icemac.addressbook.browser.base.BaseAddForm):
+
     """Add form for changing a recurred event."""
 
     label = _(u'Edit recurred event')
@@ -142,6 +147,7 @@ class AddFromRecurredEvent(icemac.ab.calendar.browser.base.View,
 class ViewRecurredEvent(icemac.ab.calendar.browser.base.View,
                         RecurredEventFormMixIn,
                         icemac.addressbook.browser.base.BaseEditForm):
+
     """View form for a recurred event."""
 
     label = _(u'View recurred event')
@@ -153,6 +159,7 @@ class ViewRecurredEvent(icemac.ab.calendar.browser.base.View,
 class DeleteRecurredEvent(icemac.ab.calendar.browser.base.View,
                           RecurredEventFormMixIn,
                           icemac.addressbook.browser.base.BaseDeleteForm):
+
     """Add form for deleting a recurred event."""
 
     label = _(u'Do you really want to delete this recurred event?')
@@ -172,6 +179,7 @@ class DeleteRecurredEvent(icemac.ab.calendar.browser.base.View,
 
 class RecurredEventAbsoluteURL(zope.traversing.browser.AbsoluteURL,
                                icemac.ab.calendar.browser.base.View):
+
     """URL to customize a recurred event."""
 
     def __str__(self):
