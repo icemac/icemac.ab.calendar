@@ -50,6 +50,10 @@ class TestMixIn(object):
         """Format a datetime to the format needed in testbrowser."""
         return datetime.strftime('%y/%m/%d %H:%M')
 
+    def format_date(self, date):
+        """Format a date to the format needed in testbrowser."""
+        return "{0.year} {0.month} {0.day} ".format(date)
+
     def get_request(self, **kw):
         """Get a request object on the right skin layer."""
         return zope.publisher.browser.TestRequest(

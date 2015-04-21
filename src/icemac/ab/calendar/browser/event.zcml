@@ -5,6 +5,31 @@
    xmlns:gocept="http://namespaces.gocept.com/zcml"
    i18n_domain="icemac.addressbook">
 
+  <adapter factory=".event.EventDatetime"
+           trusted="y"/>
+
+  <class class=".event.EventDatetime">
+    <require
+       permission="icemac.ab.calendar.ViewEvent"
+       interface=".interfaces.IEventDatetime"
+       />
+    <require
+      permission="icemac.ab.calendar.EditEvent"
+      set_schema=".interfaces.IEventDatetime"
+      />
+  </class>
+
+  <class class=".event.Datetime">
+    <require
+       permission="icemac.ab.calendar.ViewEvent"
+       interface=".interfaces.IDatetime"
+       />
+    <require
+      permission="icemac.ab.calendar.EditEvent"
+      set_schema=".interfaces.IDatetime"
+      />
+  </class>
+
   <z3c:addMenuItem
      manager="icemac.addressbook.browser.menus.interfaces.IAddMenu"
      for="icemac.ab.calendar.interfaces.ICalendar"

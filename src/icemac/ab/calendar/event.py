@@ -14,6 +14,10 @@ import zope.container.contained
 import zope.interface
 
 
+MIDNIGHT = time(0, 0)
+NOON = time(12, 0)
+
+
 class BaseEvent(object):
     """Base class of all event classes."""
 
@@ -32,7 +36,7 @@ class BaseEvent(object):
         """
         if self.whole_day_event:
             return timezone.localize(
-                datetime.combine(self.date_without_time, time(0, 0)))
+                datetime.combine(self.datetime.date(), MIDNIGHT))
         return timezone.normalize(self.datetime)
 
 
@@ -95,12 +99,11 @@ class EventDateTime(grok.Adapter):
     @property
     def datetime(self):
         """Date of the event always having a time for indexing."""
+        if self.context.datetime is None:
+            return None
         if self.context.whole_day_event:
-            if self.context.date_without_time is not None:
-                return datetime.combine(self.context.date_without_time,
-                                        time(12, 0, tzinfo=pytz.utc))
-            else:
-                return None
+            return pytz.utc.localize(
+                datetime.combine(self.context.datetime.date(), NOON))
         return self.context.datetime
 
 
@@ -175,11 +178,8 @@ def get_event_data_from_recurring_event(recurring_event, date):
             bound_field = icemac.addressbook.entities.get_bound_schema_field(
                 recurring_event, revent_entity, field)
             data[key] = bound_field.get(bound_field.context)
-    if data['whole_day_event']:
-        data['date_without_time'] = date
-    else:
-        data[u'datetime'] = data[u'datetime'].replace(
-            year=date.year, month=date.month, day=date.day)
+    data[u'datetime'] = data[u'datetime'].replace(
+        year=date.year, month=date.month, day=date.day)
     return data
 
 

@@ -45,8 +45,14 @@ class TableITests(icemac.ab.calendar.testing.BrowserTestCase):
         browser = self.get_browser('cal-editor')
         browser.open('http://localhost/ab/++attribute++calendar')
         browser.getLink('15').click()
-        self.assertEqual('%s/15 00:00' % date.today().strftime('%y/%m'),
-                         browser.getControl('datetime').value)
+        strftime = date.today().strftime
+        self.assertEqual(
+            '%s %s 15 ' % (strftime('%Y'), strftime('%m').lstrip('0')),
+            browser.getControl('date').value)
+        self.assertEqual('12:00', browser.getControl('time').value)
+        # Whole day event:
+        self.assertTrue(browser.getControl('yes').selected)
+        browser.handleErrors = False
         browser.getControl('Add', index=1).click()
         self.assertEqual(['"example" added.'], browser.get_messages())
 
@@ -156,7 +162,7 @@ class TableEventITests(icemac.ab.calendar.testing.ZODBTestCase):
 
     def test_time_renders_no_time_for_whole_day_event(self):
         event = self.create_event(
-            date_without_time=self.get_datetime((2013, 11, 2, 18)).date(),
+            datetime=self.get_datetime((2013, 11, 2, 18)),
             whole_day_event=True)
         view = self.getVUT(event)
         self.assertEqual(u'', view.time())

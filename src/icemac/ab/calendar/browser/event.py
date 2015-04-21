@@ -1,14 +1,22 @@
 from datetime import date, datetime, time
 from icemac.addressbook.i18n import _
+import grokcore.component as grok
 import icemac.ab.calendar.browser.base
+import icemac.ab.calendar.browser.interfaces
 import icemac.ab.calendar.event
 import icemac.addressbook.browser.base
 import icemac.addressbook.browser.metadata
+import icemac.addressbook.preferences.utils
+import pytz
 import z3c.form.button
 import z3c.form.form
 import z3c.form.interfaces
+import z3c.form.object
 import zope.component
 import zope.traversing.browser
+
+MIDNIGHT = time(0, 0)
+NOON = time(12, 0)
 
 
 def date_from_iso_string(string):
@@ -22,7 +30,106 @@ def date_from_iso_string(string):
     return date(*tuple(int(x) for x in string.split('-')))
 
 
-class Add(icemac.addressbook.browser.base.BaseAddForm):
+class EventDatetime(object):
+
+    """Adapter to edit an event using the IDatetime object field.
+
+    Needs to be registered via ZCML, as grok has no model based security.
+    """
+
+    zope.component.adapts(icemac.ab.calendar.interfaces.IEvent)
+    zope.interface.implements(
+        icemac.ab.calendar.browser.interfaces.IEventDatetime)
+
+    def __init__(self, context):
+        self.context = context
+
+    @property
+    def datetime(self):
+        return icemac.ab.calendar.browser.interfaces.IDatetime(self.context)
+
+    @datetime.setter
+    def datetime(self, value):
+        self.context.datetime = value.datetime
+        self.context.whole_day_event = value.whole_day_event
+
+
+class Datetime(grok.Adapter):
+
+    """Adapter storing the IDatetime field data and computing `datetime`."""
+
+    grok.context(icemac.ab.calendar.interfaces.IEvent)
+    grok.implements(icemac.ab.calendar.browser.interfaces.IDatetime)
+
+    date = None
+    time = None
+    whole_day_event = None
+    _datetime = None
+
+    def __init__(self, context=None, whole_day_event=None):
+        super(Datetime, self).__init__(context)
+        self.whole_day_event = whole_day_event
+        if isinstance(self.context, datetime):
+            self._datetime = self.context
+        elif self.context is not None:
+            # context seems to be an IEvent
+            self._datetime = self.context.datetime
+            self.whole_day_event = self.context.whole_day_event
+        if self._datetime:
+            local_datetime = self._timezone.normalize(self._datetime)
+            self.date = local_datetime.date()
+            self.time = local_datetime.time()
+
+    @property
+    def datetime(self):
+        if self.whole_day_event:
+            time = NOON
+        else:
+            time = self.time
+        return pytz.utc.normalize(self._timezone.localize(
+            datetime.combine(self.date, time)))
+
+    @property
+    def _timezone(self):
+        return icemac.addressbook.preferences.utils.get_time_zone()
+
+
+@grok.adapter(datetime)
+@grok.implementer(icemac.ab.calendar.browser.interfaces.IDatetime)
+def IDatetime_from_datetime(datetime):
+    """Adapter needed for AddForm when adding a preselected day."""
+    return Datetime(datetime, whole_day_event=True)
+
+
+# Factory needed for the add form to initially store the IDatetime values:
+z3c.form.object.registerFactoryAdapter(
+    icemac.ab.calendar.browser.interfaces.IDatetime, Datetime)
+
+
+class EventFields(object):
+
+    """Form fields to add or edit an event."""
+
+    interface = None
+
+    @property
+    def fields(self):
+        fields = icemac.addressbook.interfaces.IEntity(self.interface)
+        field_values = []
+        for name, field in fields.getFields():
+            if name == 'whole_day_event':
+                continue
+            if name == 'datetime':
+                field_values.append(
+                    icemac.ab.calendar.browser.interfaces.IEventDatetime[
+                        'datetime'])
+            else:
+                field_values.append(field)
+        return z3c.form.field.Fields(*field_values)
+
+
+class Add(EventFields, icemac.addressbook.browser.base.BaseAddForm):
+
     """Add form for an event."""
 
     label = _(u'Add new event')
@@ -34,14 +141,17 @@ class Add(icemac.addressbook.browser.base.BaseAddForm):
     def getContent(self):
         date = date_from_iso_string(self.request.get('date'))
         if date is not None:
-            selected_datetime = datetime.combine(date, time(0, 0))
+            timezone = icemac.addressbook.preferences.utils.get_time_zone()
+            selected_datetime = timezone.localize(datetime.combine(date, NOON))
         else:
             selected_datetime = None
-        data = {'datetime': selected_datetime}
+        data = {'datetime': selected_datetime,
+                'whole_day_event': True}
         return data
 
 
-class Edit(icemac.addressbook.browser.base.GroupEditForm):
+class Edit(EventFields, icemac.addressbook.browser.base.GroupEditForm):
+
     """Edit for for an event."""
 
     groups = (icemac.addressbook.browser.metadata.MetadataGroup,)

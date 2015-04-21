@@ -126,8 +126,7 @@ class IBaseEvent(zope.interface.Interface):
 
     category = zope.schema.Choice(
         title=_('event category'), source=category_source)
-    datetime = zope.schema.Datetime(title=_('datetime'), required=False)
-    date_without_time = zope.schema.Date(title=_('date'), required=False)
+    datetime = zope.schema.Datetime(title=_('datetime'), required=True)
     whole_day_event = zope.schema.Bool(
         title=_('whole day event?'), default=False)
     alternative_title = zope.schema.TextLine(
@@ -153,16 +152,6 @@ class IBaseEvent(zope.interface.Interface):
         timezone ... str
 
         """
-
-    @zope.interface.invariant
-    def on_whole_day_event_date_without_time_must_be_set(event):
-        if event.whole_day_event and event.date_without_time is None:
-            raise zope.interface.Invalid(_('Date must be entered.'))
-
-    @zope.interface.invariant
-    def on_non_whole_day_event_datetime_must_be_set(event):
-        if not event.whole_day_event and event.datetime is None:
-            raise zope.interface.Invalid(_('Date must be entered.'))
 
 
 class IEvent(IBaseEvent):

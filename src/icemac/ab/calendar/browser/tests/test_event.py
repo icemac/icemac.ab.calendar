@@ -17,6 +17,8 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.create_category(u'wedding day')
         self.datetime = get_datetime_today_8_32_am()
         self.formatted_datetime = self.datetime.strftime('%y/%m/%d %H:%M')
+        self.formatted_date = self.format_date(self.datetime)
+        self.formatted_time = self.datetime.strftime('%H:%M')
 
     def test_navigation_to_calendar_is_possible(self):
         browser = self.get_browser('cal-editor')
@@ -33,7 +35,8 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertEqual(
             'http://localhost/ab/++attribute++calendar/@@addEvent.html',
             browser.url)
-        browser.getControl('datetime').value = self.formatted_datetime
+        browser.getControl('date').value = self.formatted_date
+        browser.getControl('time').value = self.formatted_time
         browser.getControl('event category').displayValue = ['wedding day']
         browser.getControl('Add', index=1).click()
         self.assertEqual(
@@ -41,7 +44,7 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
             browser.url)
         self.assertEqual(['"wedding day" added.'], browser.get_messages())
         # New event shows up in calendar:
-        self.assertIn('08:32', browser.contents)
+        self.assertIn(self.formatted_time, browser.contents)
 
     def test_event_can_be_edited(self):
         self.create_event(datetime=self.datetime)
@@ -50,8 +53,8 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         browser.getLink('Edit').click()
         self.assertEqual(
             'http://localhost/ab/++attribute++calendar/Event', browser.url)
-        self.assertEqual(
-            self.formatted_datetime, browser.getControl('datetime').value)
+        self.assertEqual(self.formatted_date, browser.getControl('date').value)
+        self.assertEqual(self.formatted_time, browser.getControl('time').value)
         browser.getControl('event category').displayValue = ['wedding day']
         browser.getControl('Apply').click()
         self.assertEqual(

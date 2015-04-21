@@ -55,7 +55,7 @@ class EventUTests(icemac.ab.calendar.testing.ZCMLTestCase):
         tz = timezone('Europe/Berlin')
         event = BaseEvent()
         event.whole_day_event = True
-        event.date_without_time = date(2015, 1, 5)
+        event.datetime = self.get_datetime((2015, 1, 5, 13, 13))
         self.assertEqual(self.get_datetime((2015, 1, 5, 0), tz),
                          event.in_timezone(tz))
 
@@ -74,16 +74,15 @@ class EventDateTimeTests(icemac.ab.calendar.testing.ZODBTestCase):
 
     """Testing ..event.EventDateTime."""
 
-    def getAUT(self, date_tuple):
-        from datetime import date
+    def getAUT(self, datetime_tuple):
         from ..interfaces import IEventDateTime
         event = self.create_event(
-            date_without_time=date(*date_tuple), whole_day_event=True)
+            datetime=self.get_datetime(datetime_tuple), whole_day_event=True)
         return IEventDateTime(event)
 
     def test_whole_day_event_gets_indexed_with_noon_utc(self):
         from pytz import utc
-        adapter = self.getAUT((2015, 1, 5))
+        adapter = self.getAUT((2015, 1, 5, 14, 14))
         self.assertEqual(self.get_datetime((2015, 1, 5, 12)), adapter.datetime)
         self.assertEqual(utc, adapter.datetime.tzinfo)
 
@@ -238,25 +237,23 @@ class GetEventDataFromRecurringEventTests(
             {'alternative_title': u'foo bar',
              'category': category,
              'datetime': self.get_datetime((2000, 1, 1, 10, 30)),
-             'date_without_time': None,
              'external_persons': None,
              'persons': None,
              'text': None,
              'whole_day_event': False},
             self.callFUT(recurring_event, self.get_datetime((2000, 1, 1, 0))))
 
-    def test_returns_whole_day_events_as_date_without_time(self):
+    def test_returns_whole_day_events(self):
         category = self.create_category(u'bar')
         recurring_event = self.create_recurring_event(
             category=category,
-            date_without_time=self.get_datetime((2014, 5, 24, 1)).date(),
+            datetime=self.get_datetime((2014, 5, 24, 1)),
             whole_day_event=True,
             alternative_title=u'foo bar')
         self.assertEqual(
             {'alternative_title': u'foo bar',
              'category': category,
-             'datetime': None,
-             'date_without_time': self.get_datetime((2000, 1, 1, 0)).date(),
+             'datetime': self.get_datetime((2000, 1, 1, 1)),
              'external_persons': None,
              'persons': None,
              'text': None,
@@ -281,7 +278,6 @@ class GetEventDataFromRecurringEventTests(
              'alternative_title': None,
              'category': None,
              'datetime': self.get_datetime((2000, 1, 1, 10, 30)),
-             'date_without_time': None,
              'external_persons': None,
              'persons': None,
              'text': None,
@@ -333,8 +329,9 @@ class EventEntitySTests(icemac.ab.calendar.testing.BrowserTestCase):
         # This new field can be used in the event add form:
         browser.open(
             'http://localhost/ab/++attribute++calendar/@@addEvent.html')
-        browser.getControl('datetime').value = self.format_datetime(
-            self.get_datetime())
+        browser.getControl('date').value = self.format_date(
+            self.get_datetime().date())
+        browser.getControl('yes').selected = True  # whole day event?
         browser.getControl('event category').displayValue = ['Wedding']
         browser.getControl('Number of reservations').value = '42'
         browser.getControl('Add', index=1).click()

@@ -124,7 +124,7 @@ class Calendar_get_events_FTests(icemac.ab.calendar.testing.ZODBTestCase):
     def test_whole_day_event_does_not_change_month_via_timezone(self):
         self.create_event(
             alternative_title=u'whole day',
-            date_without_time=self.get_datetime((2015, 4, 30, 18)).date(),
+            datetime=self.get_datetime((2015, 4, 30, 23)),
             whole_day_event=True)
         self.create_event(
             alternative_title=u'day',
