@@ -1,5 +1,3 @@
-# Copyright (c) 2013-2014 Michael Howitz
-# See also LICENSE.txt
 from ..browser.event import EVENT_CONFIRMATION_FIELDS, EventFields
 from icemac.addressbook.i18n import _
 import icemac.ab.calendar.interfaces
@@ -11,6 +9,7 @@ import z3c.table.column
 
 
 class RecurrenceColumn(z3c.table.column.I18nGetAttrColumn):
+
     """Column displaying the concrete recurrence of an event."""
 
     header = _('recurrence period')
@@ -22,6 +21,7 @@ class RecurrenceColumn(z3c.table.column.I18nGetAttrColumn):
 
 
 class PersonsColumn(z3c.table.column.Column):
+
     """Column displaying all persons assigned to an event."""
 
     header = _('persons')
@@ -31,6 +31,7 @@ class PersonsColumn(z3c.table.column.Column):
 
 
 class LocalizedDateTimeColumn(z3c.table.column.GetAttrFormatterColumn):
+
     """Column which localizes its datetime to selected timezone."""
 
     def getValue(self, obj):
@@ -42,6 +43,7 @@ class LocalizedDateTimeColumn(z3c.table.column.GetAttrFormatterColumn):
 
 
 class Table(icemac.addressbook.browser.table.Table):
+
     """List recurring events."""
 
     no_rows_message = _(u'No recurring events defined yet.')
@@ -76,6 +78,7 @@ class Table(icemac.addressbook.browser.table.Table):
 
 
 class Add(icemac.addressbook.browser.base.BaseAddForm):
+
     """Add form for an recurring event."""
 
     label = _(u'Add new recurring event')
@@ -85,6 +88,7 @@ class Add(icemac.addressbook.browser.base.BaseAddForm):
 
 
 class Edit(icemac.addressbook.browser.base.GroupEditForm):
+
     """Edit form for recurring event."""
 
     groups = (icemac.addressbook.browser.metadata.MetadataGroup,)
@@ -110,6 +114,9 @@ class Edit(icemac.addressbook.browser.base.GroupEditForm):
 
 
 class Delete(icemac.addressbook.browser.base.BaseDeleteForm):
+
+    """Confirm delete of recurring event."""
+
     label = _(u'Do you really want to delete this recurring event?')
     interface = icemac.ab.calendar.interfaces.IRecurringEvent
     field_names = EVENT_CONFIRMATION_FIELDS
