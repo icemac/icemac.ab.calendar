@@ -121,7 +121,7 @@ class EventFields(object):
         for name, field in fields.getFields():
             if name == 'whole_day_event':
                 continue
-            if name == 'datetime':
+            elif name == 'datetime':
                 field_values.append(
                     icemac.ab.calendar.browser.interfaces.IEventDatetime[
                         'datetime'])
