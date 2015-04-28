@@ -129,6 +129,7 @@ class IBaseEvent(zope.interface.Interface):
     datetime = zope.schema.Datetime(title=_('datetime'), required=True)
     whole_day_event = zope.schema.Bool(
         title=_('whole day event?'), default=False)
+    whole_day_event.setTaggedValue('omit-from-field-list', True)
     alternative_title = zope.schema.TextLine(
         title=_('alternative title to category'), required=False)
     persons = gocept.reference.field.Set(
