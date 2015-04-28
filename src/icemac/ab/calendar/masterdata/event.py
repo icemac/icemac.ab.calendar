@@ -1,5 +1,6 @@
 # Copyright (c) 2013-2014 Michael Howitz
 # See also LICENSE.txt
+from ..browser.event import EVENT_CONFIRMATION_FIELDS, EventFields
 from icemac.addressbook.i18n import _
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.browser.base
@@ -111,4 +112,4 @@ class Edit(icemac.addressbook.browser.base.GroupEditForm):
 class Delete(icemac.addressbook.browser.base.BaseDeleteForm):
     label = _(u'Do you really want to delete this recurring event?')
     interface = icemac.ab.calendar.interfaces.IRecurringEvent
-    field_names = ('category', 'alternative_title', 'datetime')
+    field_names = EVENT_CONFIRMATION_FIELDS

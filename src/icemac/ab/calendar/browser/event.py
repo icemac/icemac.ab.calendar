@@ -17,6 +17,8 @@ import zope.traversing.browser
 
 MIDNIGHT = time(0, 0)
 NOON = time(12, 0)
+EVENT_CONFIRMATION_FIELDS = (
+    'category', 'alternative_title', 'whole_day_event', 'datetime')
 
 
 def date_from_iso_string(string):
@@ -180,7 +182,7 @@ class Delete(icemac.addressbook.browser.base.BaseDeleteForm):
 
     label = _(u'Do you really want to delete this event?')
     interface = icemac.ab.calendar.interfaces.IEvent
-    field_names = ('datetime', 'category', 'alternative_title')
+    field_names = EVENT_CONFIRMATION_FIELDS
 
 
 class Clone(icemac.addressbook.browser.base.BaseCloneForm):
@@ -189,7 +191,7 @@ class Clone(icemac.addressbook.browser.base.BaseCloneForm):
 
     label = _(u'Do you really want to clone this event?')
     interface = icemac.ab.calendar.interfaces.IEvent
-    field_names = ('datetime', 'category', 'alternative_title')
+    field_names = EVENT_CONFIRMATION_FIELDS
 
 
 class CustomizeRecurredEvent(icemac.ab.calendar.browser.base.View):
@@ -274,7 +276,7 @@ class DeleteRecurredEvent(icemac.ab.calendar.browser.base.View,
 
     label = _(u'Do you really want to delete this recurred event?')
     interface = icemac.ab.calendar.interfaces.IEvent
-    field_names = ('category', 'alternative_title', 'datetime')
+    field_names = EVENT_CONFIRMATION_FIELDS
 
     def _handle_action(self):
         content = self.getContent()
