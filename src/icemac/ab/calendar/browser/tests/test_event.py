@@ -16,7 +16,7 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.create_category(u'birthday')
         self.create_category(u'wedding day')
         self.datetime = get_datetime_today_8_32_am()
-        self.formatted_datetime = self.datetime.strftime('%y/%m/%d %H:%M')
+        self.formatted_datetime = self.format_datetime(self.datetime)
         self.formatted_date = self.format_date(self.datetime)
         self.formatted_time = self.datetime.strftime('%H:%M')
 
@@ -175,9 +175,9 @@ class AddFromRecurredEventTests(icemac.ab.calendar.testing.BrowserTestCase):
         self.assertEqual(ADD_FROM_RECURRED_EVENT_URL, browser.url)
         self.assertEqual(['bar'],
                          browser.getControl('event category').displayValue)
-        self.assertEqual(
-            '%s 10:30' % self.get_datetime().date().strftime('%y/%m/%d'),
-            browser.getControl('datetime').value)
+        self.assertEqual(self.format_date(self.get_datetime()),
+                         browser.getControl('date').value)
+        self.assertEqual('10:30', browser.getControl('time').value)
         self.assertEqual(
             'foo bär',
             browser.getControl('alternative title to category').value)

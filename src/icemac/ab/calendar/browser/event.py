@@ -223,11 +223,14 @@ class RecurredEventFormMixIn(object):
         date = self.session['recurred-event-date']
         data = icemac.ab.calendar.event.get_event_data_from_recurring_event(
             recurring_event, date)
+        data['datetime'] = Datetime(
+            data['datetime'], data.pop('whole_day_event'))
         return data
 
 
 class AddFromRecurredEvent(icemac.ab.calendar.browser.base.View,
                            RecurredEventFormMixIn,
+                           EventFields,
                            icemac.addressbook.browser.base.BaseAddForm):
 
     """Add form for changing a recurred event."""
@@ -258,6 +261,7 @@ class AddFromRecurredEvent(icemac.ab.calendar.browser.base.View,
 
 class ViewRecurredEvent(icemac.ab.calendar.browser.base.View,
                         RecurredEventFormMixIn,
+                        EventFields,
                         icemac.addressbook.browser.base.BaseEditForm):
 
     """View form for a recurred event."""
@@ -270,6 +274,7 @@ class ViewRecurredEvent(icemac.ab.calendar.browser.base.View,
 
 class DeleteRecurredEvent(icemac.ab.calendar.browser.base.View,
                           RecurredEventFormMixIn,
+                          EventFields,
                           icemac.addressbook.browser.base.BaseDeleteForm):
 
     """Add form for deleting a recurred event."""
@@ -282,7 +287,8 @@ class DeleteRecurredEvent(icemac.ab.calendar.browser.base.View,
         content = self.getContent()
         icemac.addressbook.utils.create_and_add(
             self.context, icemac.ab.calendar.event.Event,
-            category=content['category'], datetime=content['datetime'],
+            category=content['category'],
+            datetime=content['datetime'].datetime,
             deleted=True)
         title = content['alternative_title'] or content['category']
         self.status = _('"${title}" deleted.', mapping=dict(title=title))

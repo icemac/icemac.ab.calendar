@@ -77,7 +77,7 @@ class Table(icemac.addressbook.browser.table.Table):
         return self.context.values()
 
 
-class Add(icemac.addressbook.browser.base.BaseAddForm):
+class Add(EventFields, icemac.addressbook.browser.base.BaseAddForm):
 
     """Add form for an recurring event."""
 
@@ -87,7 +87,7 @@ class Add(icemac.addressbook.browser.base.BaseAddForm):
     next_url = 'parent'
 
 
-class Edit(icemac.addressbook.browser.base.GroupEditForm):
+class Edit(EventFields, icemac.addressbook.browser.base.GroupEditForm):
 
     """Edit form for recurring event."""
 

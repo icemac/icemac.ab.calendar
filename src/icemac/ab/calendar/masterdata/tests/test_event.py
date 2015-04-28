@@ -31,8 +31,9 @@ class RecurringEventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
         self.browser.getLink('recurring event').click()
         self.browser.getControl('event category').getControl(
             'birthday').selected = True
-        self.browser.getControl('datetime').value = self.format_datetime(
+        self.browser.getControl('date').value = self.format_date(
             self.get_datetime())
+        self.browser.getControl('time').value = '21:45'
         self.browser.getControl('recurrence end').value = '2025 1 1 '
         self.browser.getControl(name='form.buttons.add').click()
         self.assertEqual(['"birthday" added.'], self.browser.get_messages())
