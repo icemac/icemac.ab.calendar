@@ -96,13 +96,6 @@ class Datetime(grok.Adapter):
         return icemac.addressbook.preferences.utils.get_time_zone()
 
 
-@grok.adapter(datetime)
-@grok.implementer(icemac.ab.calendar.browser.interfaces.IDatetime)
-def IDatetime_from_datetime(datetime):
-    """Adapter needed for AddForm when adding a preselected day."""
-    return Datetime(datetime, whole_day_event=True)
-
-
 # Factory needed for the add form to initially store the IDatetime values:
 z3c.form.object.registerFactoryAdapter(
     icemac.ab.calendar.browser.interfaces.IDatetime, Datetime)
@@ -145,10 +138,11 @@ class Add(EventFields, icemac.addressbook.browser.base.BaseAddForm):
         if date is not None:
             timezone = icemac.addressbook.preferences.utils.get_time_zone()
             selected_datetime = timezone.localize(datetime.combine(date, NOON))
+            whole_day_event = True
         else:
             selected_datetime = None
-        data = {'datetime': selected_datetime,
-                'whole_day_event': True}
+            whole_day_event = False
+        data = {'datetime': Datetime(selected_datetime, whole_day_event)}
         return data
 
 
