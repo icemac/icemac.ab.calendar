@@ -272,3 +272,18 @@ div#content #calendar table td:last-child {
     background-color: #996633;
     color: #FFFFFF;
 }
+
+/* Style datetime Object widget inline so it looks like there is no object
+   widget */
+#content #form-widgets-datetime-row .label {
+    display: none;
+}
+#content #form-widgets-datetime-row .widget .label {
+    display: inherit;
+}
+#content #form-widgets-datetime-row .widget {
+    margin-left: 0;
+}
+#content #form-widgets-datetime-row .widget .widget {
+    margin-left: 1em;
+}
