@@ -17,7 +17,15 @@ PACKAGE_ID = 'icemac.ab.calendar'
 DATE_INDEX = 'icemac.ab.calendar.event.date'
 
 
-class ICalendar(zope.interface.Interface):
+class ICalendarObject(zope.interface.Interface):
+    """Marker interface for objects belonging to the calendar.
+
+    This is needed to get the calendar skin layer.
+
+    """
+
+
+class ICalendar(ICalendarObject):
     """Calender and storage for dates."""
 
     def get_events(month, timezone=None):
@@ -168,7 +176,7 @@ class IEventDateTime(zope.interface.Interface):
     datetime = zope.interface.Attribute('datetime of the event')
 
 
-class IRecurringEvents(zope.interface.Interface):
+class IRecurringEvents(ICalendarObject):
     """Container for recurrign events."""
 
     def get_events():

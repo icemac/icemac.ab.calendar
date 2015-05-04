@@ -49,7 +49,7 @@
       permission="zope.Public" />
 
   <subscriber
-      for="..interfaces.ICalendar
+      for="..interfaces.ICalendarObject
            icemac.addressbook.browser.interfaces.IAddressBookLayer"
       factory=".resource.set_layer"
       provides="icemac.addressbook.browser.interfaces.IAttributeTraversalHook"
