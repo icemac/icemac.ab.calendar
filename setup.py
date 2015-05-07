@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2013-2014 Michael Howitz
-# See also LICENSE.txt
-
 import os.path
 import setuptools
 
 
 def read(*path_elements):
+    """Read file."""
     return file(os.path.join(*path_elements)).read()
 
 
