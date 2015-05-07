@@ -158,7 +158,8 @@ class BrowserTestCase(unittest.TestCase,
     layer = TEST_BROWSER_LAYER
 
 
-class SeleniumTestCase(icemac.addressbook.testing.SeleniumTestCase):
+class SeleniumTestCase(icemac.addressbook.testing.SeleniumTestCase,
+                       ZODBTestMixIn):
 
     """Test case for selenium tests."""
 

@@ -15,6 +15,8 @@ Features
 - Newlines in the `nodes` field now lead to new items in the caöendar view for
   each line.
 
+- Allow events to take place the whole day.
+
 Other
 -----
 

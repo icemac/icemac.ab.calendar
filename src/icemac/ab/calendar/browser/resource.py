@@ -3,6 +3,7 @@
 from icemac.addressbook.browser.resource import base_css
 import fanstatic
 import icemac.ab.calendar.browser.interfaces
+import js.classy
 import js.jquery
 import zope.viewlet.viewlet
 
@@ -10,7 +11,8 @@ import zope.viewlet.viewlet
 lib = fanstatic.Library('calendar', 'resources')
 calendar_css = fanstatic.Resource(lib, 'calendar.css', depends=[base_css])
 calendar_js = fanstatic.Resource(
-    lib, 'calendar.js', depends=[js.jquery.jquery], bottom=True)
+    lib, 'calendar.js', depends=[js.jquery.jquery, js.classy.classy],
+    bottom=True)
 
 
 class CalendarResources(zope.viewlet.viewlet.ViewletBase):

@@ -211,3 +211,59 @@ class AddFromRecurredEventTests(icemac.ab.calendar.testing.BrowserTestCase):
         browser.getControl('Yes').click()
         self.assertEqual([u'"foo bär" deleted.'], browser.get_messages())
         self.assertTrue(self.layer['addressbook'].calendar['Event'].deleted)
+
+
+class EventSTests(icemac.ab.calendar.testing.SeleniumTestCase):
+
+    """Selenium testing ../resources/calendar.js"""
+
+    def create_event(self, whole_day_event):
+        """Create an event, today at 08:32."""
+        return super(EventSTests, self).create_event(
+            datetime=get_datetime_today_8_32_am(),
+            whole_day_event=whole_day_event)
+
+    def login(self):
+        super(EventSTests, self).login('cal-editor', 'cal-editor')
+        sel = self.selenium
+        sel.open('/ab/++attribute++calendar/Event')
+        return sel
+
+    def assert_time(self, status):
+        """Assert display status of time widget: 'shown' or 'hidden'."""
+        if status == 'hidden':
+            self.selenium.waitForNotVisible(
+                'id=form-widgets-datetime-widgets-time')
+        else:
+            self.selenium.waitForVisible(
+                'id=form-widgets-datetime-widgets-time')
+
+    def test_time_is_initially_hidden_for_whole_day_events(self):
+        self.create_event(whole_day_event=True)
+        self.login()
+        self.assert_time('hidden')
+
+    def test_time_is_initially_shown_for_non_whole_day_events(self):
+        self.create_event(whole_day_event=False)
+        self.login()
+        self.assert_time('shown')
+
+    def test_changing_event_to_whole_day_event_hides_time(self):
+        self.create_event(whole_day_event=False)
+        sel = self.login()
+        sel.click('id=form-widgets-datetime-widgets-whole_day_event-0')
+        self.assert_time('hidden')
+
+    def test_changing_event_to_non_whole_day_event_shows_time(self):
+        self.create_event(whole_day_event=True)
+        sel = self.login()
+        sel.click('id=form-widgets-datetime-widgets-whole_day_event-1')
+        self.assert_time('shown')
+
+    def test_clicking_on_selected_event_kind_does_not_toggle_time_display(
+            self):
+        self.create_event(whole_day_event=True)
+        sel = self.login()
+        self.assert_time('hidden')
+        sel.click('id=form-widgets-datetime-widgets-whole_day_event-0')
+        self.assert_time('hidden')
