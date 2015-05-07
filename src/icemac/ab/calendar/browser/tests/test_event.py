@@ -3,12 +3,14 @@ import icemac.ab.calendar.testing
 
 
 def get_datetime_today_8_32_am():
+    """Get a datetime object for today with fixed time."""
     from datetime import date, time, datetime
     from pytz import utc
     return datetime.combine(date.today(), time(8, 32, tzinfo=utc))
 
 
 class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
+
     """CRUD testing for ..event.*"""
 
     def setUp(self):
@@ -96,6 +98,7 @@ class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
 
 
 def get_customize_recurred_event_url(recurring_event):
+    """Get the URL to customize a recurred event."""
     return ('http://localhost/ab/++attribute++calendar/'
             '@@customize-recurred-event?event=%s&date=%s' % (
                 recurring_event.__name__,
@@ -106,6 +109,7 @@ ADD_FROM_RECURRED_EVENT_URL = (
 
 
 class EventSecurity(icemac.ab.calendar.testing.BrowserTestCase):
+
     """Security tests for categories."""
 
     def test_visitor_is_not_able_to_add_events_even_if_he_knows_the_url(self):
@@ -146,6 +150,7 @@ class EventSecurity(icemac.ab.calendar.testing.BrowserTestCase):
 
 
 class AddFromRecurredEventTests(icemac.ab.calendar.testing.BrowserTestCase):
+
     """Testing ..event.AddFromRecurredEvent."""
 
     def setUp(self):

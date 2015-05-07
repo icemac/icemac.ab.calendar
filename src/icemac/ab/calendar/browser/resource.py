@@ -1,5 +1,3 @@
-# Copyright (c) 2013-2014 Michael Howitz
-# See also LICENSE.txt
 from icemac.addressbook.browser.resource import base_css
 import fanstatic
 import icemac.ab.calendar.browser.interfaces
@@ -16,6 +14,7 @@ calendar_js = fanstatic.Resource(
 
 
 class CalendarResources(zope.viewlet.viewlet.ViewletBase):
+
     """Resources which are needed for the calendar."""
 
     def update(self):
