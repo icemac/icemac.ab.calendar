@@ -2,6 +2,7 @@ import icemac.ab.calendar.testing
 
 
 class CalendarTests(icemac.ab.calendar.testing.BrowserTestCase):
+
     """Testing ..calendar.Calendar."""
 
     def setUp(self):
@@ -27,6 +28,7 @@ class CalendarTests(icemac.ab.calendar.testing.BrowserTestCase):
 
 
 class CalendarSecurityTests(icemac.ab.calendar.testing.BrowserTestCase):
+
     """Security testing ..calendar.Calendar."""
 
     def test_visitor_is_not_able_to_access_display_fields(self):
