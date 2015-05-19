@@ -52,7 +52,7 @@ class EventFieldsSource(zc.sourcefactory.basic.BasicSourceFactory):
         # are always displayed or handeled in a specfic way:
         for field_name, field in self.event_entity.getRawFields():
             if field_name in ('datetime', 'category', 'alternative_title',
-                              'external_persons'):
+                              'external_persons', 'whole_day_event'):
                 continue
             yield field
 
