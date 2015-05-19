@@ -1,5 +1,3 @@
-# Copyright (c) 2013-2014 Michael Howitz
-# See also LICENSE.txt
 from __future__ import unicode_literals
 import icemac.ab.calendar.testing
 

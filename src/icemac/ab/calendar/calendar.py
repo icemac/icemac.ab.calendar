@@ -16,7 +16,8 @@ import zope.interface
 
 
 class Calendar(zope.container.btree.BTreeContainer):
-    "Calendar containing dates."
+    """Calendar containing dates."""
+
     zope.interface.implements(icemac.ab.calendar.interfaces.ICalendar)
 
     def get_events(self, month, timezone=None):
@@ -52,6 +53,7 @@ class Calendar(zope.container.btree.BTreeContainer):
 
 class CalendarDisplaySettings(grok.Annotation):
     """Store calendar display settings in annotations."""
+
     grok.context(icemac.ab.calendar.interfaces.ICalendar)
     grok.implements(icemac.ab.calendar.interfaces.ICalendarDisplaySettings)
 
@@ -76,5 +78,5 @@ class CalendarDisplaySettings(grok.Annotation):
 @grok.adapter(icemac.addressbook.interfaces.IAddressBook)
 @grok.implementer(icemac.ab.calendar.interfaces.ICalendar)
 def calendar(address_book):
-    "Adapt the event to its calendar."
+    """Adapt the event to its calendar."""
     return address_book.calendar
