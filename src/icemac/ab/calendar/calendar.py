@@ -61,8 +61,15 @@ class CalendarDisplaySettings(grok.Annotation):
 
     @property
     def event_additional_fields(self):
-        return [icemac.addressbook.fieldsource.untokenize(value)[1]
-                for value in self._event_additional_fields]
+        fields = []
+        for value in self._event_additional_fields:
+            try:
+                field = icemac.addressbook.fieldsource.untokenize(value)[1]
+            except KeyError:
+                pass
+            else:
+                fields.append(field)
+        return fields
 
     @event_additional_fields.setter
     def event_additional_fields(self, fields):

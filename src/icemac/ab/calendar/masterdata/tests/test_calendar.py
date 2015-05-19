@@ -12,19 +12,39 @@ class CalendarTests(icemac.ab.calendar.testing.BrowserTestCase):
             self.layer['addressbook'], 'icemac.ab.calendar.event.Event',
             u'Int', u'reservations')
 
+    def _delete_user_defined_field(self):
+        browser = self.get_browser('mgr')
+        browser.open('http://localhost/ab/++attribute++entities/'
+                     'icemac.ab.calendar.event.Event')
+        browser.getLink('Delete').click()
+        browser.getControl('Yes').click()
+        self.assertEqual(['"reservations" deleted.'], browser.get_messages())
+
+    def assert_fields_selected(self, fields, browser):
+        self.assertEqual(
+            fields,
+            browser.getControl(
+                name='form.widgets.event_additional_fields.to').displayOptions)
+
     def test_fields_for_display_can_be_selected(self):
         browser = self.get_browser('cal-editor')
         browser.open('http://localhost/ab/@@calendar-masterdata.html')
         browser.getLink('Calendar view').click()
-        self.assertEqual(
-            'http://localhost/ab/++attribute++calendar/@@edit-display.html',
-            browser.url)
+        edit_display_URL = (
+            'http://localhost/ab/++attribute++calendar/@@edit-display.html')
+        self.assertEqual(edit_display_URL, browser.url)
         browser.in_out_widget_select('form.widgets.event_additional_fields',
                                      [browser.getControl('persons'),
                                       browser.getControl('reservations')])
         browser.getControl('Apply').click()
         self.assertEqual(
             ['Data successfully updated.'], browser.get_messages())
+        browser.open(edit_display_URL)
+        self.assert_fields_selected(['reservations', 'persons'], browser)
+        # Does not break on selected but deleted user defined field:
+        self._delete_user_defined_field()
+        browser.open(edit_display_URL)
+        self.assert_fields_selected(['persons'], browser)
 
 
 class CalendarSecurityTests(icemac.ab.calendar.testing.BrowserTestCase):
