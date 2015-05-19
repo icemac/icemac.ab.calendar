@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2013-2014 Michael Howitz
-# See also LICENSE.txt
 from .renderer.interfaces import UnknownLanguageError, IEventDescription
 from datetime import date
 from icemac.addressbook.i18n import _

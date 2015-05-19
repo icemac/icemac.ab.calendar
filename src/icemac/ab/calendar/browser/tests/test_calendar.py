@@ -10,6 +10,7 @@ if datetime.date.today().month == 5:
 
 
 class CalendarSecurity(icemac.ab.calendar.testing.BrowserTestCase):
+
     """Security tests for the calendar."""
 
     def test_visitor_is_able_to_access_a_filled_calendar(self):
@@ -59,6 +60,7 @@ class CalendarSecurity(icemac.ab.calendar.testing.BrowserTestCase):
 
 
 class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
+
     """Testing ..calendar.Calendar."""
 
     def test_displays_current_month_by_default(self):
@@ -195,6 +197,7 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
 
 
 class CalendarSTests(icemac.ab.calendar.testing.SeleniumTestCase):
+
     """Selenium testing ..calendar.Calendar."""
 
     def test_month_dropdown_on_month_view_autosubmits(self):

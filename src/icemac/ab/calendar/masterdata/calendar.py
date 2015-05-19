@@ -5,6 +5,7 @@ import zope.schema.interfaces
 
 
 class CalendarView(icemac.addressbook.browser.base.GroupEditForm):
+
     """Edit the calendar view settings."""
 
     interface = icemac.ab.calendar.interfaces.ICalendarDisplaySettings
@@ -13,6 +14,7 @@ class CalendarView(icemac.addressbook.browser.base.GroupEditForm):
 
 class AnnotationField(icemac.addressbook.browser.datamanager.AnnotationField,
                       grok.MultiAdapter):
+
     """Special AnnotationField for calendar."""
 
     grok.adapts(icemac.ab.calendar.interfaces.ICalendar,
