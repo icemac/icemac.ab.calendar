@@ -140,11 +140,12 @@ class TestRecurrStarEvent(icemac.ab.calendar.testing.ZODBTestCase):
         from icemac.addressbook.testing import create_person
         super(TestRecurrStarEvent, self).setUp()
         ab = self.layer['addressbook']
-        category = self.create_category(u'birthday')
-        person = create_person(ab, ab, u'Tester')
+        self.category = self.create_category(u'birthday')
+        self.person = create_person(ab, ab, u'Tester')
         self.recurring_event = self.create_recurring_event(
-            datetime=self.get_datetime((2014, 5, 2, 12)), category=category,
-            period='weekly', persons=set([person]), text=u'foobar')
+            datetime=self.get_datetime((2014, 5, 2, 12)), text=u'foobar',
+            category=self.category, period='weekly',
+            persons=set([self.person]))
 
     def test_get_events_returns_iterable_of_RecurredEvent_instances(self):
         from ..event import RecurredEvent
@@ -169,6 +170,25 @@ class TestRecurrStarEvent(icemac.ab.calendar.testing.ZODBTestCase):
 
     def test_RecurredEvent__create_from_copies_attributes_from_parameter(self):
         from ..event import RecurredEvent
+        from icemac.addressbook.interfaces import IEntity
+        from icemac.ab.calendar.interfaces import IRecurringEvent
+        from icemac.addressbook.testing import create_field, create
+
+        ab = self.layer['addressbook']
+        event_field_name = create_field(
+            ab, 'icemac.ab.calendar.event.Event', u'Int', u'reserve')
+        revent_field_name = create_field(
+            ab, 'icemac.ab.calendar.event.RecurringEvent', u'Int', u'reserve')
+        data = {
+            'datetime': self.get_datetime((2014, 5, 2, 12)),
+            'category': self.category,
+            'period': 'weekly',
+            'persons': set([self.person]),
+            revent_field_name: 42,
+            'return_obj': True}
+        recurring_event = create(
+            ab, ab.calendar, IEntity(IRecurringEvent).class_name, **data)
+
         recurred_event = RecurredEvent.create_from(
             recurring_event, self.get_datetime((2014, 4, 12, 21)))
         self.assertEqual(
@@ -179,7 +199,8 @@ class TestRecurrStarEvent(icemac.ab.calendar.testing.ZODBTestCase):
             self.recurring_event.category, recurred_event.category)
         self.assertEqual(
             self.layer['addressbook'].calendar, recurred_event.__parent__)
-        self.assertEqual(self.recurring_event, recurred_event.recurring_event)
+        self.assertEqual(recurring_event, recurred_event.recurring_event)
+        self.assertEqual(42, getattr(recurred_event, event_field_name))
 
 
 class GetFieldNameOnIEventTests(icemac.ab.calendar.testing.ZODBTestCase):

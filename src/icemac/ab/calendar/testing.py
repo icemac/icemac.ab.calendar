@@ -149,6 +149,7 @@ class ZODBTestCase(unittest.TestCase,
 
 class BrowserTestCase(unittest.TestCase,
                       icemac.addressbook.testing.BrowserMixIn,
+                      gocept.testing.assertion.Ellipsis,
                       TestMixIn,
                       ZODBTestMixIn,
                       icemac.addressbook.testing.ZODBMixIn):

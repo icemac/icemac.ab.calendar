@@ -195,6 +195,66 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         browser.open(calendar_url)
         self.assertEqual(calendar_url + '/@@year.html', browser.url)
 
+    def test_displays_fields_selected_in_master_data(self):
+        from icemac.ab.calendar.interfaces import ICalendarDisplaySettings
+        from icemac.ab.calendar.interfaces import IEvent
+        from icemac.ab.calendar.interfaces import IRecurringEvent
+        from icemac.addressbook.interfaces import IEntity
+        from icemac.addressbook.testing import create_field, create
+        # Create user fields for select
+        ab = self.layer['addressbook']
+        event_field_name = create_field(
+            ab, 'icemac.ab.calendar.event.Event', u'Int', u'reservations')
+        revent_field_name = create_field(
+            ab, 'icemac.ab.calendar.event.RecurringEvent', u'Int',
+            u'reservations')
+        # Select fields
+        event_entity = IEntity(IEvent)
+        field_names = ['text', event_field_name]
+        ICalendarDisplaySettings(ab.calendar).event_additional_fields = [
+            event_entity.getRawField(x) for x in field_names]
+
+        category = self.create_category(u'bar')
+        data = {'datetime': self.get_datetime(), 'text': u'Text1',
+                'period': 'yearly', revent_field_name: 42,
+                'category': category, 'return_obj': True}
+        create(ab, ab.calendar_recurring_events,
+               IEntity(IRecurringEvent).class_name, **data)
+        browser = self.get_browser('cal-visitor')
+        browser.open('http://localhost/ab/++attribute++calendar')
+        self.assertEllipsis('''...
+      <ul class="info">
+        <li>Text1</li>
+        <li>42</li>
+      </ul>...''', browser.contents)
+
+    def test_ignores_field_if_not_defined_on_IRecurringEvent(self):
+        from icemac.ab.calendar.interfaces import ICalendarDisplaySettings
+        from icemac.ab.calendar.interfaces import IEvent
+        from icemac.ab.calendar.interfaces import IRecurringEvent
+        from icemac.addressbook.interfaces import IEntity
+        from icemac.addressbook.testing import create_field, create
+        # Create user fields for select
+        ab = self.layer['addressbook']
+        field_name = create_field(
+            ab, 'icemac.ab.calendar.event.Event', u'Int', u'reservations')
+        # Select fields
+        event_entity = IEntity(IEvent)
+        ICalendarDisplaySettings(ab.calendar).event_additional_fields = [
+            event_entity.getRawField(x) for x in ['text', field_name]]
+
+        category = self.create_category(u'bar')
+        data = {'datetime': self.get_datetime(), 'text': u'Text2',
+                'period': 'yearly', 'category': category, 'return_obj': True}
+        create(ab, ab.calendar_recurring_events,
+               IEntity(IRecurringEvent).class_name, **data)
+        browser = self.get_browser('cal-visitor')
+        browser.handleErrors = False
+        browser.open('http://localhost/ab/++attribute++calendar')
+        self.assertEllipsis('''...
+      <span class="info">Text2</span>
+...''', browser.contents)
+
 
 class CalendarSTests(icemac.ab.calendar.testing.SeleniumTestCase):
 

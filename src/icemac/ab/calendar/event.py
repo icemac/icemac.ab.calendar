@@ -200,7 +200,9 @@ def calendar_of_recurring_event(recurring_event):
 class RecurredEvent(BaseEvent):
     """An event computed from RecurringEvent."""
 
-    zope.interface.implements(icemac.ab.calendar.interfaces.IRecurredEvent)
+    zope.interface.implements(
+        icemac.ab.calendar.interfaces.IRecurredEvent,
+        icemac.addressbook.interfaces.IUserFieldStorage)
     zope.schema.fieldproperty.createFieldProperties(
         icemac.ab.calendar.interfaces.IRecurredEvent)
 

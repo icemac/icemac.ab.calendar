@@ -105,6 +105,7 @@ class TableEventITests(icemac.ab.calendar.testing.ZODBTestCase):
 
     def getVUT(
             self, event, field_names=[], time_zone_name=None, request_kw={}):
+        from icemac.addressbook.interfaces import IEntity
         from icemac.ab.calendar.browser.renderer.interfaces import (
             IEventDescription)
         from icemac.ab.calendar.interfaces import (
@@ -112,8 +113,9 @@ class TableEventITests(icemac.ab.calendar.testing.ZODBTestCase):
         from zope.component import getMultiAdapter
         request = self.get_request(**request_kw)
         ab = self.layer['addressbook']
+        event_entity = IEntity(IEvent)
         ICalendarDisplaySettings(ab.calendar).event_additional_fields = [
-            IEvent[x] for x in field_names]
+            event_entity.getRawField(x) for x in field_names]
         event_description = IEventDescription(event)
         view = getMultiAdapter(
             (event_description, request), name='table-event')
@@ -141,6 +143,19 @@ class TableEventITests(icemac.ab.calendar.testing.ZODBTestCase):
           <li>Cool!</li>
         </ul>
         ...''', self.getVUT(event, ['persons', 'text'])())
+
+    def test_info_renders_user_defined_fields(self):
+        from icemac.addressbook.interfaces import IEntity
+        from icemac.ab.calendar.interfaces import IEvent
+        from icemac.addressbook.testing import create_field, create
+        ab = self.layer['addressbook']
+        field_name = create_field(
+            ab, 'icemac.ab.calendar.event.Event', u'Int', u'reservations')
+        data = {'datetime': self.get_datetime(), 'text': u'Text1',
+                field_name: 42, 'return_obj': True}
+        event = create(ab, ab.calendar, IEntity(IEvent).class_name, **data)
+        self.assertEqual([{u'info': u'Text1'}, {u'info': u'42'}],
+                         self.getVUT(event, ['text', field_name]).info())
 
     def test_time_is_converted_to_timezone_of_user(self):
         event = self.create_event(

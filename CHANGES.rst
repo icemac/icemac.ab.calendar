@@ -17,6 +17,12 @@ Features
 
 - Allow events to take place the whole day.
 
+Bugfixes
+--------
+
+- Selecting a user defined field for display in calendar view resulted in an
+  error when displaying recurred events.
+
 Other
 -----
 

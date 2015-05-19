@@ -309,10 +309,13 @@ class EventDescription(grok.Adapter):
             else:
                 schema_field = (
                     icemac.addressbook.entities.get_bound_schema_field(
-                        self.context,
-                        icemac.addressbook.interfaces.IEntity(field.interface),
-                        field))
-                value = schema_field.get(schema_field.context)
+                        self.context, None, field,
+                        default_attrib_fallback=False))
+                try:
+                    value = schema_field.get(schema_field.context)
+                except AttributeError:
+                    # Field defined on IEvent but not on IRecurringEvent
+                    value = None
                 if value is not None:
                     value = unicode(value)
             if value:
