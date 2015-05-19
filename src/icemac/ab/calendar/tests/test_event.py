@@ -170,7 +170,7 @@ class TestRecurrStarEvent(icemac.ab.calendar.testing.ZODBTestCase):
     def test_RecurredEvent__create_from_copies_attributes_from_parameter(self):
         from ..event import RecurredEvent
         recurred_event = RecurredEvent.create_from(
-            self.recurring_event, self.get_datetime((2014, 4, 12, 21)))
+            recurring_event, self.get_datetime((2014, 4, 12, 21)))
         self.assertEqual(
             self.get_datetime((2014, 4, 12, 21)), recurred_event.datetime)
         self.assertIn(list(self.recurring_event.persons)[0],
@@ -241,7 +241,8 @@ class GetEventDataFromRecurringEventTests(
              'persons': None,
              'text': None,
              'whole_day_event': False},
-            self.callFUT(recurring_event, self.get_datetime((2000, 1, 1, 0))))
+            self.callFUT(recurring_event,
+                         self.get_datetime((2000, 1, 1, 10, 30))))
 
     def test_returns_whole_day_events(self):
         category = self.create_category(u'bar')
@@ -259,7 +260,7 @@ class GetEventDataFromRecurringEventTests(
              'text': None,
              'whole_day_event': True},
             self.callFUT(
-                recurring_event, self.get_datetime((2000, 1, 1, 0)).date()))
+                recurring_event, self.get_datetime((2000, 1, 1, 1))))
 
     def test_returns_appropriate_user_defined_fields(self):
         from icemac.addressbook.testing import create_field, create
@@ -282,7 +283,8 @@ class GetEventDataFromRecurringEventTests(
              'persons': None,
              'text': None,
              'whole_day_event': False},
-            self.callFUT(recurring_event, self.get_datetime((2000, 1, 1, 0))))
+            self.callFUT(recurring_event,
+                         self.get_datetime((2000, 1, 1, 10, 30))))
 
 
 class EventRTests(icemac.ab.calendar.testing.BrowserTestCase):

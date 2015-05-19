@@ -86,7 +86,7 @@ class Calendar_get_events_FTests(icemac.ab.calendar.testing.ZODBTestCase):
             period=u'weekly',
             category=night_lunch)
         event_data = get_event_data_from_recurring_event(
-            recurring_event, self.get_datetime((2013, 3, 21, 0)).date())
+            recurring_event, self.get_datetime((2013, 3, 21, 23, 0)))
         event_data['alternative_title'] = u'this week'
         self.create_event(**event_data)
         self.assertEqual([(u'each week', '2013-03-14'),

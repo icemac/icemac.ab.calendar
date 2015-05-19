@@ -215,8 +215,10 @@ class RecurredEventFormMixIn(object):
         recurring_event = recurring_events[
             self.session['recurring-event-name']]
         date = self.session['recurred-event-date']
+        datetime = recurring_event.datetime.replace(
+            year=date.year, month=date.month, day=date.day)
         data = icemac.ab.calendar.event.get_event_data_from_recurring_event(
-            recurring_event, date)
+            recurring_event, datetime)
         data['datetime'] = Datetime(
             data['datetime'], data.pop('whole_day_event'))
         return data

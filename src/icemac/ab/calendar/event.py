@@ -161,7 +161,7 @@ def _get_field_name_on_IEvent(field, event_entity):
     return None
 
 
-def get_event_data_from_recurring_event(recurring_event, date):
+def get_event_data_from_recurring_event(recurring_event, datetime):
     """Get the event data from a recurring event
 
     This data can be written as the `__dict__` of the event.
@@ -178,8 +178,7 @@ def get_event_data_from_recurring_event(recurring_event, date):
             bound_field = icemac.addressbook.entities.get_bound_schema_field(
                 recurring_event, revent_entity, field)
             data[key] = bound_field.get(bound_field.context)
-    data[u'datetime'] = data[u'datetime'].replace(
-        year=date.year, month=date.month, day=date.day)
+    data[u'datetime'] = datetime
     return data
 
 
@@ -212,11 +211,8 @@ class RecurredEvent(BaseEvent):
     @classmethod
     def create_from(cls, recurring_event, datetime):
         """Constructor: Copy data from recurring event."""
-        field_names = zope.schema.getFieldNames(
-            icemac.ab.calendar.interfaces.IEvent)
-        data = {name: getattr(recurring_event, name) for name in field_names}
+        data = get_event_data_from_recurring_event(recurring_event, datetime)
         data.update({
-            'datetime': datetime,
             '__parent__': icemac.ab.calendar.interfaces.ICalendar(
                 recurring_event),
             'recurring_event': recurring_event})
