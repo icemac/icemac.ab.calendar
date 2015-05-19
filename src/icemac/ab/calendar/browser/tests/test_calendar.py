@@ -210,14 +210,16 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
             u'reservations')
         # Select fields
         event_entity = IEntity(IEvent)
-        field_names = ['text', event_field_name]
+        # Sort order is used for display in calendar:
+        field_names = ['text', event_field_name, 'persons']
         ICalendarDisplaySettings(ab.calendar).event_additional_fields = [
             event_entity.getRawField(x) for x in field_names]
 
         category = self.create_category(u'bar')
         data = {'datetime': self.get_datetime(), 'text': u'Text1',
                 'period': 'yearly', revent_field_name: 42,
-                'category': category, 'return_obj': True}
+                'external_persons': [u'Ben Utzer'], 'category': category,
+                'return_obj': True}
         create(ab, ab.calendar_recurring_events,
                IEntity(IRecurringEvent).class_name, **data)
         browser = self.get_browser('cal-visitor')
@@ -226,6 +228,7 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
       <ul class="info">
         <li>Text1</li>
         <li>42</li>
+        <li>Ben Utzer</li>
       </ul>...''', browser.contents)
 
     def test_ignores_field_if_not_defined_on_IRecurringEvent(self):
