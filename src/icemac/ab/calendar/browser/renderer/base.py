@@ -46,7 +46,7 @@ class Calendar(grok.MultiAdapter,
         raise NotImplementedError()
 
     def translate(self, message_id):
-        return zope.i18n.translate(message_id, self.request)
+        return zope.i18n.translate(message_id, context=self.request)
 
     def __call__(self):
         self.update()
