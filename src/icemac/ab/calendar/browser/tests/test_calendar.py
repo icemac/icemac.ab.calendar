@@ -258,6 +258,41 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
       <span class="info">Text2</span>
 ...''', browser.contents)
 
+    def _delete_user_defined_field(self):
+        browser = self.get_browser('mgr')
+        browser.open('http://localhost/ab/++attribute++entities/'
+                     'icemac.ab.calendar.event.Event')
+        browser.getLink('Delete').click()
+        browser.getControl('Yes').click()
+        self.assertEqual(['"reservations" deleted.'], browser.get_messages())
+
+    def test_ignores_selected_but_deleted_user_defined_field(self):
+        from icemac.ab.calendar.interfaces import ICalendarDisplaySettings
+        from icemac.ab.calendar.interfaces import IEvent
+        from icemac.addressbook.interfaces import IEntity
+        from icemac.addressbook.testing import create_field, create
+        # Create user field for select
+        ab = self.layer['addressbook']
+        field_name = create_field(
+            ab, 'icemac.ab.calendar.event.Event', u'Int', u'reservations')
+        # Select fields
+        event_entity = IEntity(IEvent)
+        field_names = ['text', field_name]
+        ICalendarDisplaySettings(ab.calendar).event_additional_fields = [
+            event_entity.getRawField(x) for x in field_names]
+
+        category = self.create_category(u'bar')
+        data = {'datetime': self.get_datetime(), 'text': u'Text1',
+                'category': category, field_name: 42, 'return_obj': True}
+        create(ab, ab.calendar, IEntity(IEvent).class_name, **data)
+
+        self._delete_user_defined_field()
+        browser = self.get_browser('cal-visitor')
+        browser.open('http://localhost/ab/++attribute++calendar')
+        self.assertEllipsis('''...
+      <span class="info">Text1</span>
+...''', browser.contents)
+
 
 class CalendarSTests(icemac.ab.calendar.testing.SeleniumTestCase):
 
