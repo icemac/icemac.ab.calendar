@@ -237,7 +237,7 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         from icemac.ab.calendar.interfaces import IRecurringEvent
         from icemac.addressbook.interfaces import IEntity
         from icemac.addressbook.testing import create_field, create
-        # Create user fields for select
+        # Create user field for select
         ab = self.layer['addressbook']
         field_name = create_field(
             ab, 'icemac.ab.calendar.event.Event', u'Int', u'reservations')
