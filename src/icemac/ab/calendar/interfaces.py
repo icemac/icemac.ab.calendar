@@ -249,3 +249,16 @@ class IRecurredEvent(IBaseEvent):
 
     def create_from(recurring_event, datetime):
         "Create an instance with data from recurring event but for `datetime`."
+
+
+class INoSecurityProxyType(zope.interface.interfaces.IInterface):
+    """"Marker interface for interfaces which require security unwrapping.
+
+    The `.masterdata.calendar.AnnotationField` security unrwarps contexts
+    providing such an interface because they are stored in annotations.
+
+    Usage: register the interface in ZCML via
+
+    <interface interface=".your.Interface"
+               type="icemac.ab.calendar.interfaces.INoSecurityProxyType" />
+    """

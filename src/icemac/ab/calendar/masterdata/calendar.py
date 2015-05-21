@@ -20,5 +20,8 @@ class AnnotationField(icemac.addressbook.browser.datamanager.AnnotationField,
     grok.adapts(icemac.ab.calendar.interfaces.ICalendar,
                 zope.schema.interfaces.IField)
 
-    no_security_proxy = (
-        icemac.ab.calendar.interfaces.ICalendarDisplaySettings,)
+    @property
+    def no_security_proxy(self):
+        interfaces = [x[1] for x in zope.component.getUtilitiesFor(
+            icemac.ab.calendar.interfaces.INoSecurityProxyType)]
+        return interfaces

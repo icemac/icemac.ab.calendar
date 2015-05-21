@@ -18,6 +18,8 @@
   <include file="classes.zcml" />
 
   <subscriber handler=".install.install_calendar" />
+  <interface interface=".interfaces.ICalendarDisplaySettings"
+             type="icemac.ab.calendar.interfaces.INoSecurityProxyType" />
 
   <!-- Category -->
   <adapter
