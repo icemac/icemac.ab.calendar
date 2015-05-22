@@ -8,6 +8,11 @@
      />
 
   <permission
+     id="icemac.ab.calendar.EditCalendarAnnotations"
+     title="EditCalendarAnnotations"
+     />
+
+  <permission
      id="icemac.ab.calendar.ViewCalendar"
      title="ViewCalendar"
      />

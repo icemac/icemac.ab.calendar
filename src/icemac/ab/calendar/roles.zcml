@@ -31,6 +31,10 @@
      />
   <grant
      role="icemac.ab.calendar.Editor"
+     permission="icemac.ab.calendar.EditCalendarAnnotations"
+     />
+  <grant
+     role="icemac.ab.calendar.Editor"
      permission="icemac.ab.calendar.ViewCalendar"
      />
 

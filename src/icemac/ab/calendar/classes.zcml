@@ -15,6 +15,9 @@
       permission="icemac.ab.calendar.EditCalendar"
       set_schema=".interfaces.ICalendar"
       interface="zope.container.interfaces.IWriteContainer"
+      />
+    <require
+      permission="icemac.ab.calendar.EditCalendarAnnotations"
       set_attributes="__annotations__"
       />
   </class>
