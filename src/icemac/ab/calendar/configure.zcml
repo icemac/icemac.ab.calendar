@@ -20,6 +20,9 @@
   <subscriber handler=".install.install_calendar" />
   <interface interface=".interfaces.ICalendarDisplaySettings"
              type="icemac.ab.calendar.interfaces.INoSecurityProxyType" />
+  <interface interface="icemac.addressbook.metadata.interfaces.IEditor"
+             type="icemac.ab.calendar.interfaces.INoSecurityProxyType" />
+
 
   <!-- Category -->
   <adapter
