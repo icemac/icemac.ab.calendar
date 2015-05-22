@@ -4,6 +4,7 @@
 from __future__ import unicode_literals
 from .base import Calendar
 from .interfaces import AUSFALL, INTERN, UnknownLanguageError
+from icemac.addressbook.browser.base import can_access_uri_part
 from icemac.addressbook.i18n import _
 import datetime
 import grokcore.component as grok
@@ -26,6 +27,7 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
     show_time = True
     action_class = 'edit'
     _action_url = None
+    default_text = _('Edit')  # allow at least to edit the entry
 
     def time(self):
         if self.context.whole_day:  # and not event.has_text():
@@ -57,7 +59,7 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
     def text(self):
         text = self._localized(self.context.getText).strip()
         if not text:
-            text = _('Edit')  # allow at least to edit the entry
+            text = self.default_text
         return text
 
     def info(self):
@@ -73,6 +75,8 @@ class Table(Calendar):
     """Tabular display of a calendar."""
 
     grok.name('table')
+    may_render_days_as_add_links = True
+    render_event_adapter_name = 'table-event'
 
     def update(self):
         first_of_month = self.month.firstOfMonth()
@@ -107,12 +111,7 @@ class Table(Calendar):
         self.write('  <tbody>')
         today = datetime.date.today()
         events = self.events
-        calendar = icemac.ab.calendar.interfaces.ICalendar(
-            icemac.addressbook.interfaces.IAddressBook(None))
-        can_add_event = icemac.addressbook.browser.base.can_access_uri_part(
-            calendar, self.request, 'addEvent.html')
-        if can_add_event:
-            add_url = self.url(calendar, 'addEvent.html')
+        add_event_for_day_url = self.get_add_event_for_day_url()
         for delta in xrange(self.num_of_days):
             if (delta % 7) == 0:
                 # week start
@@ -127,13 +126,13 @@ class Table(Calendar):
                 css_classes.append('today')
             self.write('<td class="%s">', ' '.join(css_classes))
             if day in self.month:
-                if can_add_event:
+                if add_event_for_day_url:
                     self.write(
-                        '<a href="%s?date=%s" title="%s">', add_url,
-                        day.isoformat(), self.translate(
-                            _('Add new event for this day.')))
+                        '<a href="%s?date=%s" title="%s">',
+                        add_event_for_day_url, day.isoformat(),
+                        self.translate(_('Add new event for this day.')))
                 self.write('<span class="number">%s</span>', day.day)
-                if can_add_event:
+                if add_event_for_day_url:
                     self.write('</a>')
                 found_events_for_day = False
                 for ev in events[:]:
@@ -146,7 +145,8 @@ class Table(Calendar):
                         self.write('<dl>')
                         found_events_for_day = True
                     view = zope.component.getMultiAdapter(
-                        (ev, self.request), name='table-event')
+                        (ev, self.request),
+                        name=self.render_event_adapter_name)
                     view.show_time = (ev.datetime != prev_datetime)
                     self.write(view())
                     prev_datetime = ev.datetime
@@ -157,3 +157,18 @@ class Table(Calendar):
         self.write('  </tbody>')
         self.write('</table>')
         return self.read()
+
+    def get_add_event_for_day_url(self):
+        """Get the URL to add a new a event for a day.
+
+        Takes `may_render_days_as_add_links` into account.
+        Returns None if there should be no add link.
+
+        """
+        if not self.may_render_days_as_add_links:
+            return None
+        calendar = icemac.ab.calendar.interfaces.ICalendar(
+            icemac.addressbook.interfaces.IAddressBook(None))
+        if not can_access_uri_part(calendar, self.request, 'addEvent.html'):
+            return None
+        return self.url(calendar, 'addEvent.html')

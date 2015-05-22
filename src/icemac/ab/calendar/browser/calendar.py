@@ -106,9 +106,10 @@ class TabularCalendar(icemac.ab.calendar.browser.base.View):
         return self.url(self.context, to=target)
 
     def update(self):
-        self.form = self.form_class(self, self.request)
-        # Write the value the user entered on self:
-        self.form.update()
+        if self.form_class is not None:
+            self.form = self.form_class(self, self.request)
+            # Write the value the user entered on self:
+            self.form.update()
 
     def render_form(self):
         return self.form.render()
@@ -128,6 +129,7 @@ class MonthCalendar(TabularCalendar):
     zope.interface.implements(IMonthSelector)
     form_class = MonthSelectorForm
     css_class = 'month'
+    renderer_name = 'table'
 
     @property
     def calendar_month(self):
@@ -154,7 +156,7 @@ class MonthCalendar(TabularCalendar):
         self.renderer = zope.component.getMultiAdapter(
             (self.month, self.request, events),
             icemac.ab.calendar.browser.renderer.interfaces.IRenderer,
-            name='table')
+            name=self.renderer_name)
 
     def render_calendar(self):
         return self.renderer()

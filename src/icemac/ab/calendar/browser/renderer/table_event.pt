@@ -3,7 +3,8 @@
 <dd tal:attributes="class view/dd_class">
   <a tal:attributes="class view/action_class;
                      href view/action_url"
-     tal:content="structure view/text" />
+     tal:content="structure view/text"
+     tal:omit-tag="not:view/action_url" />
   <tal:info tal:define="info view/info">
     <tal:single-element condition="python:len(info) &lt;= 1">
       <span class="info"
