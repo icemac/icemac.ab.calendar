@@ -65,9 +65,7 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
         return [{'info': x} for x in self._localized(self.context.getInfo)]
 
     def action_url(self):
-        if self._action_url is None:
-            self._action_url = self.url(self.context.context)
-        return self._action_url
+        return self.url(self.context.context)
 
 
 class Table(Calendar):

@@ -117,10 +117,8 @@ class TableEventITests(icemac.ab.calendar.testing.ZODBTestCase):
         ICalendarDisplaySettings(ab.calendar).event_additional_fields = [
             event_entity.getRawField(x) for x in field_names]
         event_description = IEventDescription(event)
-        view = getMultiAdapter(
+        return getMultiAdapter(
             (event_description, request), name='table-event')
-        view._action_url = 'url:'
-        return view
 
     def test_renders_no_selected_event_additional_field_as_nothing(self):
         event = self.create_event(datetime=self.get_datetime())
