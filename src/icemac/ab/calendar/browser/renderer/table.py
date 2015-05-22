@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2010-2014 Michael Howitz
-# See also LICENSE.txt
 from __future__ import unicode_literals
+
 from .base import Calendar
 from .interfaces import AUSFALL, INTERN, UnknownLanguageError
 from icemac.addressbook.browser.base import can_access_uri_part
