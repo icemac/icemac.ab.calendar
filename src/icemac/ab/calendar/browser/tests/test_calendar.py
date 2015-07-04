@@ -258,14 +258,6 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
       <span class="info">Text2</span>
 ...''', browser.contents)
 
-    def _delete_user_defined_field(self):
-        browser = self.get_browser('mgr')
-        browser.open('http://localhost/ab/++attribute++entities/'
-                     'icemac.ab.calendar.event.Event')
-        browser.getLink('Delete').click()
-        browser.getControl('Yes').click()
-        self.assertEqual(['"reservations" deleted.'], browser.get_messages())
-
     def test_ignores_selected_but_deleted_user_defined_field(self):
         from icemac.ab.calendar.interfaces import ICalendarDisplaySettings
         from icemac.ab.calendar.interfaces import IEvent
@@ -286,7 +278,7 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
                 'category': category, field_name: 42, 'return_obj': True}
         create(ab, ab.calendar, IEntity(IEvent).class_name, **data)
 
-        self._delete_user_defined_field()
+        event_entity.removeField(event_entity.getRawField(field_name))
         browser = self.get_browser('cal-visitor')
         browser.open('http://localhost/ab/++attribute++calendar')
         self.assertEllipsis('''...

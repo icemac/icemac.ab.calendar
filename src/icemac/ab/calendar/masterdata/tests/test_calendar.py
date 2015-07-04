@@ -8,17 +8,9 @@ class CalendarTests(icemac.ab.calendar.testing.BrowserTestCase):
     def setUp(self):
         from icemac.addressbook.testing import create_field
         super(CalendarTests, self).setUp()
-        create_field(
-            self.layer['addressbook'], 'icemac.ab.calendar.event.Event',
-            u'Int', u'reservations')
-
-    def _delete_user_defined_field(self):
-        browser = self.get_browser('mgr')
-        browser.open('http://localhost/ab/++attribute++entities/'
-                     'icemac.ab.calendar.event.Event')
-        browser.getLink('Delete').click()
-        browser.getControl('Yes').click()
-        self.assertEqual(['"reservations" deleted.'], browser.get_messages())
+        self.ab = self.layer['addressbook']
+        self.field_name = create_field(
+            self.ab, 'icemac.ab.calendar.event.Event', u'Int', u'reservations')
 
     def assert_fields_selected(self, fields, browser):
         self.assertEqual(
@@ -27,6 +19,9 @@ class CalendarTests(icemac.ab.calendar.testing.BrowserTestCase):
                 name='form.widgets.event_additional_fields.to').displayOptions)
 
     def test_fields_for_display_can_be_selected(self):
+        from icemac.ab.calendar.interfaces import IEvent
+        from icemac.addressbook.interfaces import IEntity
+        from icemac.addressbook.utils import site
         browser = self.get_browser('cal-editor')
         browser.open('http://localhost/ab/@@calendar-masterdata.html')
         browser.getLink('Calendar view').click()
@@ -42,7 +37,9 @@ class CalendarTests(icemac.ab.calendar.testing.BrowserTestCase):
         browser.open(edit_display_URL)
         self.assert_fields_selected(['reservations', 'persons'], browser)
         # Does not break on selected but deleted user defined field:
-        self._delete_user_defined_field()
+        with site(self.ab):
+            event_entity = IEntity(IEvent)
+            event_entity.removeField(event_entity.getRawField(self.field_name))
         browser.open(edit_display_URL)
         self.assert_fields_selected(['persons'], browser)
 
