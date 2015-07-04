@@ -150,13 +150,15 @@ class MonthCalendar(TabularCalendar):
 
     def update(self):
         super(MonthCalendar, self).update()
-        events = [IEventDescription(x)
-                  for x in self.context.get_events(
-                      self.month, self.time_zone_name())]
         self.renderer = zope.component.getMultiAdapter(
-            (self.month, self.request, events),
+            (self.month, self.request, self.get_event_descriptions()),
             icemac.ab.calendar.browser.renderer.interfaces.IRenderer,
             name=self.renderer_name)
+
+    def get_event_descriptions(self):
+        return [IEventDescription(x)
+                for x in self.context.get_events(
+                    self.month, self.time_zone_name())]
 
     def render_calendar(self):
         return self.renderer()
