@@ -109,6 +109,7 @@ class EventDateTime(grok.Adapter):
 
 class RecurringEventContainer(zope.container.btree.BTreeContainer):
     """A container for recurring events."""
+
     zope.interface.implements(icemac.ab.calendar.interfaces.IRecurringEvents)
 
     def get_events(self):
@@ -117,6 +118,7 @@ class RecurringEventContainer(zope.container.btree.BTreeContainer):
 
 class RecurringEvent(Event):
     """An event which repeats after a defined period."""
+
     zope.interface.implements(icemac.ab.calendar.interfaces.IRecurringEvent)
     zope.schema.fieldproperty.createFieldProperties(
         icemac.ab.calendar.interfaces.IRecurringEventAdditionalSchema)
