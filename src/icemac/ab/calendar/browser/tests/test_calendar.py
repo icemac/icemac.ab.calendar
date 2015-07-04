@@ -198,9 +198,8 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
     def test_displays_fields_selected_in_master_data(self):
         from icemac.ab.calendar.interfaces import ICalendarDisplaySettings
         from icemac.ab.calendar.interfaces import IEvent
-        from icemac.ab.calendar.interfaces import IRecurringEvent
         from icemac.addressbook.interfaces import IEntity
-        from icemac.addressbook.testing import create_field, create
+        from icemac.addressbook.testing import create_field
         # Create user fields for select
         ab = self.layer['addressbook']
         event_field_name = create_field(
@@ -218,11 +217,10 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         category = self.create_category(u'bar')
         data = {'datetime': self.get_datetime(), 'text': u'Text1',
                 'period': 'yearly', revent_field_name: 42,
-                'external_persons': [u'Ben Utzer'], 'category': category,
-                'return_obj': True}
-        create(ab, ab.calendar_recurring_events,
-               IEntity(IRecurringEvent).class_name, **data)
+                'external_persons': [u'Ben Utzer'], 'category': category}
+        self.create_recurring_event(**data)
         browser = self.get_browser('cal-visitor')
+        browser.handleErrors = False
         browser.open('http://localhost/ab/++attribute++calendar')
         self.assertEllipsis('''...
       <ul class="info">
@@ -234,9 +232,8 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
     def test_ignores_field_if_not_defined_on_IRecurringEvent(self):
         from icemac.ab.calendar.interfaces import ICalendarDisplaySettings
         from icemac.ab.calendar.interfaces import IEvent
-        from icemac.ab.calendar.interfaces import IRecurringEvent
         from icemac.addressbook.interfaces import IEntity
-        from icemac.addressbook.testing import create_field, create
+        from icemac.addressbook.testing import create_field
         # Create user field for select
         ab = self.layer['addressbook']
         field_name = create_field(
@@ -249,8 +246,7 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         category = self.create_category(u'bar')
         data = {'datetime': self.get_datetime(), 'text': u'Text2',
                 'period': 'yearly', 'category': category, 'return_obj': True}
-        create(ab, ab.calendar_recurring_events,
-               IEntity(IRecurringEvent).class_name, **data)
+        self.create_recurring_event(**data)
         browser = self.get_browser('cal-visitor')
         browser.handleErrors = False
         browser.open('http://localhost/ab/++attribute++calendar')
@@ -262,7 +258,7 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
         from icemac.ab.calendar.interfaces import ICalendarDisplaySettings
         from icemac.ab.calendar.interfaces import IEvent
         from icemac.addressbook.interfaces import IEntity
-        from icemac.addressbook.testing import create_field, create
+        from icemac.addressbook.testing import create_field
         # Create user field for select
         ab = self.layer['addressbook']
         field_name = create_field(
@@ -275,8 +271,8 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
 
         category = self.create_category(u'bar')
         data = {'datetime': self.get_datetime(), 'text': u'Text1',
-                'category': category, field_name: 42, 'return_obj': True}
-        create(ab, ab.calendar, IEntity(IEvent).class_name, **data)
+                'category': category, field_name: 42}
+        self.create_event(**data)
 
         event_entity.removeField(event_entity.getRawField(field_name))
         browser = self.get_browser('cal-visitor')
@@ -357,12 +353,7 @@ class EventDescriptionITests_getInfo(icemac.ab.calendar.testing.ZODBTestCase):
     def _make_one(self, **kw):
         from icemac.ab.calendar.browser.renderer.interfaces import (
             IEventDescription)
-        from icemac.addressbook.testing import create
-        ab = self.layer['addressbook']
-        event = create(
-            ab, ab.calendar, 'icemac.ab.calendar.event.Event',
-            return_obj=True, **kw)
-        return IEventDescription(event)
+        return IEventDescription(self.create_event(**kw))
 
     def _set_settings(self, *args):
         from icemac.ab.calendar.interfaces import (

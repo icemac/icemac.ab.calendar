@@ -143,15 +143,13 @@ class TableEventITests(icemac.ab.calendar.testing.ZODBTestCase):
         ...''', self.getVUT(event, ['persons', 'text'])())
 
     def test_info_renders_user_defined_fields(self):
-        from icemac.addressbook.interfaces import IEntity
-        from icemac.ab.calendar.interfaces import IEvent
-        from icemac.addressbook.testing import create_field, create
+        from icemac.addressbook.testing import create_field
         ab = self.layer['addressbook']
         field_name = create_field(
             ab, 'icemac.ab.calendar.event.Event', u'Int', u'reservations')
         data = {'datetime': self.get_datetime(), 'text': u'Text1',
-                field_name: 42, 'return_obj': True}
-        event = create(ab, ab.calendar, IEntity(IEvent).class_name, **data)
+                field_name: 42}
+        event = self.create_event(**data)
         self.assertEqual([{u'info': u'Text1'}, {u'info': u'42'}],
                          self.getVUT(event, ['text', field_name]).info())
 

@@ -154,7 +154,7 @@ class AddFromRecurredEventTests(icemac.ab.calendar.testing.BrowserTestCase):
     """Testing ..event.AddFromRecurredEvent."""
 
     def setUp(self):
-        from icemac.addressbook.testing import create_field, create
+        from icemac.addressbook.testing import create_field
         from icemac.ab.calendar.interfaces import IEvent, IRecurringEvent
         super(AddFromRecurredEventTests, self).setUp()
         self.create_category(u'aaz')
@@ -164,9 +164,7 @@ class AddFromRecurredEventTests(icemac.ab.calendar.testing.BrowserTestCase):
         ab = self.layer['addressbook']
         create_field(ab, IEvent, u'Text', u'foobar')
         foobar = create_field(ab, IRecurringEvent, u'Text', u'foobar')
-        recurring_event = create(
-            ab, ab.calendar_recurring_events,
-            'icemac.ab.calendar.event.RecurringEvent', return_obj=True,
+        recurring_event = self.create_recurring_event(
             **{'category': bar, foobar: u'qux',
                'datetime': self.get_datetime((2014, 5, 24, 10, 30)),
                'alternative_title': u'foo bär', 'period': u'weekly',

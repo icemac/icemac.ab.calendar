@@ -1,12 +1,12 @@
-# Copyright (c) 2013-2014 Michael Howitz
-# See also LICENSE.txt
 import datetime
 import gocept.testing.assertion
 import icemac.ab.calendar
 import icemac.ab.calendar.browser.calendar
 import icemac.ab.calendar.category
 import icemac.ab.calendar.event
+import icemac.ab.calendar.interfaces
 import icemac.addressbook.browser.interfaces
+import icemac.addressbook.interfaces
 import icemac.addressbook.testing
 import icemac.addressbook.utils
 import mock
@@ -98,14 +98,28 @@ class ZODBTestMixIn(object):
     def _create(self, class_, parent=None, **kw):
         """Helper method to create an object in the ZODB."""
         ab = self.layer['addressbook']
-        if parent is None:
-            parent = ab
-        else:
-            parent = getattr(ab, parent)
+        parent = self._get_attr_of_address_book(parent)
         with icemac.addressbook.utils.site(ab):
             name = icemac.addressbook.utils.create_and_add(
                 parent, class_, **kw)
         return parent[name]
+
+    def _create_with_user_defined_fields(self, iface, parent_name, **kw):
+        """Create an object and set user defined field values, too."""
+        ab = self.layer['addressbook']
+        parent = self._get_attr_of_address_book(parent_name)
+        return icemac.addressbook.testing.create(
+            ab, parent, icemac.addressbook.interfaces.IEntity(
+                iface).class_name, return_obj=True, **kw)
+
+    def _get_attr_of_address_book(self, name):
+        """Get an attr of the address book or it itself if name is `None`."""
+        ab = self.layer['addressbook']
+        if name is None:
+            attr = ab
+        else:
+            attr = getattr(ab, name)
+        return attr
 
     def create_category(self, title):
         """Create a new event category."""
@@ -114,14 +128,14 @@ class ZODBTestMixIn(object):
 
     def create_event(self, **kw):
         """Create a new event in the calendar."""
-        return self._create(icemac.ab.calendar.event.Event,
-                            parent='calendar', **kw)
+        return self._create_with_user_defined_fields(
+            icemac.ab.calendar.interfaces.IEvent, 'calendar', **kw)
 
     def create_recurring_event(self, period='weekly', **kw):
         """Create a new recurring event in master data."""
-        return self._create(icemac.ab.calendar.event.RecurringEvent,
-                            parent='calendar_recurring_events', period=period,
-                            **kw)
+        return self._create_with_user_defined_fields(
+            icemac.ab.calendar.interfaces.IRecurringEvent,
+            'calendar_recurring_events', period=period, **kw)
 
 
 class UnitTestCase(unittest.TestCase, TestMixIn):

@@ -170,9 +170,7 @@ class TestRecurrStarEvent(icemac.ab.calendar.testing.ZODBTestCase):
 
     def test_RecurredEvent__create_from_copies_attributes_from_parameter(self):
         from ..event import RecurredEvent
-        from icemac.addressbook.interfaces import IEntity
-        from icemac.ab.calendar.interfaces import IRecurringEvent
-        from icemac.addressbook.testing import create_field, create
+        from icemac.addressbook.testing import create_field
 
         ab = self.layer['addressbook']
         event_field_name = create_field(
@@ -184,10 +182,8 @@ class TestRecurrStarEvent(icemac.ab.calendar.testing.ZODBTestCase):
             'category': self.category,
             'period': 'weekly',
             'persons': set([self.person]),
-            revent_field_name: 42,
-            'return_obj': True}
-        recurring_event = create(
-            ab, ab.calendar, IEntity(IRecurringEvent).class_name, **data)
+            revent_field_name: 42}
+        recurring_event = self.create_recurring_event(**data)
 
         recurred_event = RecurredEvent.create_from(
             recurring_event, self.get_datetime((2014, 4, 12, 21)))
@@ -284,15 +280,13 @@ class GetEventDataFromRecurringEventTests(
                 recurring_event, self.get_datetime((2000, 1, 1, 1))))
 
     def test_returns_appropriate_user_defined_fields(self):
-        from icemac.addressbook.testing import create_field, create
+        from icemac.addressbook.testing import create_field
         from icemac.ab.calendar.interfaces import IEvent, IRecurringEvent
         ab = self.layer['addressbook']
         revent_foo = create_field(ab, IRecurringEvent, u'Text', u'foo')
         revent_bar = create_field(ab, IRecurringEvent, u'Text', u'bar')
         create_field(ab, IEvent, u'Text', u'foo')
-        recurring_event = create(
-            ab, ab.calendar_recurring_events,
-            'icemac.ab.calendar.event.RecurringEvent', return_obj=True,
+        recurring_event = self.create_recurring_event(
             **{revent_foo: u'asdf', revent_bar: u'qwe',
                'datetime': self.get_datetime((2014, 5, 24, 10, 30))})
         self.assertEqual(
