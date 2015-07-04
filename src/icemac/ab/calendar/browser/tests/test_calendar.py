@@ -500,3 +500,13 @@ class HyphenatedTests(unittest.TestCase):
         res = func(any, lang='de')
         self.assertIsInstance(res, unicode)
         self.assertEqual(u'Ge&shy;bürts&shy;tag&lt;&gt;', res)
+
+
+class CalendarForEventDescriptionTests(
+        icemac.ab.calendar.testing.ZODBTestCase):
+    """Testing ..calendar.calendar_for_event_description()."""
+
+    def test_IEventDescription_can_be_adapted_to_ICalendar(self):
+        from icemac.ab.calendar.interfaces import ICalendar
+        ed = self.get_event_description(event=self.create_event())
+        self.assertEqual(self.layer['addressbook'].calendar, ICalendar(ed))

@@ -328,3 +328,10 @@ class EventDescription(grok.Adapter):
                 else:
                     info.append(value)
         return info
+
+
+@grok.adapter(icemac.ab.calendar.browser.renderer.interfaces.IEventDescription)
+@grok.implementer(icemac.ab.calendar.interfaces.ICalendar)
+def calendar_for_event_description(ed):
+    """Get the calendar an eventdesription belongs to."""
+    return icemac.ab.calendar.interfaces.ICalendar(ed.context)
