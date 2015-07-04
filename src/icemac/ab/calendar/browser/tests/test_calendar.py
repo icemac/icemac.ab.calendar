@@ -510,3 +510,14 @@ class CalendarForEventDescriptionTests(
         from icemac.ab.calendar.interfaces import ICalendar
         ed = self.get_event_description(event=self.create_event())
         self.assertEqual(self.layer['addressbook'].calendar, ICalendar(ed))
+
+
+class EventForEventDescriptionTests(
+        icemac.ab.calendar.testing.ZODBTestCase):
+    """Testing ..calendar.event_for_event_description()."""
+
+    def test_IEventDescription_can_be_adapted_to_ICalendar(self):
+        from icemac.ab.calendar.interfaces import IEvent
+        event = self.create_event()
+        ed = self.get_event_description(event=event)
+        self.assertEqual(event, IEvent(ed))

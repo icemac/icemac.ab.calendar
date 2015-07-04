@@ -331,7 +331,14 @@ class EventDescription(grok.Adapter):
 
 
 @grok.adapter(icemac.ab.calendar.browser.renderer.interfaces.IEventDescription)
+@grok.implementer(icemac.ab.calendar.interfaces.IEvent)
+def event_for_event_description(ed):
+    """Get the event an event description was created from."""
+    return ed.context
+
+
+@grok.adapter(icemac.ab.calendar.browser.renderer.interfaces.IEventDescription)
 @grok.implementer(icemac.ab.calendar.interfaces.ICalendar)
 def calendar_for_event_description(ed):
-    """Get the calendar an eventdesription belongs to."""
+    """Get the calendar an event description belongs to."""
     return icemac.ab.calendar.interfaces.ICalendar(ed.context)
