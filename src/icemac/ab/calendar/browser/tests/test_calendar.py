@@ -245,7 +245,7 @@ class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
 
         category = self.create_category(u'bar')
         data = {'datetime': self.get_datetime(), 'text': u'Text2',
-                'period': 'yearly', 'category': category, 'return_obj': True}
+                'period': 'yearly', 'category': category}
         self.create_recurring_event(**data)
         browser = self.get_browser('cal-visitor')
         browser.handleErrors = False
