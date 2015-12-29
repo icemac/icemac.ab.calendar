@@ -121,7 +121,7 @@ class PersonSource(zc.sourcefactory.basic.BasicSourceFactory):
     """Persons in addressbook."""
 
     def getValues(self):
-        return zope.site.hooks.getSite().values()
+        return zope.component.hooks.getSite().values()
 
     def getTitle(self, value):
         return icemac.addressbook.interfaces.ITitle(value)
