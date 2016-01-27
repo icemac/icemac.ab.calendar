@@ -1,5 +1,3 @@
-# Copyright (c) 2013-2014 Michael Howitz
-# See also LICENSE.txt
 from .interfaces import ICalendarMasterData
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.browser.menus.menu

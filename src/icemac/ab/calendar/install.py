@@ -1,5 +1,3 @@
-# Copyright (c) 2013-2014 Michael Howitz
-# See also LICENSE.txt
 from .interfaces import DATE_INDEX
 import icemac.ab.calendar.calendar
 import icemac.ab.calendar.category
@@ -14,8 +12,8 @@ import zope.component
 @zope.component.adapter(
     icemac.addressbook.addressbook.AddressBookCreated)
 def install_calendar(event):
-    "Install the calendar in the newly created addressbook."
     with icemac.addressbook.utils.site(event.address_book) as address_book:
+    """Install the calendar in the newly created addressbook."""
         icemac.addressbook.addressbook.create_and_register(
             address_book, 'calendar', icemac.ab.calendar.calendar.Calendar,
             icemac.ab.calendar.interfaces.ICalendar)

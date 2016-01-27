@@ -1,5 +1,3 @@
-# Copyright (c) 2013-2014 Michael Howitz
-# See also LICENSE.txt
 from icemac.addressbook.i18n import _
 import gocept.reference.interfaces
 import icemac.ab.calendar.interfaces
@@ -17,12 +15,11 @@ class Table(icemac.addressbook.browser.table.Table):
     def setUpColumns(self):
         return [z3c.table.column.addColumn(
             self, icemac.addressbook.browser.table.TitleLinkColumn, 'title',
-            header=_(u'event category')),
-            ]
+            header=_(u'event category'))]
 
     @property
     def values(self):
-        "The values are stored on the context."
+        """The values are stored on the context."""
         return self.context.values()
 
 
@@ -41,8 +38,7 @@ def can_delete_category(form):
         icemac.addressbook.browser.base.can_access('@@delete.html')(form)
         and
         not gocept.reference.interfaces.IReferenceTarget(
-            form.context).is_referenced()
-        )
+            form.context).is_referenced())
 
 
 class Edit(icemac.addressbook.browser.base.GroupEditForm):
@@ -70,6 +66,8 @@ class Edit(icemac.addressbook.browser.base.GroupEditForm):
 
 
 class Delete(icemac.addressbook.browser.base.BaseDeleteForm):
+    """Form to delete a category."""
+
     label = _(u'Do you really want to delete this event category?')
     interface = icemac.ab.calendar.interfaces.ICategory
     field_names = ('title', )
