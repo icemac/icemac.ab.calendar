@@ -237,7 +237,7 @@ class IRecurringEvent(IBaseEvent, IRecurringEventAdditionalSchema):
         'Weight of the selected recurrence period.')
 
     def get_events(interval_start, interval_end):
-        """Get the events computed from recurrence in the interval."""
+        """Get the events computed from recurrence in the datetime interval."""
 
 
 class IRecurredEvent(IBaseEvent):
