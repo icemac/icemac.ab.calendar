@@ -49,7 +49,7 @@ class MonthSource(zc.sourcefactory.basic.BasicSourceFactory):
     def getTitle(self, value):
         request = zope.globalrequest.getRequest()
         calendar = request.locale.dates.calendars['gregorian']
-        return calendar.getMonthNames()[value - 1]
+        return calendar.months.get(value)[0]
 
 month_source = MonthSource()
 
