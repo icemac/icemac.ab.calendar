@@ -6,6 +6,7 @@ import icemac.ab.calendar.browser.interfaces
 import icemac.ab.calendar.event
 import icemac.addressbook.browser.base
 import icemac.addressbook.browser.metadata
+import icemac.addressbook.interfaces
 import icemac.addressbook.preferences.utils
 import pytz
 import z3c.form.button
@@ -267,17 +268,22 @@ class DeleteRecurredEvent(icemac.ab.calendar.browser.base.View,
     label = _(u'Do you really want to delete this recurred event?')
     interface = icemac.ab.calendar.interfaces.IEvent
     field_names = EVENT_CONFIRMATION_FIELDS
+    next_url_after_delete = 'object'
 
-    def _handle_action(self):
+    @property
+    def status_title(self):
+        content = self.getContent()
+        if content['alternative_title']:
+            return content['alternative_title']
+        return icemac.addressbook.interfaces.ITitle(content['category'])
+
+    def _do_delete(self):
         content = self.getContent()
         icemac.addressbook.utils.create_and_add(
             self.context, icemac.ab.calendar.event.Event,
             category=content['category'],
             datetime=content['datetime'].datetime,
             deleted=True)
-        title = content['alternative_title'] or content['category']
-        self.status = _('"${title}" deleted.', mapping=dict(title=title))
-        self.redirect_to_next_url('object')
 
 
 class RecurredEventAbsoluteURL(zope.traversing.browser.AbsoluteURL,
