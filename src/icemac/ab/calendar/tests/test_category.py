@@ -1,21 +1,13 @@
-# Copyright (c) 2013-2014 Michael Howitz
-# See also LICENSE.txt
-import unittest
+from icemac.ab.calendar.category import Category, CategoryContainer
+from icemac.ab.calendar.interfaces import ICategory, ICategories
+from zope.interface.verify import verifyObject
 
 
-class CategoryTests(unittest.TestCase):
-    """Testing ..category.Category*."""
+def test_category__Category__1():
+    """It implements the `ICategory` interface."""
+    assert verifyObject(ICategory, Category())
 
-    def test_Category_implements_ICategory_interface(self):
-        from zope.interface.verify import verifyObject
-        from icemac.ab.calendar.interfaces import ICategory
-        from icemac.ab.calendar.category import Category
 
-        self.assertTrue(verifyObject(ICategory, Category()))
-
-    def test_CategoryContainer_implements_ICategories_interface(self):
-        from zope.interface.verify import verifyObject
-        from icemac.ab.calendar.interfaces import ICategories
-        from icemac.ab.calendar.category import CategoryContainer
-
-        self.assertTrue(verifyObject(ICategories, CategoryContainer()))
+def test_category__CategoryContainer__1():
+    """It implements the `ICategories` interface."""
+    assert verifyObject(ICategories, CategoryContainer())

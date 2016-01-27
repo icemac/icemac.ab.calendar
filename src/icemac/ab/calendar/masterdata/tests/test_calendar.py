@@ -1,61 +1,51 @@
-import icemac.ab.calendar.testing
+from icemac.ab.calendar.interfaces import IEvent
+from icemac.addressbook.interfaces import IEntity
+from mechanize import LinkNotFoundError, HTTPError
+import pytest
+import zope.component.hooks
 
 
-class CalendarTests(icemac.ab.calendar.testing.BrowserTestCase):
-
-    """Testing ..calendar.Calendar."""
-
-    def setUp(self):
-        from icemac.addressbook.testing import create_field
-        super(CalendarTests, self).setUp()
-        self.ab = self.layer['addressbook']
-        self.field_name = create_field(
-            self.ab, 'icemac.ab.calendar.event.Event', u'Int', u'reservations')
-
-    def assert_fields_selected(self, fields, browser):
-        self.assertEqual(
-            fields,
+def assert_fields_selected(browser, *fields):
+    """Assert that some fields are selected in `event_additional_fields`."""
+    assert (list(fields) ==
             browser.getControl(
                 name='form.widgets.event_additional_fields.to').displayOptions)
 
-    def test_fields_for_display_can_be_selected(self):
-        from icemac.ab.calendar.interfaces import IEvent
-        from icemac.addressbook.interfaces import IEntity
-        from icemac.addressbook.utils import site
-        browser = self.get_browser('cal-editor')
-        browser.open('http://localhost/ab/@@calendar-masterdata.html')
-        browser.getLink('Calendar view').click()
-        edit_display_URL = (
-            'http://localhost/ab/++attribute++calendar/@@edit-display.html')
-        self.assertEqual(edit_display_URL, browser.url)
-        browser.in_out_widget_select('form.widgets.event_additional_fields',
-                                     [browser.getControl('persons'),
-                                      browser.getControl('reservations')])
-        browser.getControl('Apply').click()
-        self.assertEqual(
-            ['Data successfully updated.'], browser.get_messages())
-        browser.open(edit_display_URL)
-        self.assert_fields_selected(['reservations', 'persons'], browser)
-        # Does not break on selected but deleted user defined field:
-        with site(self.ab):
-            event_entity = IEntity(IEvent)
-            event_entity.removeField(event_entity.getRawField(self.field_name))
-        browser.open(edit_display_URL)
-        self.assert_fields_selected(['persons'], browser)
+
+def test_calendar__CalendarView__1(address_book, FieldFactory, browser):
+    """It allows to select fields for display in the calendar."""
+    field = FieldFactory(
+        address_book, IEvent, u'Int', u'reservations').__name__
+    browser.login('cal-editor')
+    browser.open(browser.CALENDAR_MASTERDATA_URL)
+    browser.getLink('Calendar view').click()
+    assert browser.CALENDAR_MASTERDATA_EDIT_DISPLAY_URL == browser.url
+    browser.in_out_widget_select('form.widgets.event_additional_fields',
+                                 [browser.getControl('persons'),
+                                  browser.getControl('reservations')])
+    browser.getControl('Apply').click()
+    assert 'Data successfully updated.' == browser.message
+    browser.open(browser.CALENDAR_MASTERDATA_EDIT_DISPLAY_URL)
+    assert_fields_selected(browser, 'reservations', 'persons')
+    # It does not break on selected but deleted user defined field:
+    with zope.component.hooks.site(address_book):
+        event_entity = IEntity(IEvent)
+        event_entity.removeField(event_entity.getRawField(field))
+    browser.open(browser.CALENDAR_MASTERDATA_EDIT_DISPLAY_URL)
+    assert_fields_selected(browser, 'persons')
 
 
-class CalendarSecurityTests(icemac.ab.calendar.testing.BrowserTestCase):
+def test_calendar__CalendarView__2(address_book, browser):
+    """It is not shown on calendar master data for a calendar visitor."""
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_MASTERDATA_URL)
+    with pytest.raises(LinkNotFoundError):
+        browser.getLink('Calendar view')
 
-    """Security testing ..calendar.Calendar."""
 
-    def test_visitor_is_not_able_to_access_display_fields(self):
-        from mechanize import LinkNotFoundError, HTTPError
-        browser = self.get_browser('cal-visitor')
-        browser.open('http://localhost/ab/@@calendar-masterdata.html')
-        with self.assertRaises(LinkNotFoundError):
-            browser.getLink('Calendar view')
-        # The URL is not accesible, too:
-        with self.assertRaises(HTTPError) as err:
-            browser.open('http://localhost/ab/++attribute++calendar/'
-                         '@@edit-display.html')
-        self.assertEqual('HTTP Error 403: Forbidden', str(err.exception))
+def test_calendar__CalendarView__3(address_book, browser):
+    """It is not accessible for a calendar visitor."""
+    browser.login('cal-visitor')
+    with pytest.raises(HTTPError) as err:
+        browser.open(browser.CALENDAR_MASTERDATA_EDIT_DISPLAY_URL)
+    assert 'HTTP Error 403: Forbidden' == str(err.value)

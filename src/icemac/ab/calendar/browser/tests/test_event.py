@@ -1,272 +1,317 @@
 # -*- coding: utf-8 -*-
-import icemac.ab.calendar.testing
+from icemac.ab.calendar.interfaces import IEvent, IRecurringEvent
+from mechanize import HTTPError
+from zope.traversing.browser import absoluteURL
+import pytest
 
 
-def get_datetime_today_8_32_am():
-    """Get a datetime object for today with fixed time."""
-    from datetime import date, time, datetime
-    from pytz import utc
-    return datetime.combine(date.today(), time(8, 32, tzinfo=utc))
+def test_event__Add__1(address_book, CategoryFactory, DateTime, browser):
+    """It can add events which shown up in the calendar."""
+    CategoryFactory(address_book, u'wedding day')
+    dt = DateTime.today_8_32_am
+    formatted_time = dt.strftime('%H:%M')
+    formatted_date = DateTime.format_date(dt)
+    browser.login('cal-editor')
+    browser.open(browser.CALENDAR_MONTH_OVERVIEW_URL)
+    browser.getLink('event').click()
+    assert browser.EVENT_ADD_URL == browser.url
+    browser.getControl('date').value = formatted_date
+    browser.getControl('time').value = formatted_time
+    browser.getControl('event category').displayValue = ['wedding day']
+    browser.getControl('Add', index=1).click()
+    assert '"wedding day" added.' == browser.message
+    assert browser.CALENDAR_MONTH_OVERVIEW_URL == browser.url
+    # The new event shows up in the calendar:
+    assert formatted_time in browser.contents
 
 
-class EventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
-
-    """CRUD testing for ..event.*"""
-
-    def setUp(self):
-        super(EventCRUD, self).setUp()
-        self.create_category(u'birthday')
-        self.create_category(u'wedding day')
-        self.datetime = get_datetime_today_8_32_am()
-        self.formatted_datetime = self.format_datetime(self.datetime)
-        self.formatted_date = self.format_date(self.datetime)
-        self.formatted_time = self.datetime.strftime('%H:%M')
-
-    def test_navigation_to_calendar_is_possible(self):
-        browser = self.get_browser('cal-editor')
-        browser.open('http://localhost/ab')
-        browser.getLink('Calendar').click()
-        self.assertEqual(
-            'http://localhost/ab/++attribute++calendar/@@month.html',
-            browser.url)
-
-    def test_event_can_be_added_and_is_shown_in_calendar(self):
-        browser = self.get_browser('cal-editor')
-        browser.open('http://localhost/ab/++attribute++calendar')
-        browser.getLink('event').click()
-        self.assertEqual(
-            'http://localhost/ab/++attribute++calendar/@@addEvent.html',
-            browser.url)
-        browser.getControl('date').value = self.formatted_date
-        browser.getControl('time').value = self.formatted_time
-        browser.getControl('event category').displayValue = ['wedding day']
-        browser.getControl('Add', index=1).click()
-        self.assertEqual(
-            'http://localhost/ab/++attribute++calendar/@@month.html',
-            browser.url)
-        self.assertEqual(['"wedding day" added.'], browser.get_messages())
-        # New event shows up in calendar:
-        self.assertIn(self.formatted_time, browser.contents)
-
-    def test_event_can_be_edited(self):
-        self.create_event(datetime=self.datetime)
-        browser = self.get_browser('cal-editor')
-        browser.open('http://localhost/ab/++attribute++calendar')
-        browser.getLink('Edit').click()
-        self.assertEqual(
-            'http://localhost/ab/++attribute++calendar/Event', browser.url)
-        self.assertEqual(self.formatted_date, browser.getControl('date').value)
-        self.assertEqual(self.formatted_time, browser.getControl('time').value)
-        browser.getControl('event category').displayValue = ['wedding day']
-        browser.getControl('Apply').click()
-        self.assertEqual(
-            ['Data successfully updated.'], browser.get_messages())
-        self.assertEqual(
-            'http://localhost/ab/++attribute++calendar/@@month.html',
-            browser.url)
-        browser.getLink('wedding day').click()
-        self.assertEqual(['wedding day'],
-                         browser.getControl('event category').displayValue)
-
-    def test_event_can_be_deleted_after_confirmation(self):
-        event = self.create_event(datetime=self.datetime)
-        browser = self.get_browser('cal-editor')
-        browser.open(
-            'http://localhost/ab/++attribute++calendar/%s' % event.__name__)
-        browser.getControl('Delete').click()
-        self.assertIn('Do you really want to delete this event?',
-                      browser.contents)
-        browser.getControl('Yes').click()
-        self.assertEqual(['"event" deleted.'], browser.get_messages())
-        self.assertEqual(
-            'http://localhost/ab/++attribute++calendar/@@month.html',
-            browser.url)
-
-    def test_event_can_be_cloned_after_confirmation(self):
-        event = self.create_event(datetime=self.datetime)
-        browser = self.get_browser('cal-editor')
-        browser.open(
-            'http://localhost/ab/++attribute++calendar/%s' % event.__name__)
-        browser.getControl('Clone event').click()
-        self.assertEqual(['form.buttons.action', 'form.buttons.cancel'],
-                         browser.get_submit_control_names())
-        browser.getControl('Yes').click()
-        self.assertEqual(['"event" cloned.'], browser.get_messages())
-        # Clone leads to edit view of cloned event:
-        self.assertEqual('http://localhost/ab/++attribute++calendar/Event-2',
-                         browser.url)
+def test_event__Add__2(address_book, browser):
+    """It is not accessible for a calendar visitor."""
+    browser.login('cal-visitor')
+    with pytest.raises(HTTPError) as err:
+        browser.open(browser.EVENT_ADD_URL)
+    assert 'HTTP Error 403: Forbidden' == str(err.value)
 
 
-def get_customize_recurred_event_url(recurring_event):
-    """Get the URL to customize a recurred event."""
-    return ('http://localhost/ab/++attribute++calendar/'
-            '@@customize-recurred-event?event=%s&date=%s' % (
-                recurring_event.__name__,
-                get_datetime_today_8_32_am().date().isoformat()))
-
-ADD_FROM_RECURRED_EVENT_URL = (
-    'http://localhost/ab/++attribute++calendar/@@addFromRecurredEvent.html')
-
-
-class EventSecurity(icemac.ab.calendar.testing.BrowserTestCase):
-
-    """Security tests for categories."""
-
-    def test_visitor_is_not_able_to_add_events_even_if_he_knows_the_url(self):
-        from mechanize import HTTPError
-        browser = self.get_browser('cal-visitor')
-        with self.assertRaises(HTTPError) as err:
-            browser.open(
-                'http://localhost/ab/++attribute++calendar/@@addEvent.html')
-        self.assertEqual('HTTP Error 403: Forbidden', str(err.exception))
-
-    def test_visitor_is_able_to_view_edit_form_but_not_to_change(self):
-        event = self.create_event(datetime=get_datetime_today_8_32_am())
-        browser = self.get_browser('cal-visitor')
-        browser.open(
-            'http://localhost/ab/++attribute++calendar/%s' % event.__name__)
-        # There are no fields to edit and no delete button:
-        self.assertEqual(['form.buttons.apply', 'form.buttons.cancel'],
-                         browser.get_all_control_names())
-
-    def test_visitor_not_able_to_customize_recurred_event_even_knowing_the_url(
-            self):
-        from mechanize import HTTPError
-        browser = self.get_browser('cal-visitor')
-        with self.assertRaises(HTTPError) as err:
-            browser.open(ADD_FROM_RECURRED_EVENT_URL)
-        self.assertEqual('HTTP Error 403: Forbidden', str(err.exception))
-
-    def test_visitor_sees_display_form_when_looking_at_recurrend_event_details(
-            self):
-        recurring_event = self.create_recurring_event(
-            datetime=get_datetime_today_8_32_am(),
-            alternative_title=u'recurred event')
-        browser = self.get_browser('cal-visitor')
-        browser.handleErrors = False
-        browser.open(get_customize_recurred_event_url(recurring_event))
-        self.assertEqual(['form.buttons.apply', 'form.buttons.cancel'],
-                         browser.get_all_control_names())
+def test_event__Edit__1(
+        address_book, EventFactory, CategoryFactory, DateTime, browser):
+    """It allows to edit an event."""
+    CategoryFactory(address_book, u'wedding day')
+    dt = DateTime.today_8_32_am
+    EventFactory(address_book, datetime=dt)
+    browser.login('cal-editor')
+    browser.open(browser.CALENDAR_MONTH_OVERVIEW_URL)
+    browser.getLink('Edit').click()
+    assert browser.EVENT_EDIT_URL == browser.url
+    assert DateTime.format_date(dt) == browser.getControl('date').value
+    assert dt.strftime('%H:%M') == browser.getControl('time').value
+    browser.getControl('event category').displayValue = ['wedding day']
+    browser.getControl('Apply').click()
+    assert 'Data successfully updated.' == browser.message
+    assert browser.CALENDAR_MONTH_OVERVIEW_URL == browser.url
+    browser.getLink('wedding day').click()
+    assert ['wedding day'] == browser.getControl('event category').displayValue
 
 
-class AddFromRecurredEventTests(icemac.ab.calendar.testing.BrowserTestCase):
+def test_event__Edit__2(address_book, EventFactory, DateTime, browser):
+    """It is not accessible for a calendar visitor."""
+    EventFactory(address_book, datetime=DateTime.today_8_32_am)
+    browser.login('cal-visitor')
+    browser.open(browser.EVENT_EDIT_URL)
+    # There are no fields to edit and no delete or clone button:
+    assert (['form.buttons.apply', 'form.buttons.cancel'] ==
+            browser.all_control_names)
 
-    """Testing ..event.AddFromRecurredEvent."""
 
-    def setUp(self):
-        from icemac.addressbook.testing import create_field
-        from icemac.ab.calendar.interfaces import IEvent, IRecurringEvent
-        super(AddFromRecurredEventTests, self).setUp()
-        self.create_category(u'aaz')
-        bar = self.create_category(u'bar')
-        self.create_person(u'Bester')
-        tester = self.create_person(u'Tester')
-        ab = self.layer['addressbook']
-        create_field(ab, IEvent, u'Text', u'foobar')
-        foobar = create_field(ab, IRecurringEvent, u'Text', u'foobar')
-        recurring_event = self.create_recurring_event(
-            **{'category': bar, foobar: u'qux',
-               'datetime': self.get_datetime((2014, 5, 24, 10, 30)),
-               'alternative_title': u'foo bär', 'period': u'weekly',
-               'persons': set([tester]),
-               'external_persons': [u'Mr. Developer'], 'text': u'Important'})
-        self.browser = self.get_browser('cal-editor')
-        self.browser.open(get_customize_recurred_event_url(recurring_event))
+def test_event__Delete__1(address_book, EventFactory, DateTime, browser):
+    """It allows to delete an event after a confirmation."""
+    EventFactory(address_book, datetime=DateTime.today_8_32_am)
+    browser.login('cal-editor')
+    browser.open(browser.EVENT_EDIT_URL)
+    browser.getControl('Delete').click()
+    assert 'Do you really want to delete this event?' in browser.contents
+    assert browser.EVENT_DELETE_URL == browser.url
+    browser.getControl('Yes').click()
+    assert '"event" deleted.' == browser.message
+    assert browser.CALENDAR_MONTH_OVERVIEW_URL == browser.url
 
-    def test_prefills_form_from_recurring_event(self):
-        browser = self.browser
-        self.assertEqual(ADD_FROM_RECURRED_EVENT_URL, browser.url)
-        self.assertEqual(['bar'],
-                         browser.getControl('event category').displayValue)
-        self.assertEqual(self.format_date(self.get_datetime()),
-                         browser.getControl('date').value)
-        self.assertEqual('10:30', browser.getControl('time').value)
-        self.assertEqual(
-            'foo bär',
+
+def test_event__Delete__2(
+        address_book, EventFactory, CategoryFactory, DateTime, browser):
+    """It renders a nice message if the event only has a category."""
+    EventFactory(address_book, datetime=DateTime.today_8_32_am,
+                 category=CategoryFactory(address_book, u'foo'))
+    browser.login('cal-editor')
+    browser.open(browser.EVENT_DELETE_URL)
+    browser.getControl('Yes').click()
+    assert '"foo" deleted.' == browser.message
+
+
+def test_event__Delete__3(address_book, EventFactory, DateTime, browser):
+    """It is not accessible for a calendar visitor."""
+    EventFactory(address_book, datetime=DateTime.today_8_32_am)
+    browser.login('cal-visitor')
+    with pytest.raises(HTTPError) as err:
+        browser.open(browser.EVENT_DELETE_URL)
+    assert 'HTTP Error 403: Forbidden' == str(err.value)
+
+
+def test_event__Clone__1(address_book, EventFactory, DateTime, browser):
+    """It clones an event after a confirmation."""
+    EventFactory(address_book, datetime=DateTime.today_8_32_am)
+    browser.login('cal-editor')
+    browser.open(browser.EVENT_EDIT_URL)
+    browser.getControl('Clone event').click()
+    assert browser.EVENT_CLONE_URL == browser.url
+    assert (['form.buttons.action', 'form.buttons.cancel'] ==
+            browser.submit_control_names)
+    browser.getControl('Yes').click()
+    assert '"event" cloned.' == browser.message
+    # Clone leads to edit view of cloned event:
+    assert '{0.EVENT_EDIT_URL}-2'.format(browser) == browser.url
+
+
+def test_event__Clone__2(address_book, EventFactory, DateTime, browser):
+    """It is not accessible for a calendar visitor."""
+    EventFactory(address_book, datetime=DateTime.today_8_32_am)
+    browser.login('cal-visitor')
+    with pytest.raises(HTTPError) as err:
+        browser.open(browser.EVENT_CLONE_URL)
+    assert 'HTTP Error 403: Forbidden' == str(err.value)
+
+
+@pytest.fixture('function')
+def sample_recurring_event(
+        address_book, FieldFactory, CategoryFactory, RecurringEventFactory,
+        PersonFactory, RequestFactory, DateTime):
+    """Example of a recurring event."""
+    CategoryFactory(address_book, u'aaz')
+    bar = CategoryFactory(address_book, u'bar')
+    PersonFactory(address_book, u'Bester')
+    tester = PersonFactory(address_book, u'Tester')
+    FieldFactory(address_book, IEvent, u'Text', u'foobar')
+    foobar = FieldFactory(
+        address_book, IRecurringEvent, u'Text', u'foobar').__name__
+    return RecurringEventFactory(
+        address_book,
+        **{'category': bar,
+           foobar: u'qux',
+           'datetime': DateTime(2014, 5, 24, 10, 30),
+           'alternative_title': u'foo bär',
+           'period': u'daily',
+           'persons': set([tester]),
+           'external_persons': [u'Mr. Developer'],
+           'text': u'Important'})
+
+
+def get_recurred_event_url(recurring_event, request, DateTime):
+    """Get the URL of a recurred event."""
+    recurred_event = recurring_event.get_events(
+        DateTime.today_8_32_am,
+        DateTime.add(DateTime.today_8_32_am, days=1)).next()
+    return absoluteURL(recurred_event, request).replace(
+        'http://127.0.0.1/', 'http://localhost/')
+
+
+@pytest.fixture('function')
+def sample_recurred_event_url(
+        sample_recurring_event, RequestFactory, DateTime):
+    """Sample of a recurred event.
+
+    Returns the URL to the @@customize-recurred-event view.
+    """
+    return get_recurred_event_url(
+        sample_recurring_event, RequestFactory(), DateTime)
+
+
+def test_event__ViewRecurredEvent__1(
+        address_book, sample_recurred_event_url, browser):
+    """It renders a display form for a calendar visitor."""
+    browser.login('cal-visitor')
+    browser.open(sample_recurred_event_url)
+    assert browser.RECURRED_EVENT_VIEW_URL == browser.url
+    assert (['form.buttons.apply', 'form.buttons.cancel'] ==
+            browser.all_control_names)
+
+
+def test_event__AddFromRecurredEvent__1(
+        address_book, DateTime, sample_recurred_event_url, browser):
+    """It prefills the form from the recurring event."""
+    browser.login('cal-editor')
+    browser.open(sample_recurred_event_url)
+    assert browser.RECURRED_EVENT_ADD_URL == browser.url
+    assert ['bar'] == browser.getControl('event category').displayValue
+    assert (DateTime.format_date(DateTime.now) ==
+            browser.getControl('date').value)
+    assert '10:30' == browser.getControl('time').value
+    assert ('foo bär' ==
             browser.getControl('alternative title to category').value)
-        self.assertEqual(['Tester'],
-                         browser.getControl('persons').displayValue)
-        self.assertEqual(
-            'Mr. Developer',
+    assert ['Tester'] == browser.getControl('persons').displayValue
+    assert ('Mr. Developer' ==
             browser.getControl(name='form.widgets.external_persons.0').value)
-        self.assertEqual('Important', browser.getControl('notes').value)
-        self.assertEqual('qux', browser.getControl('foobar').value)
-
-    def test_saves_changes_made_in_form(self):
-        browser = self.browser
-        browser.getControl('alternative title to category').value = 'birthday'
-        browser.getControl('Apply').click()
-        self.assertEqual(['"birthday" added.'], browser.get_messages())
-        browser.getLink('birthday').click()
-        self.assertEqual('birthday', browser.getControl('alternative').value)
-
-    def test_cancel_does_not_change_anything(self):
-        browser = self.browser
-        browser.getControl('Cancel').click()
-        self.assertEqual(['Addition canceled.'], browser.get_messages())
-        self.assertEqual(0, len(self.layer['addressbook'].calendar))
-
-    def test_delete_removes_recurred_event_after_confirmation(self):
-        browser = self.browser
-        browser.getControl('Delete').click()
-        self.assertIn('Do you really want to delete this recurred event?',
-                      browser.contents)
-        browser.getControl('Yes').click()
-        self.assertEqual([u'"foo bär" deleted.'], browser.get_messages())
-        self.assertTrue(self.layer['addressbook'].calendar['Event'].deleted)
+    assert 'Important' == browser.getControl('notes').value
+    assert 'qux' == browser.getControl('foobar').value
 
 
-class EventSTests(icemac.ab.calendar.testing.SeleniumTestCase):
+def test_event__AddFromRecurredEvent__2(
+        address_book, sample_recurred_event_url, browser):
+    """It saves changes made in the form."""
+    browser.login('cal-editor')
+    browser.open(sample_recurred_event_url)
+    browser.getControl('alternative title to category').value = 'birthday'
+    browser.getControl('Apply').click()
+    assert '"birthday" added.' == browser.message
+    browser.open(browser.EVENT_EDIT_URL)
+    assert 'birthday' == browser.getControl('alternative').value
 
-    """Selenium testing ../resources/calendar.js"""
 
-    def create_event(self, whole_day_event):
-        """Create an event, today at 08:32."""
-        return super(EventSTests, self).create_event(
-            datetime=get_datetime_today_8_32_am(),
-            whole_day_event=whole_day_event)
+def test_event__AddFromRecurredEvent__3(
+        address_book, sample_recurred_event_url, browser):
+    """It does not change anything if `cancel` gets hit."""
+    browser.login('cal-editor')
+    browser.open(sample_recurred_event_url)
+    browser.getControl('Cancel').click()
+    assert 'Addition canceled.' == browser.message
+    assert 0 == len(address_book.calendar)
 
-    def login(self):
-        super(EventSTests, self).login('cal-editor', 'cal-editor')
-        sel = self.selenium
-        sel.open('/ab/++attribute++calendar/Event')
-        return sel
 
-    def assert_time(self, status):
-        """Assert display status of time widget: 'shown' or 'hidden'."""
-        if status == 'hidden':
-            self.selenium.waitForNotVisible(
-                'id=form-widgets-datetime-widgets-time')
-        else:
-            self.selenium.waitForVisible(
-                'id=form-widgets-datetime-widgets-time')
+def test_event__AddFromRecurredEvent__4(address_book, browser):
+    """It is not accessible for a calendar visitor."""
+    browser.login('cal-visitor')
+    with pytest.raises(HTTPError) as err:
+        browser.open(browser.RECURRED_EVENT_ADD_URL)
+    assert 'HTTP Error 403: Forbidden' == str(err.value)
 
-    def test_time_is_initially_hidden_for_whole_day_events(self):
-        self.create_event(whole_day_event=True)
-        self.login()
-        self.assert_time('hidden')
 
-    def test_time_is_initially_shown_for_non_whole_day_events(self):
-        self.create_event(whole_day_event=False)
-        self.login()
-        self.assert_time('shown')
+def test_event__DeleteRecurredEvent__1(
+        address_book, sample_recurred_event_url, browser):
+    """It deletes the recurred event after a confirmation."""
+    browser.login('cal-editor')
+    browser.open(sample_recurred_event_url)
+    browser.getControl('Delete').click()
+    assert browser.RECURRED_EVENT_DELETE_URL == browser.url
+    assert ('Do you really want to delete this recurred event?' in
+            browser.contents)
+    browser.getControl('Yes').click()
+    assert u'"foo bär" deleted.' == browser.message
+    assert address_book.calendar['Event'].deleted
 
-    def test_changing_event_to_whole_day_event_hides_time(self):
-        self.create_event(whole_day_event=False)
-        sel = self.login()
-        sel.click('id=form-widgets-datetime-widgets-whole_day_event-0')
-        self.assert_time('hidden')
 
-    def test_changing_event_to_non_whole_day_event_shows_time(self):
-        self.create_event(whole_day_event=True)
-        sel = self.login()
-        sel.click('id=form-widgets-datetime-widgets-whole_day_event-1')
-        self.assert_time('shown')
+def test_event__DeleteRecurredEvent__2(
+        address_book, sample_recurring_event, RequestFactory, DateTime,
+        browser):
+    """It renders a nice message if the recurring event has only a category."""
+    sample_recurring_event.alternative_title = None
+    browser.login('cal-editor')
+    browser.open(get_recurred_event_url(
+        sample_recurring_event, RequestFactory(), DateTime))
+    browser.getControl('Delete').click()
+    browser.getControl('Yes').click()
+    assert u'"bar" deleted.' == browser.message
 
-    def test_clicking_on_selected_event_kind_does_not_toggle_time_display(
-            self):
-        self.create_event(whole_day_event=True)
-        sel = self.login()
-        self.assert_time('hidden')
-        sel.click('id=form-widgets-datetime-widgets-whole_day_event-0')
-        self.assert_time('hidden')
+
+def test_event__DeleteRecurredEvent__3(address_book, browser):
+    """It is not accessible for a calendar visitor."""
+    browser.login('cal-visitor')
+    with pytest.raises(HTTPError) as err:
+        browser.open(browser.RECURRED_EVENT_DELETE_URL)
+    assert 'HTTP Error 403: Forbidden' == str(err.value)
+
+
+@pytest.fixture('function')
+def sample_event(address_book, EventFactory, DateTime):
+    """Create a sample event."""
+    return EventFactory(address_book, datetime=DateTime.today_8_32_am)
+
+
+def assert_time(selenium, status):
+    """Assert display status of time widget: 'shown' or 'hidden'."""
+    if status == 'hidden':
+        attr = 'waitForNotVisible'
+    else:
+        attr = 'waitForVisible'
+    getattr(selenium, attr)('id=form-widgets-datetime-widgets-time')
+
+
+def test_event__WidgetToggle__1(sample_event, webdriver):
+    """The time widget is initially hidden for whole day events."""
+    sample_event.whole_day_event = True
+    sel = webdriver.login('cal-editor')
+    sel.open('/ab/++attribute++calendar/Event')
+    assert_time(sel, 'hidden')
+
+
+def test_event__WidgetToggle__2(sample_event, webdriver):
+    """The time widget is initially shown for non whole day events."""
+    sample_event.whole_day_event = False
+    sel = webdriver.login('cal-editor')
+    sel.open('/ab/++attribute++calendar/Event')
+    assert_time(sel, 'shown')
+
+
+def test_event__WidgetToggle__3(sample_event, webdriver):
+    """Changing an event to a whole day event hides the time widget."""
+    sample_event.whole_day_event = False
+    sel = webdriver.login('cal-editor')
+    sel.open('/ab/++attribute++calendar/Event')
+    sel.click('id=form-widgets-datetime-widgets-whole_day_event-0')
+    assert_time(sel, 'hidden')
+
+
+def test_event__WidgetToggle__4(sample_event, webdriver):
+    """Changing an event to a non-whole day event shows the time widget."""
+    sample_event.whole_day_event = True
+    sel = webdriver.login('cal-editor')
+    sel.open('/ab/++attribute++calendar/Event')
+    sel.click('id=form-widgets-datetime-widgets-whole_day_event-1')
+    assert_time(sel, 'shown')
+
+
+def test_event__WidgetToggle__5(sample_event, webdriver):
+    """Clicking on a selected event kind does not toggle the time display."""
+    sample_event.whole_day_event = True
+    sel = webdriver.login('cal-editor')
+    sel.open('/ab/++attribute++calendar/Event')
+    assert_time(sel, 'hidden')
+    sel.click('id=form-widgets-datetime-widgets-whole_day_event-0')
+    assert_time(sel, 'hidden')

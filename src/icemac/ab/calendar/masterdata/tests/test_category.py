@@ -1,115 +1,141 @@
-# Copyright (c) 2013-2014 Michael Howitz
-# See also LICENSE.txt
-import icemac.ab.calendar.testing
+from mechanize import LinkNotFoundError, HTTPError
+from zope.security.interfaces import Unauthorized
+import pytest
 
 
-class CategoryCRUD(icemac.ab.calendar.testing.BrowserTestCase):
-    """CRUD testing for ..category.*"""
-
-    def setUp(self):
-        super(CategoryCRUD, self).setUp()
-        self.browser = self.get_browser('cal-editor')
-        self.browser.open(
-            'http://localhost/ab/++attribute++calendar_categories')
-
-    def test_navigation_to_category_edit_is_possible(self):
-        self.browser.open('http://localhost/ab')
-        self.browser.getLink('Master data').click()
-        self.browser.getLink('Calendar', index=1).click()
-        self.assertEqual('http://localhost/ab/@@calendar-masterdata.html',
-                         self.browser.url)
-        self.browser.getLink('Event categories').click()
-        self.assertEqual(
-            'http://localhost/ab/++attribute++calendar_categories',
-            self.browser.url)
-        self.assertIn(
-            'No event categories defined yet.', self.browser.contents)
-
-    def test_category_can_be_added_and_is_shown_in_list(self):
-        self.browser.getLink('event category').click()
-        self.browser.getControl('event category').value = 'birthday'
-        self.browser.getControl('Add').click()
-        self.assertEqual(['"birthday" added.'], self.browser.get_messages())
-        # New category show up in list:
-        self.assertIn('birthday', self.browser.contents)
-
-    def test_category_can_be_edited(self):
-        self.create_category(u'birthday')
-        self.browser.reload()
-        self.browser.getLink('birthday').click()
-        self.assertEqual(
-            'birthday', self.browser.getControl('event category').value)
-        self.browser.getControl('event category').value = 'wedding day'
-        self.browser.getControl('Apply').click()
-        self.assertEqual(
-            ['Data successfully updated.'], self.browser.get_messages())
-        # Changed category name show up in list:
-        self.assertIn('wedding day', self.browser.contents)
-
-    def test_new_category_with_existing_title_cannot_be_added(self):
-        self.create_category(u'birthday')
-        self.browser.getLink('event category').click()
-        self.browser.getControl('event category').value = 'birthday'
-        self.browser.getControl('Add').click()
-        self.assertIn('There were some errors.', self.browser.contents)
-        self.assertIn('This category already exists.', self.browser.contents)
-
-    def test_category_title_cannot_be_changed_to_existing_one(self):
-        self.create_category(u'birthday')
-        self.create_category(u'wedding day')
-        self.browser.reload()
-        self.browser.getLink('birthday').click()
-        self.browser.getControl('event category').value = 'wedding day'
-        self.browser.getControl('Apply').click()
-        self.assertIn('There were some errors.', self.browser.contents)
-        self.assertIn('This category already exists.', self.browser.contents)
-
-    def test_category_can_be_deleted(self):
-        self.create_category(u'birthday')
-        self.browser.reload()
-        self.browser.getLink('birthday').click()
-        self.browser.getControl('Delete').click()
-        self.assertIn('Do you really want to delete this event category?',
-                      self.browser.contents)
-        self.browser.getControl('Yes').click()
-        self.assertEqual(['"birthday" deleted.'], self.browser.get_messages())
-
-    def test_used_category_cannot_be_deleted(self):
-        from icemac.addressbook.utils import site
-        with site(self.layer['addressbook']):
-            category = self.create_category(u'birthday')
-            self.create_event(category=category)
-        self.browser.reload()
-        self.browser.getLink('birthday').click()
-        with self.assertRaises(LookupError):
-            self.browser.getControl('Delete').click()
+EVENT_CATEGORY_ADD_TEXT = 'event category'
 
 
-class CategorySecurity(icemac.ab.calendar.testing.BrowserTestCase):
-    """Security tests for categories."""
+def test_category__Table__1(address_book, browser):
+    """It allows to navigate to the category list view."""
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_MASTERDATA_URL)
+    browser.getLink('Event categories').click()
+    assert browser.CALENDAR_CATEGORIES_LIST_URL == browser.url
 
-    def test_visitor_is_able_to_see_categories_but_cannot_change_them(self):
-        from mechanize import LinkNotFoundError
 
-        self.create_category(u'birthday')
-        browser = self.get_browser('cal-visitor')
-        browser.open('http://localhost/ab/@@calendar-masterdata.html')
-        browser.getLink('Event categories').click()
-        self.assertEqual(
-            'http://localhost/ab/++attribute++calendar_categories',
-            browser.url)
-        # There is no add link:
-        with self.assertRaises(LinkNotFoundError):
-            browser.getLink('event category').click()
-        browser.getLink('birthday').click()
-        # There are no fields and no delete button:
-        self.assertEqual(['form.buttons.apply', 'form.buttons.cancel'],
-                         browser.get_all_control_names())
+def test_category__Table__2(address_book, browser):
+    """It renders a message if there are no categories yet."""
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_CATEGORIES_LIST_URL)
+    assert 'No event categories defined yet.' in browser.contents
 
-    def test_anonymous_is_not_able_to_access_categories(self):
-        from zope.security.interfaces import Unauthorized
-        browser = self.get_browser()
-        browser.handleErrors = False  # needed to catch exception
-        with self.assertRaises(Unauthorized):
-            browser.open(
-                'http://localhost/ab/++attribute++calendar_categories')
+
+def test_category__Table__3(address_book, browser):
+    """It renders no add link for a calendar visitor."""
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_CATEGORIES_LIST_URL)
+    with pytest.raises(LinkNotFoundError):
+        browser.getLink(EVENT_CATEGORY_ADD_TEXT)
+
+
+def test_category__Table__4(address_book, browser):
+    """It prevents access for anonymous."""
+    browser.handleErrors = False  # needed to catch exception
+    with pytest.raises(Unauthorized):
+        browser.open(browser.CALENDAR_CATEGORIES_LIST_URL)
+
+
+def test_category__Add__1(address_book, browser):
+    """It allows to add a new category in the list."""
+    browser.login('cal-editor')
+    browser.open(browser.CALENDAR_CATEGORIES_LIST_URL)
+    browser.getLink(EVENT_CATEGORY_ADD_TEXT).click()
+    assert browser.CALENDAR_CATEGORY_ADD_URL == browser.url
+    browser.getControl('event category').value = 'birthday'
+    browser.getControl('Add').click()
+    assert '"birthday" added.' == browser.message
+    # The new category shows up in the list:
+    assert 'birthday' in browser.contents
+
+
+def test_category__Add__2(address_book, CategoryFactory, browser):
+    """It prevents adding a new category with an already existing title."""
+    CategoryFactory(address_book, u'birthday')
+    browser.login('cal-editor')
+    browser.open(browser.CALENDAR_CATEGORY_ADD_URL)
+    browser.getControl('event category').value = 'birthday'
+    browser.getControl('Add').click()
+    assert 'There were some errors.' in browser.contents
+    assert 'This category already exists.' in browser.contents
+
+
+def test_category__Add__3(address_book, browser):
+    """It is not accessible for a calendar visitor."""
+    browser.login('cal-visitor')
+    with pytest.raises(HTTPError) as err:
+        browser.open(browser.CALENDAR_CATEGORY_ADD_URL)
+    assert 'HTTP Error 403: Forbidden' == str(err.value)
+
+
+def test_category__Edit__1(address_book, CategoryFactory, browser):
+    """It allows to edit a category."""
+    CategoryFactory(address_book, u'birthday')
+    browser.login('cal-editor')
+    browser.open(browser.CALENDAR_CATEGORIES_LIST_URL)
+    browser.getLink('birthday').click()
+    assert browser.CALENDAR_CATEGORY_EDIT_URL == browser.url
+    assert 'birthday' == browser.getControl('event category').value
+    browser.getControl('event category').value = 'wedding day'
+    browser.getControl('Apply').click()
+    assert 'Data successfully updated.' == browser.message
+    # The changed category name shows up in the list:
+    assert 'wedding day' in browser.contents
+
+
+def test_category__Edit__2(address_book, CategoryFactory, browser):
+    """It prevents changing a category title to an existing one."""
+    CategoryFactory(address_book, u'birthday')
+    CategoryFactory(address_book, u'wedding day')
+    browser.login('cal-editor')
+    browser.open(browser.CALENDAR_CATEGORY_EDIT_URL)
+    browser.getControl('event category').value = 'wedding day'
+    browser.getControl('Apply').click()
+    assert 'There were some errors.' in browser.contents
+    assert 'This category already exists.' in browser.contents
+
+
+def test_category__Edit__3(address_book, CategoryFactory, browser):
+    """It allows a calendar visitor only to see the category data.
+
+    But he cannot change or delete them.
+    """
+    CategoryFactory(address_book, u'foo')
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_CATEGORY_EDIT_URL)
+    # There are no fields and no delete button:
+    assert (['form.buttons.apply', 'form.buttons.cancel'] ==
+            browser.all_control_names)
+
+
+def test_category__Delete__1(address_book, CategoryFactory, browser):
+    """It allows to delete a category."""
+    CategoryFactory(address_book, u'birthday')
+    browser.login('cal-editor')
+    browser.open(browser.CALENDAR_CATEGORY_EDIT_URL)
+    browser.getControl('Delete').click()
+    assert browser.CALENDAR_CATEGORY_DELETE_URL == browser.url
+    assert ('Do you really want to delete this event category?' in
+            browser.contents)
+    browser.getControl('Yes').click()
+    assert '"birthday" deleted.' == browser.message
+
+
+def test_category__Delete__2(
+        address_book, CategoryFactory, EventFactory, browser):
+    """It used_category_cannot_be_deleted."""
+    EventFactory(
+        address_book, category=CategoryFactory(address_book, u'birthday'))
+    browser.login('cal-editor')
+    browser.open(browser.CALENDAR_CATEGORY_DELETE_URL)
+    with pytest.raises(LookupError):
+        browser.getControl('Delete')
+
+
+def test_category__Delete__3(address_book, CategoryFactory, browser):
+    """It is not accessible for a calendar visitor."""
+    CategoryFactory(address_book, u'foo')
+    browser.login('cal-visitor')
+    with pytest.raises(HTTPError) as err:
+        browser.open(browser.CALENDAR_CATEGORY_DELETE_URL)
+    assert 'HTTP Error 403: Forbidden' == str(err.value)

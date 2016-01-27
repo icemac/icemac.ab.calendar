@@ -30,6 +30,8 @@ Other
 
 - Lint JS code.
 
+- Use py.test as new test runner.
+
 1.6.0 (2014-12-16)
 ==================
 

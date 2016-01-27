@@ -1,98 +1,127 @@
 from __future__ import unicode_literals
-import icemac.ab.calendar.testing
+from mechanize import LinkNotFoundError, HTTPError
+from zope.security.interfaces import Unauthorized
+import pytest
 
 
-class RecurringEventCRUD(icemac.ab.calendar.testing.BrowserTestCase):
-    """CRUD testing for ..event.*"""
-
-    def setUp(self):
-        super(RecurringEventCRUD, self).setUp()
-        self.create_category('birthday')
-        self.browser = self.get_browser('cal-editor')
-        self.browser.open(
-            'http://localhost/ab/++attribute++calendar_recurring_events')
-
-    def test_navigation_to_recurring_event_edit_is_possible(self):
-        self.browser.open('http://localhost/ab')
-        self.browser.getLink('Master data').click()
-        self.browser.getLink('Calendar', index=1).click()
-        self.assertEqual('http://localhost/ab/@@calendar-masterdata.html',
-                         self.browser.url)
-        self.browser.getLink('Recurring Events').click()
-        self.assertEqual(
-            'http://localhost/ab/++attribute++calendar_recurring_events',
-            self.browser.url)
-        self.assertIn(
-            'No recurring events defined yet.', self.browser.contents)
-
-    def test_recurring_events_can_be_added_and_is_shown_in_list(self):
-        self.browser.getLink('recurring event').click()
-        self.browser.getControl('event category').getControl(
-            'birthday').selected = True
-        self.browser.getControl('date').value = self.format_date(
-            self.get_datetime())
-        self.browser.getControl('time').value = '21:45'
-        self.browser.getControl('recurrence end').value = '2025 1 1 '
-        self.browser.getControl(name='form.buttons.add').click()
-        self.assertEqual(['"birthday" added.'], self.browser.get_messages())
-        # New recurring event shows up in list:
-        self.assertIn('birthday', self.browser.contents)
-
-    def test_recurring_event_can_be_edited(self):
-        self.create_recurring_event(
-            alternative_title='wedding day', datetime=self.get_datetime())
-        self.browser.reload()
-        self.browser.getLink('wedding day').click()
-        self.assertEqual(
-            'wedding day', self.browser.getControl('alternative title').value)
-        self.browser.getControl('alternative title').value = ''
-        self.browser.getControl('event category').getControl(
-            'birthday').selected = True
-        self.browser.getControl('Apply').click()
-        self.assertEqual(
-            ['Data successfully updated.'], self.browser.get_messages())
-        # Changed event name shows up in list:
-        self.assertIn('birthday', self.browser.contents)
-
-    def test_recurring_event_can_be_deleted(self):
-        self.create_recurring_event(
-            alternative_title='birthday', datetime=self.get_datetime())
-        self.browser.reload()
-        self.browser.getLink('birthday').click()
-        self.browser.getControl('Delete').click()
-        self.assertIn('Do you really want to delete this recurring event?',
-                      self.browser.contents)
-        self.browser.getControl('Yes').click()
-        self.assertEqual(['"birthday" deleted.'], self.browser.get_messages())
+RECURRING_EVENT_ADD_TEXT = 'recurring event'
 
 
-class RecurringEventSecurity(icemac.ab.calendar.testing.BrowserTestCase):
-    """Security tests for recurring events."""
+def test_event__Table__1(address_book, browser):
+    """It allows to navigate to the recurring events list view."""
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_MASTERDATA_URL)
+    browser.getLink('Recurring Events').click()
+    assert browser.CALENDAR_RECURRING_EVENTS_LIST_URL == browser.url
 
-    def test_visitor_is_able_to_see_recurring_events_but_cannot_change_them(
-            self):
-        from mechanize import LinkNotFoundError
 
-        self.create_recurring_event(alternative_title='birthday',
-                                    datetime=self.get_datetime())
-        browser = self.get_browser('cal-visitor')
-        browser.open('http://localhost/ab/@@calendar-masterdata.html')
-        browser.getLink('Recurring Events').click()
-        self.assertEqual(
-            'http://localhost/ab/++attribute++calendar_recurring_events',
-            browser.url)
-        # There is no add link:
-        with self.assertRaises(LinkNotFoundError):
-            browser.getLink('recurring event').click()
-        browser.getLink('birthday').click()
-        # There are no fields and no delete button:
-        self.assertEqual(['form.buttons.apply', 'form.buttons.cancel'],
-                         browser.get_all_control_names())
+def test_event__Table__2(address_book, browser):
+    """It renders a message if there are no recurring events yet."""
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_RECURRING_EVENTS_LIST_URL)
+    assert 'No recurring events defined yet.' in browser.contents
 
-    def test_anonymous_is_not_able_to_access_recurring_events(self):
-        from zope.security.interfaces import Unauthorized
-        browser = self.get_browser()
-        browser.handleErrors = False  # needed to catch exception
-        with self.assertRaises(Unauthorized):
-            browser.open(
-                'http://localhost/ab/++attribute++calendar_recurring_events')
+
+def test_event__Table__3(address_book, browser):
+    """It renders no add link for a calendar visitor."""
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_RECURRING_EVENTS_LIST_URL)
+    with pytest.raises(LinkNotFoundError):
+        browser.getLink(RECURRING_EVENT_ADD_TEXT)
+
+
+def test_event__Table__4(address_book, browser):
+    """It prevents access for anonymous."""
+    browser.handleErrors = False  # needed to catch exception
+    with pytest.raises(Unauthorized):
+        browser.open(browser.CALENDAR_RECURRING_EVENTS_LIST_URL)
+
+
+def test_event__Add__1(address_book, CategoryFactory, DateTime, browser):
+    """It allows to add recurring events to the list."""
+    CategoryFactory(address_book, 'birthday')
+    browser.login('cal-editor')
+    browser.open(browser.CALENDAR_RECURRING_EVENTS_LIST_URL)
+    browser.getLink(RECURRING_EVENT_ADD_TEXT).click()
+    assert browser.CALENDAR_RECURRING_EVENT_ADD_URL == browser.url
+    browser.getControl('event category').getControl('birthday').selected = True
+    browser.getControl('date').value = DateTime.format_date(DateTime.now)
+    browser.getControl('time').value = '21:45'
+    browser.getControl('recurrence end').value = '2055 1 1 '
+    browser.getControl(name='form.buttons.add').click()
+    assert '"birthday" added.' == browser.message
+    assert browser.CALENDAR_RECURRING_EVENTS_LIST_URL == browser.url
+    browser.reload()  # get rid of the flash message
+    # The new recurring event shows up in the list:
+    assert 'birthday' in browser.contents
+
+
+def test_event__Add__2(address_book, browser):
+    """It is not accessible for a calendar visitor."""
+    browser.login('cal-visitor')
+    with pytest.raises(HTTPError) as err:
+        browser.open(browser.CALENDAR_RECURRING_EVENT_ADD_URL)
+    assert 'HTTP Error 403: Forbidden' == str(err.value)
+
+
+def test_event__Edit__1(
+        address_book, RecurringEventFactory, CategoryFactory, DateTime,
+        browser):
+    """It allows to edit a recurring event."""
+    CategoryFactory(address_book, 'birthday')
+    RecurringEventFactory(
+        address_book, alternative_title='wedding day', datetime=DateTime.now,
+        period='weekly')
+    browser.login('cal-editor')
+    browser.open(browser.CALENDAR_RECURRING_EVENTS_LIST_URL)
+    browser.getLink('wedding day').click()
+    assert browser.CALENDAR_RECURRING_EVENT_EDIT_URL == browser.url
+    assert 'wedding day' == browser.getControl('alternative title').value
+    browser.getControl('alternative title').value = ''
+    browser.getControl('event category').getControl('birthday').selected = True
+    browser.getControl('Apply').click()
+    assert 'Data successfully updated.' == browser.message
+    # The changed event name shows up in the list:
+    assert 'birthday' in browser.contents
+
+
+def test_category__Edit__2(
+        address_book, RecurringEventFactory, DateTime, browser):
+    """It allows a calendar visitor only to see the recurring event data.
+
+    But he cannot change or delete them.
+    """
+    RecurringEventFactory(
+        address_book, alternative_title='foo', datetime=DateTime.now,
+        period='weekly')
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_RECURRING_EVENT_EDIT_URL)
+    # There are no fields and no delete button:
+    assert (['form.buttons.apply', 'form.buttons.cancel'] ==
+            browser.all_control_names)
+
+
+def test_event__Delete__1(
+        address_book, RecurringEventFactory, DateTime, browser):
+    """It recurring_event_can_be_deleted."""
+    RecurringEventFactory(
+        address_book, alternative_title='birthday', datetime=DateTime.now)
+    browser.login('cal-editor')
+    browser.open(browser.CALENDAR_RECURRING_EVENT_EDIT_URL)
+    browser.getControl('Delete').click()
+    assert browser.CALENDAR_RECURRING_EVENT_DELETE_URL == browser.url
+    assert ('Do you really want to delete this recurring event?' in
+            browser.contents)
+    browser.getControl('Yes').click()
+    assert '"birthday" deleted.' == browser.message
+
+
+def test_category__Delete__2(
+        address_book, RecurringEventFactory, DateTime, browser):
+    """It is not accessible for a calendar visitor."""
+    RecurringEventFactory(
+        address_book, alternative_title='birthday', datetime=DateTime.now)
+    browser.login('cal-visitor')
+    with pytest.raises(HTTPError) as err:
+        browser.open(browser.CALENDAR_RECURRING_EVENT_DELETE_URL)
+    assert 'HTTP Error 403: Forbidden' == str(err.value)

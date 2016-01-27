@@ -1,514 +1,483 @@
 # -*- coding: utf-8 -*-
-import datetime
-import icemac.ab.calendar.testing
-import unittest
-
-
-MONTH_FOR_TEST = 'May'
-if datetime.date.today().month == 5:
-    MONTH_FOR_TEST = 'November'
-
-
-class CalendarSecurity(icemac.ab.calendar.testing.BrowserTestCase):
-
-    """Security tests for the calendar."""
-
-    def test_visitor_is_able_to_access_a_filled_calendar(self):
-        from ..calendar import hyphenate
-        from pyphen import Pyphen
-        self.create_event(
-            datetime=self.get_datetime(),
-            alternative_title=u"Cousin's Birthday")
-        browser = self.get_browser('cal-visitor')
-        # We need to set a language as otherwise there will only be numbers
-        # instead of week day names:
-        browser.addHeader('Accept-Language', 'en')
-        browser.open('http://localhost/ab')
-        browser.getLink('Calendar').click()
-        self.assertEqual(
-            'http://localhost/ab/++attribute++calendar/@@month.html',
-            browser.url)
-        self.assertIn('Sunday', browser.contents)
-        self.assertIn(hyphenate("Cousin's Birthday", Pyphen(lang='en')),
-                      browser.contents)
-
-    def test_visitor_is_able_to_change_the_time_zone(self):
-        browser = self.get_browser('cal-visitor')
-        browser.open('http://localhost/ab/++attribute++calendar')
-        browser.getLink('UTC').click()
-        self.assertEqual('http://localhost/ab/++preferences++/ab.timeZone',
-                         browser.url)
-        browser.getControl('Time zone').displayValue = ['Indian/Christmas']
-        browser.getControl('Apply').click()
-        self.assertEqual(['Data successfully updated.'],
-                         browser.get_messages())
-
-    def test_visitor_is_not_able_to_add_events(self):
-        from mechanize import LinkNotFoundError
-        browser = self.get_browser('cal-visitor')
-        browser.open('http://localhost/ab/++attribute++calendar')
-        # No link to add events:
-        with self.assertRaises(LinkNotFoundError):
-            browser.getLink('event').click()
-
-    def test_anonymous_is_not_able_to_access_calendar(self):
-        from zope.security.interfaces import Unauthorized
-        browser = self.get_browser()
-        browser.handleErrors = False  # needed to catch exception
-        with self.assertRaises(Unauthorized):
-            browser.open('http://localhost/ab/++attribute++calendar')
-
-
-class CalendarFTests(icemac.ab.calendar.testing.BrowserTestCase):
-
-    """Testing ..calendar.Calendar."""
-
-    def test_displays_current_month_by_default(self):
-        browser = self.get_browser('cal-visitor')
-        # We need to explicitly set the language here because otherwise the
-        # month name is not displayed:
-        browser.addHeader('Accept-Language', 'en')
-        browser.open('http://localhost/ab/++attribute++calendar')
-        current_month, current_year = self.get_datetime().strftime(
-            '%B %Y').split()
-        self.assertEqual(
-            [current_month], browser.getControl('month').displayValue)
-        self.assertEqual(
-            [current_year], browser.getControl('year').displayValue)
-
-    def test_can_switch_to_entered_month(self):
-        browser = self.get_browser('cal-visitor')
-        # We need to explicitly set the language here because otherwise the
-        # month name is not displayed:
-        browser.addHeader('Accept-Language', 'en')
-        browser.open('http://localhost/ab/++attribute++calendar')
-        browser.getControl('month').getControl(MONTH_FOR_TEST).click()
-        browser.getControl('year').getControl('2024').click()
-        browser.getControl('Apply').click()
-        self.assertEqual(['Month changed.'], browser.get_messages())
-        self.assertEqual(
-            [MONTH_FOR_TEST], browser.getControl('month').displayValue)
-        self.assertEqual(['2024'], browser.getControl('year').displayValue)
-
-    def test_keeps_month_switched_to(self):
-        browser = self.get_browser('cal-visitor')
-        # We need to explicitly set the language here because otherwise the
-        # month name is not displayed:
-        browser.addHeader('Accept-Language', 'en')
-        calendar_url = 'http://localhost/ab/++attribute++calendar'
-        browser.open(calendar_url)
-        browser.getControl('month').getControl(MONTH_FOR_TEST).click()
-        browser.getControl('year').getControl('2024').click()
-        browser.getControl('Apply').click()
-        self.assertEqual(['Month changed.'], browser.get_messages())
-        browser.open(calendar_url)
-        self.assertEqual(
-            [MONTH_FOR_TEST], browser.getControl('month').displayValue)
-        self.assertEqual(['2024'], browser.getControl('year').displayValue)
-
-    def test_translates_months_in_dropdown(self):
-        browser = self.get_browser('cal-visitor')
-        browser.addHeader('Accept-Language', 'de-DE')
-        browser.open('http://localhost/ab/++attribute++calendar')
-        self.assertEqual('Mai', browser.getControl('month').displayOptions[4])
-
-    def test_shows_events_belonging_to_month(self):
-        from datetime import timedelta
-        now = self.get_datetime()
-        self.create_event(alternative_title=u'foo bär', datetime=now)
-        self.create_event(alternative_title=u'baz qux',
-                          datetime=now + timedelta(days=31))
-        browser = self.get_browser('cal-visitor')
-        browser.open('http://localhost/ab/++attribute++calendar')
-        self.assertIn('foo bär', browser.contents)
-        self.assertNotIn('baz qux', browser.contents)
-
-    def test_shows_recurred_events_as_links(self):
-        self.create_recurring_event(
-            alternative_title=u'foo bär', datetime=self.get_datetime(),
-            period=u'weekly', category=self.create_category(u'bat'))
-        browser = self.get_browser('cal-visitor')
-        browser.open('http://localhost/ab/++attribute++calendar')
-        self.assertEqual(
-            'http://localhost/ab/++attribute++calendar/'
-            '@@customize-recurred-event?date=%s&event=RecurringEvent' %
-            datetime.date.today().isoformat(),
-            browser.getLink('foo bär').url)
-
-    def test_renders_time_zone_user_has_set_in_prefs_as_link(self):
-        from zope.component import getUtility
-        from zope.preference.interfaces import IDefaultPreferenceProvider
-        default_prefs = getUtility(IDefaultPreferenceProvider)
-        default_prefs.getDefaultPreferenceGroup('ab.timeZone').time_zone = (
-            'Pacific/Fiji')
-        browser = self.get_browser('cal-visitor')
-        browser.open('http://localhost/ab/++attribute++calendar')
-        self.assertEqual(
-            'http://localhost/ab/++preferences++/ab.timeZone',
-            browser.getLink('Pacific/Fiji').url)
-
-    def test_shows_events_in_time_zone_selected_by_user(self):
-        from zope.component import getUtility
-        from zope.preference.interfaces import IDefaultPreferenceProvider
-        default_prefs = getUtility(IDefaultPreferenceProvider)
-        default_prefs.getDefaultPreferenceGroup('ab.timeZone').time_zone = (
-            'America/Los_Angeles')
-        self.create_event(
-            alternative_title=u'1st of april utc', datetime=self.get_datetime(
-                (2014, 4, 1, 0)))
-        self.create_event(
-            alternative_title=u'2nd of april utc', datetime=self.get_datetime(
-                (2014, 4, 2, 0)))
-        browser = self.get_browser('cal-visitor')
-        # We need to explicitly set the language here because otherwise the
-        # month name is not displayed:
-        browser.addHeader('Accept-Language', 'en')
-        browser.open('http://localhost/ab/++attribute++calendar')
-        browser.getControl('month').getControl('April').selected = True
-        browser.getControl('year').getControl('2014').selected = True
-        browser.getControl('Apply').click()
-        self.assertEqual(['Month changed.'], browser.get_messages())
-        # 1st of april 0:00 UTC is in march for Los Angeles timezone, so it
-        # does not show up here.
-        self.assertNotIn('1st of april utc', browser.contents)
-        self.assertIn('2nd of april utc', browser.contents)
-
-    def test_can_switch_to_year_view(self):
-        browser = self.get_browser('cal-visitor')
-        # We need to explicitly set the language here because otherwise the
-        # month names are not displayed:
-        browser.addHeader('Accept-Language', 'en')
-        calendar_url = 'http://localhost/ab/++attribute++calendar'
-        browser.open(calendar_url)
-        browser.getLink('Year').click()
-        self.assertEqual(calendar_url + '/@@year.html', browser.url)
-        year = datetime.date.today().year
-        self.assertIn('January {}'.format(year), browser.contents)
-        self.assertIn('December {}'.format(year), browser.contents)
-
-    def test_keeps_view_switched_to(self):
-        browser = self.get_browser('cal-visitor')
-        calendar_url = 'http://localhost/ab/++attribute++calendar'
-        browser.open(calendar_url)
-        browser.getLink('Year').click()
-        self.assertEqual(calendar_url + '/@@year.html', browser.url)
-        browser.open(calendar_url)
-        self.assertEqual(calendar_url + '/@@year.html', browser.url)
-
-    def test_displays_fields_selected_in_master_data(self):
-        from icemac.ab.calendar.interfaces import ICalendarDisplaySettings
-        from icemac.ab.calendar.interfaces import IEvent
-        from icemac.addressbook.interfaces import IEntity
-        from icemac.addressbook.testing import create_field
-        # Create user fields for select
-        ab = self.layer['addressbook']
-        event_field_name = create_field(
-            ab, 'icemac.ab.calendar.event.Event', u'Int', u'reservations')
-        revent_field_name = create_field(
-            ab, 'icemac.ab.calendar.event.RecurringEvent', u'Int',
-            u'reservations')
-        # Select fields
-        event_entity = IEntity(IEvent)
-        # Sort order is used for display in calendar:
-        field_names = ['text', event_field_name, 'persons']
-        ICalendarDisplaySettings(ab.calendar).event_additional_fields = [
-            event_entity.getRawField(x) for x in field_names]
-
-        category = self.create_category(u'bar')
-        data = {'datetime': self.get_datetime(), 'text': u'Text1',
-                'period': 'yearly', revent_field_name: 42,
-                'external_persons': [u'Ben Utzer'], 'category': category}
-        self.create_recurring_event(**data)
-        browser = self.get_browser('cal-visitor')
-        browser.handleErrors = False
-        browser.open('http://localhost/ab/++attribute++calendar')
-        self.assertEllipsis('''...
-      <ul class="info">
-        <li>Text1</li>
-        <li>42</li>
-        <li>Ben Utzer</li>
-      </ul>...''', browser.contents)
-
-    def test_ignores_field_if_not_defined_on_IRecurringEvent(self):
-        from icemac.ab.calendar.interfaces import ICalendarDisplaySettings
-        from icemac.ab.calendar.interfaces import IEvent
-        from icemac.addressbook.interfaces import IEntity
-        from icemac.addressbook.testing import create_field
-        # Create user field for select
-        ab = self.layer['addressbook']
-        field_name = create_field(
-            ab, 'icemac.ab.calendar.event.Event', u'Int', u'reservations')
-        # Select fields
-        event_entity = IEntity(IEvent)
-        ICalendarDisplaySettings(ab.calendar).event_additional_fields = [
-            event_entity.getRawField(x) for x in ['text', field_name]]
-
-        category = self.create_category(u'bar')
-        data = {'datetime': self.get_datetime(), 'text': u'Text2',
-                'period': 'yearly', 'category': category}
-        self.create_recurring_event(**data)
-        browser = self.get_browser('cal-visitor')
-        browser.handleErrors = False
-        browser.open('http://localhost/ab/++attribute++calendar')
-        self.assertEllipsis('''...
-      <span class="info">Text2</span>
-...''', browser.contents)
-
-    def test_ignores_selected_but_deleted_user_defined_field(self):
-        from icemac.ab.calendar.interfaces import ICalendarDisplaySettings
-        from icemac.ab.calendar.interfaces import IEvent
-        from icemac.addressbook.interfaces import IEntity
-        from icemac.addressbook.testing import create_field
-        # Create user field for select
-        ab = self.layer['addressbook']
-        field_name = create_field(
-            ab, 'icemac.ab.calendar.event.Event', u'Int', u'reservations')
-        # Select fields
-        event_entity = IEntity(IEvent)
-        field_names = ['text', field_name]
-        ICalendarDisplaySettings(ab.calendar).event_additional_fields = [
-            event_entity.getRawField(x) for x in field_names]
-
-        category = self.create_category(u'bar')
-        data = {'datetime': self.get_datetime(), 'text': u'Text1',
-                'category': category, field_name: 42}
-        self.create_event(**data)
-
-        event_entity.removeField(event_entity.getRawField(field_name))
-        browser = self.get_browser('cal-visitor')
-        browser.open('http://localhost/ab/++attribute++calendar')
-        self.assertEllipsis('''...
-      <span class="info">Text1</span>
-...''', browser.contents)
-
-
-class CalendarSTests(icemac.ab.calendar.testing.SeleniumTestCase):
-
-    """Selenium testing ..calendar.Calendar."""
-
-    def test_month_dropdown_on_month_view_autosubmits(self):
-        self.login()
-        sel = self.selenium
-        sel.open('/ab/++attribute++calendar')
-        sel.select(
-            'id=form-widgets-calendar_month', 'label=%s' % MONTH_FOR_TEST)
-        sel.waitForPageToLoad()
-        self.assertMessage(u'Month changed.')
-
-    def test_year_dropdown_on_month_view_autosubmits(self):
-        self.login()
-        sel = self.selenium
-        sel.open('/ab/++attribute++calendar')
-        sel.select('id=form-widgets-calendar_year', 'label=2024')
-        sel.waitForPageToLoad()
-        self.assertMessage(u'Month changed.')
-
-    def test_year_dropdown_on_year_view_autosubmits(self):
-        self.login()
-        sel = self.selenium
-        sel.open('/ab/++attribute++calendar')
-        sel.clickAndWait('link=Year')
-        sel.select('id=form-widgets-calendar_year', 'label=2024')
-        sel.waitForPageToLoad()
-        self.assertMessage(u'Year changed.')
-
-
-class EventDescriptionUTests(icemac.ab.calendar.testing.UnitTestCase):
-    """Unit testing ..calendar.EventDescription."""
-
-    def test_EventDescription_implements_IEventDescription(self):
-        from zope.interface.verify import verifyObject
-        from icemac.ab.calendar.browser.renderer.interfaces import (
-            IEventDescription)
-        from icemac.ab.calendar.browser.calendar import EventDescription
-
-        event_description = self.get_event_description()
-        self.assertIsInstance(event_description, EventDescription)
-        self.assertTrue(verifyObject(IEventDescription, event_description))
-
-
-class EventDescriptionFTests(icemac.ab.calendar.testing.ZODBTestCase):
-    """Functional testing ..calendar.EventDescription."""
-
-    def test_persons_is_komma_separated_list_of_persons_in_ab_and_externals(
-            self):
-        person = self.create_person(last_name=u'Tester', first_name=u'Hans')
-        event = self.create_event(
-            persons=set([person]), external_persons=[u'Heiner Myer'])
-        event_description = self.get_event_description(event=event)
-        self.assertEqual(u'Hans Tester, Heiner Myer',
-                         event_description.persons)
-
-    def test_persons_is_emtpty_string_if_there_are_no_persons_assigned(self):
-        self.assertEqual(u'', self.get_event_description().persons)
-
-
-class EventDescriptionITests_getInfo(icemac.ab.calendar.testing.ZODBTestCase):
-    """Integration testing ..calendar.EventDescription.getInfo()"""
-
-    def setUp(self):
-        super(EventDescriptionITests_getInfo, self).setUp()
-        self.patch_get_time_zone_name()
-
-    def _make_one(self, **kw):
-        from icemac.ab.calendar.browser.renderer.interfaces import (
-            IEventDescription)
-        return IEventDescription(self.create_event(**kw))
-
-    def _set_settings(self, *args):
-        from icemac.ab.calendar.interfaces import (
-            ICalendarDisplaySettings, IEvent)
-        fields = []
-        for arg in args:
-            if isinstance(arg, basestring):
-                arg = IEvent[arg]
-            fields.append(arg)
-        ab = self.layer['addressbook']
-        ICalendarDisplaySettings(ab.calendar).event_additional_fields = fields
-
-    def test_returns_list_of_selected_fields_as_unicodes(self):
-        from icemac.ab.calendar.interfaces import IEvent
-        from icemac.addressbook.interfaces import IEntity
-        from icemac.addressbook.testing import create_field
-        ab = self.layer['addressbook']
-        reservations_name = create_field(
-            ab, 'icemac.ab.calendar.event.Event', u'Int', u'reservations')
-        event_entity = IEntity(IEvent)
-        # Both user fields and pre-defined fields are possible
-        self._set_settings('text', event_entity.getRawField(reservations_name))
-        ed = self._make_one(
-            **{'text': u'Event is not yet sure.', reservations_name: 50})
-        self.assertEqual([u'Event is not yet sure.', u'50'], ed.getInfo())
-
-    def test_splits_the_text_field_at_line_endings(self):
-        self._set_settings('text')
-        ed = self._make_one(text=u'foo\nbar')
-        self.assertEqual([u'foo', u'bar'], ed.getInfo())
-
-    def test_omits_fields_with_None_value(self):
-        self._set_settings('text')
-        ed = self._make_one()
-        self.assertIsNone(ed.context.text)
-        self.assertEqual([], ed.getInfo())
-
-    def test_omits_empty_string_values(self):
-        self._set_settings('persons')
-        ed = self._make_one()
-        self.assertEqual('', ed.persons)
-        self.assertEqual([], ed.getInfo())
-
-    def test_does_not_omit_0_numbers(self):
-        from icemac.ab.calendar.interfaces import IEvent
-        from icemac.addressbook.interfaces import IEntity
-        from icemac.addressbook.testing import create_field
-        ab = self.layer['addressbook']
-        num_name = create_field(
-            ab, 'icemac.ab.calendar.event.Event', u'Int', u'num')
-        event_entity = IEntity(IEvent)
-        self._set_settings(event_entity.getRawField(num_name))
-        ed = self._make_one(**{num_name: 0})
-        self.assertEqual([u'0'], ed.getInfo())
-
-    def test_returns_external_and_internal_persons_if_persons_selected(self):
-        from icemac.addressbook.testing import create_person
-        ab = self.layer['addressbook']
-        p1 = create_person(ab, ab, u'Tester', first_name=u'Hans')
-        self._set_settings('persons')
-        ed = self._make_one(
-            persons=set([p1]),
-            external_persons=[u'Franz Vrozzek', u'Fritz Vrba'])
-        self.assertEqual([u'Franz Vrozzek, Fritz Vrba, Hans Tester'],
-                         ed.getInfo())
-
-    def test_hyphenates_text(self):
-        self._set_settings('text')
-        ed = self._make_one(text=u'I contain longer words.')
-        self.assertEqual([u'I con&shy;tain longer word&shy;s.'],
-                         ed.getInfo(lang='en'))
-
-
-class EventDescription_getText_Tests(icemac.ab.calendar.testing.UnitTestCase):
-    """Testing ..calendar.EventDescription.getText()."""
-
-    def _makeOne(self, category_name=None, **kw):
-        from icemac.ab.calendar.category import Category
-        from icemac.addressbook.utils import create_obj
-        if category_name is not None:
-            kw['category'] = create_obj(Category, title=category_name)
-        return self.get_event_description(**kw)
-
-    def callMUT(self, event_description, **kw):
-        return event_description.getText(**kw)
-
-    def test_returns_alternative_title(self):
-        ed = self._makeOne(
-            category_name=u'birthday', alternative_title=u'foo bar')
-        self.assertEqual(u'foo bar', self.callMUT(ed))
-
-    def test_returns_category_title_if_alternative_title_is_not_set(self):
-        ed = self._makeOne(category_name=u'foo', alternative_title=None)
-        self.assertEqual(u'foo', self.callMUT(ed))
-
-    def test_returns_empty_if_neither_alternative_title_nor_category_is_set(
-            self):
-        ed = self._makeOne(category=None, alternative_title=None)
-        self.assertEqual(u'', self.callMUT(ed))
-
-    def test_getText_returns_not_hyphenated_text_by_default(self):
-        self.assertEqual(
-            u'birthday',
-            self.callMUT(self._makeOne(alternative_title=u'birthday')))
-
-    def test_getText_raises_UnknownLanguageError_for_unknown_languages(self):
-        from ..renderer.interfaces import UnknownLanguageError
-        with self.assertRaises(UnknownLanguageError):
-            self.callMUT(self._makeOne(), lang='Clingon')
-
-    def test_getText_returns_hyphenated_respecting_set_language(self):
-        ed = self._makeOne(alternative_title=u'Geburtstag')
-        self.assertEqual(u'Ge&shy;burts&shy;tag', self.callMUT(ed, lang='de'))
-
-
-class HyphenatedTests(unittest.TestCase):
-    """Testing ..calendar.hyphenated"""
-
-    def test_encodes_text_as_html_even_if_not_hyphenating(self):
-        from ..calendar import hyphenated
-
-        @hyphenated
-        def func(ignored):
-            return u'<script>'
-
-        self.assertEqual(u'&lt;script&gt;', func(any))
-
-    def test_hyphenates_text_and_encodes_text_for_html(self):
-        from ..calendar import hyphenated
-
-        @hyphenated
-        def func(ignored, lang=None):
-            return u'Gebürtstag<>'
-
-        res = func(any, lang='de')
-        self.assertIsInstance(res, unicode)
-        self.assertEqual(u'Ge&shy;bürts&shy;tag&lt;&gt;', res)
-
-
-class CalendarForEventDescriptionTests(
-        icemac.ab.calendar.testing.ZODBTestCase):
-    """Testing ..calendar.calendar_for_event_description()."""
-
-    def test_IEventDescription_can_be_adapted_to_ICalendar(self):
-        from icemac.ab.calendar.interfaces import ICalendar
-        ed = self.get_event_description(event=self.create_event())
-        self.assertEqual(self.layer['addressbook'].calendar, ICalendar(ed))
-
-
-class EventForEventDescriptionTests(
-        icemac.ab.calendar.testing.ZODBTestCase):
-    """Testing ..calendar.event_for_event_description()."""
-
-    def test_IEventDescription_can_be_adapted_to_ICalendar(self):
-        from icemac.ab.calendar.interfaces import IEvent
-        event = self.create_event()
-        ed = self.get_event_description(event=event)
-        self.assertEqual(event, IEvent(ed))
+from datetime import timedelta, date
+from icemac.ab.calendar.browser.calendar import EventDescription, hyphenated
+from icemac.ab.calendar.browser.renderer.interfaces import IEventDescription
+from icemac.ab.calendar.browser.renderer.interfaces import UnknownLanguageError
+from icemac.ab.calendar.interfaces import ICalendarDisplaySettings, ICalendar
+from icemac.ab.calendar.interfaces import IEvent, IRecurringEvent
+from icemac.addressbook.interfaces import IEntity
+from mechanize import LinkNotFoundError
+from zope.interface.verify import verifyObject
+from zope.preference.interfaces import IDefaultPreferenceProvider
+from zope.security.interfaces import Unauthorized
+import pytest
+import zope.component
+
+
+MONTH_FOR_TEST = 'November' if date.today().month == 5 else 'May'
+
+# Helper functions
+
+
+def set_event_additional_fields(address_book, *field_names):
+    """Set the given fields to be displayed when an event is rendered."""
+    event_entity = IEntity(IEvent)
+    ICalendarDisplaySettings(address_book.calendar).event_additional_fields = [
+        event_entity.getRawField(x)
+        for x in field_names]
+
+
+# Tests
+
+def test_calendar__TabularCalendar__1(
+        address_book, browser, EventFactory, DateTime):
+    """It allows a visitor to access a filled calendar."""
+    EventFactory(
+        address_book, datetime=DateTime.now, alternative_title=u"Qwrtz")
+    browser.login('cal-visitor')
+    # We need to set a language as otherwise there will only be numbers
+    # instead of week day names in the calendar:
+    browser.lang('en')
+    browser.open(browser.ADDRESS_BOOK_DEFAULT_URL)
+    assert browser.CALENDAR_OVERVIEW_URL == browser.getLink('Calendar').url
+    browser.getLink('Calendar').click()
+    assert browser.CALENDAR_MONTH_OVERVIEW_URL == browser.url
+    assert 'Sunday' in browser.contents
+    assert 'Qwrtz' in browser.contents
+
+
+def test_calendar__TabularCalendar__2(address_book, browser):
+    """It allows a visitor to change his the time zone settings."""
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_OVERVIEW_URL)
+    browser.getLink('UTC').click()
+    assert browser.PREFS_TIMEZONE_URL.startswith(browser.url)
+    browser.getControl('Time zone').displayValue = ['Indian/Christmas']
+    browser.getControl('Apply').click()
+    assert 'Data successfully updated.' == browser.message
+
+
+def test_calendar__TabularCalendar__3(address_book, browser):
+    """It does not render an event add link for a visitor."""
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_OVERVIEW_URL)
+    # No link to add events:
+    with pytest.raises(LinkNotFoundError):
+        browser.getLink('event')
+
+
+def test_calendar__TabularCalendar__4(address_book, browser):
+    """It prevents access of anonymous."""
+    browser.handleErrors = False  # needed to catch exception
+    with pytest.raises(Unauthorized):
+        browser.open(browser.CALENDAR_OVERVIEW_URL)
+
+
+def test_calendar__MonthSelectorForm__1(address_book, browser, DateTime):
+    """It displays the current month by default."""
+    browser.login('cal-visitor')
+    # We need to explicitly set the language here because otherwise the
+    # month name is not displayed:
+    browser.lang('en')
+    browser.open(browser.CALENDAR_MONTH_OVERVIEW_URL)
+    current_month = DateTime.now.strftime('%B')
+    current_year = str(DateTime.now.year)
+    assert [current_month] == browser.getControl('month').displayValue
+    assert [current_year] == browser.getControl('year').displayValue
+
+
+def test_calendar__MonthSelectorForm__2(address_book, browser):
+    """It can switch to the entered month."""
+    browser.login('cal-visitor')
+    # We need to explicitly set the language here because otherwise the
+    # month name is not displayed:
+    browser.lang('en')
+    browser.open(browser.CALENDAR_MONTH_OVERVIEW_URL)
+    browser.getControl('month').getControl(MONTH_FOR_TEST).click()
+    browser.getControl('year').getControl('2024').click()
+    browser.getControl('Apply').click()
+    assert 'Month changed.' == browser.message
+    assert [MONTH_FOR_TEST] == browser.getControl('month').displayValue
+    assert ['2024'] == browser.getControl('year').displayValue
+
+
+def test_calendar__MonthSelectorForm__3(address_book, browser):
+    """It keeps the month the user switched to."""
+    browser.login('cal-visitor')
+    # We need to explicitly set the language here because otherwise the
+    # month name is not displayed:
+    browser.lang('en')
+    browser.open(browser.CALENDAR_MONTH_OVERVIEW_URL)
+    browser.getControl('month').getControl(MONTH_FOR_TEST).click()
+    browser.getControl('year').getControl('2024').click()
+    browser.getControl('Apply').click()
+    assert 'Month changed.' == browser.message
+    browser.open(browser.CALENDAR_MONTH_OVERVIEW_URL)
+    assert [MONTH_FOR_TEST] == browser.getControl('month').displayValue
+    assert ['2024'] == browser.getControl('year').displayValue
+
+
+def test_calendar__MonthSelectorForm__4(address_book, browser):
+    """It translates the months in the month dropdown."""
+    browser.login('cal-visitor')
+    browser.lang('de-DE')
+    browser.open(browser.CALENDAR_MONTH_OVERVIEW_URL)
+    assert 'Mai' == browser.getControl('month').displayOptions[4]
+
+
+def test_calendar__Dispatcher__1(address_book, browser):
+    """It keeps the view mode switched to."""
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_MONTH_OVERVIEW_URL)
+    browser.getLink('Year').click()
+    assert browser.CALENDAR_YEAR_OVERVIEW_URL == browser.url
+    browser.open(browser.CALENDAR_OVERVIEW_URL)
+    assert browser.CALENDAR_YEAR_OVERVIEW_URL == browser.url
+
+
+def test_calendar__MonthCalendar__1(
+        address_book, EventFactory, DateTime, browser):
+    """It shows the events belonging to the selected month."""
+    now = DateTime.now
+    EventFactory(address_book, alternative_title=u'foo bär', datetime=now)
+    EventFactory(address_book, alternative_title=u'baz qux',
+                 datetime=now + timedelta(days=31))
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_MONTH_OVERVIEW_URL)
+    assert 'foo bär' in browser.contents
+    assert 'baz qux' not in browser.contents
+
+
+def test_calendar__MonthCalendar__2(
+        address_book, RecurringEventFactory, CategoryFactory, DateTime,
+        browser):
+    """It shows recurred events as links to customize them."""
+    RecurringEventFactory(
+        address_book, alternative_title=u'foo bär', datetime=DateTime.now,
+        period=u'weekly', category=CategoryFactory(address_book, u'bat'))
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_MONTH_OVERVIEW_URL)
+    assert browser.getLink('foo bär').url.startswith(
+        browser.RECURRED_EVENT_CUSTOMIZE_URL)
+    assert browser.getLink('foo bär').url.endswith(
+        '@@customize-recurred-event?date={}&event=RecurringEvent'.format(
+            date.today().isoformat()))
+
+
+def test_calendar__MonthCalendar__3(address_book, browser):
+    """It renders the time zone the user has set in the prefs as a link."""
+    default_prefs = zope.component.getUtility(IDefaultPreferenceProvider)
+    default_prefs.getDefaultPreferenceGroup(
+        'ab.timeZone').time_zone = 'Pacific/Fiji'
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_MONTH_OVERVIEW_URL)
+    file('response.html', 'w').write(browser.contents)
+    assert browser.PREFS_TIMEZONE_URL.startswith(
+        browser.getLink('Pacific/Fiji').url)
+
+
+def test_calendar__MonthCalendar__4(
+        address_book, EventFactory, DateTime, browser):
+    """It shows events in the time zone selected by the user."""
+    default_prefs = zope.component.getUtility(IDefaultPreferenceProvider)
+    default_prefs.getDefaultPreferenceGroup(
+        'ab.timeZone').time_zone = 'America/Los_Angeles'
+    EventFactory(address_book, alternative_title=u'1st of april utc',
+                 datetime=DateTime(2014, 4, 1, 0))
+    EventFactory(address_book, alternative_title=u'2nd of april utc',
+                 datetime=DateTime(2014, 4, 2, 0))
+    browser.login('cal-visitor')
+    # We need to explicitly set the language here because otherwise the month
+    # name is not displayed:
+    browser.lang('en')
+    browser.open(browser.CALENDAR_MONTH_OVERVIEW_URL)
+    browser.getControl('month').getControl('April').selected = True
+    browser.getControl('year').getControl('2014').selected = True
+    browser.getControl('Apply').click()
+    assert 'Month changed.' == browser.message
+    # 1st of april 0:00 UTC is in march for Los Angeles timezone, so it
+    # does not show up here.
+    assert '1st of april utc' not in browser.contents
+    assert '2nd of april utc' in browser.contents
+
+
+def test_calendar__MonthCalendar__5(address_book, browser):
+    """It can switch to the year view."""
+    browser.login('cal-visitor')
+    # We need to explicitly set the language here because otherwise the month
+    # names are not displayed:
+    browser.lang('en')
+    browser.open(browser.CALENDAR_MONTH_OVERVIEW_URL)
+    browser.getLink('Year').click()
+    assert browser.CALENDAR_YEAR_OVERVIEW_URL == browser.url
+    year = date.today().year
+    assert 'January {}'.format(year) in browser.contents
+    assert 'December {}'.format(year) in browser.contents
+
+
+def test_calendar__MonthCalendar__6(
+        address_book, FieldFactory, CategoryFactory, DateTime,
+        RecurringEventFactory, browser):
+    """It displays the fields of event objects selected in master data."""
+    # Create user fields for select
+    event_field_name = FieldFactory(
+        address_book, IEvent, u'Int', u'reservations').__name__
+    revent_field_name = FieldFactory(
+        address_book, IRecurringEvent, u'Int', u'reservations').__name__
+    # Sort order is used for display in calendar:
+    set_event_additional_fields(
+        address_book, 'text', event_field_name, 'persons')
+
+    category = CategoryFactory(address_book, u'bar')
+    data = {'datetime': DateTime.now, 'text': u'Text1',
+            'period': 'yearly', revent_field_name: 42,
+            'external_persons': [u'Ben Utzer'], 'category': category}
+    RecurringEventFactory(address_book, **data)
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_MONTH_OVERVIEW_URL)
+    assert [
+        'Text1',
+        '42',
+        'Ben Utzer'
+    ] == browser.etree.xpath('//ul[@class="info"]/li/text()')
+
+
+def test_calendar_js__1(address_book, webdriver):
+    """It auto-submits on change in the month drop-down of the month view."""
+    sel = webdriver.login('cal-visitor')
+    sel.open('/ab/++attribute++calendar/@@month.html')
+    sel.select('id=form-widgets-calendar_month',
+               'label={}'.format(MONTH_FOR_TEST))
+    sel.waitForPageToLoad()
+    assert u'Month changed.' == webdriver.message
+
+
+def test_calendar_js__2(address_book, webdriver):
+    """It auto-submits on change in the year drop-down of the month view."""
+    sel = webdriver.login('cal-visitor')
+    sel.open('/ab/++attribute++calendar/@@month.html')
+    sel.select('id=form-widgets-calendar_year', 'label=2024')
+    sel.waitForPageToLoad()
+    assert u'Month changed.' == webdriver.message
+
+
+def test_calendar_js__3(address_book, webdriver):
+    """It auto-submits on change in the year drop-down of the year view."""
+    sel = webdriver.login('cal-visitor')
+    sel.open('/ab/++attribute++calendar/@@year.html')
+    sel.select('id=form-widgets-calendar_year', 'label=2024')
+    sel.waitForPageToLoad()
+    assert u'Year changed.' == webdriver.message
+
+
+def test_calendar__EventDescription__1(EventDescriptionFactory):
+    """It fulfills the `IEventDescription` interface."""
+    event_description = EventDescriptionFactory()
+    assert isinstance(event_description, EventDescription)
+    assert verifyObject(IEventDescription, event_description)
+
+
+def test_calendar__EventDescription__persons__1(
+        address_book, PersonFactory, EventFactory, EventDescriptionFactory):
+    """It is a comma separated list of persons.
+
+    It combines the persons from the address book and the external persons.
+    """
+    person = PersonFactory(address_book, u'Tester', first_name=u'Hans')
+    event = EventFactory(
+        address_book, persons=set([person]), external_persons=[u'Heiner Myer'])
+    event_description = EventDescriptionFactory(event=event)
+    assert u'Hans Tester, Heiner Myer' == event_description.persons
+
+
+def test_calendar__EventDescription__persons__2(EventDescriptionFactory):
+    """It is an empty string if there are no persons assigned to the event."""
+    assert u'' == EventDescriptionFactory().persons
+
+
+@pytest.fixture('function')
+def selected_user_field(address_book, FieldFactory):
+    """Create a user defined field ad select it for display.
+
+    Return the name of the user defined field.
+    """
+    field_name = FieldFactory(
+        address_book, IEvent, u'Int', u'reservations').__name__
+    set_event_additional_fields(address_book, 'text', field_name)
+    return field_name
+
+
+def test_calendar__EventDescription__getInfo__1(
+        address_book, CategoryFactory, RecurringEventFactory, DateTime,
+        selected_user_field, utc_time_zone_pref):
+    """It ignores not existing fields.
+
+    This happens if a user defined field is chosen for display but there is no
+    equivalent field on the recurring event which is rendered as recurred
+    event.
+
+    """
+    ed = IEventDescription(RecurringEventFactory(address_book, **{
+        'datetime': DateTime.now,
+        'text': u'Text2',
+        'period': 'yearly',
+        'category': CategoryFactory(address_book, u'bar')}))
+    assert ['Text2'] == ed.getInfo()
+
+
+def test_calendar__EventDescription__getInfo__2(
+        address_book, EventFactory, DateTime, CategoryFactory,
+        selected_user_field, utc_time_zone_pref):
+    """It ignores a selected but later deleted user defined field."""
+    ed = IEventDescription(EventFactory(address_book, **{
+        'datetime': DateTime.now,
+        'text': u'Text1',
+        'category': CategoryFactory(address_book, u'bar'),
+        selected_user_field: 42}))
+    event_entity = IEntity(IEvent)
+    event_entity.removeField(event_entity.getRawField(selected_user_field))
+    assert ['Text1'] == ed.getInfo()
+
+
+def test_calendar__EventDescription__getInfo__3(
+        address_book, FieldFactory, EventFactory, utc_time_zone_pref):
+    """It returns a list of the selected fields as unicode objects."""
+    reservations = FieldFactory(
+        address_book, IEvent, u'Int', u'reservations').__name__
+    # Both user fields and pre-defined fields are possible
+    set_event_additional_fields(address_book, 'text', reservations)
+    ed = IEventDescription(EventFactory(address_book, **{
+        'text': u'Event is not yet sure.',
+        reservations: 50}))
+    assert [u'Event is not yet sure.', u'50'] == ed.getInfo()
+
+
+def test_calendar__EventDescription__getInfo__4(
+        address_book, EventFactory, utc_time_zone_pref):
+    """It splits the text field at line endings."""
+    set_event_additional_fields(address_book, 'text')
+    ed = IEventDescription(EventFactory(address_book, text=u'foo\nbar'))
+    assert [u'foo', u'bar'] == ed.getInfo()
+
+
+def test_calendar__EventDescription__getInfo__5(
+        address_book, EventFactory, utc_time_zone_pref):
+    """It omits fields with a `None` value."""
+    set_event_additional_fields(address_book, 'text')
+    ed = IEventDescription(EventFactory(address_book))
+    assert ed.context.text is None
+    assert [] == ed.getInfo()
+
+
+def test_calendar__EventDescription__getInfo__6(
+        address_book, EventFactory, utc_time_zone_pref):
+    """It omits empty string values."""
+    set_event_additional_fields(address_book, 'persons')
+    ed = IEventDescription(EventFactory(address_book))
+    assert '' == ed.persons
+    assert [] == ed.getInfo()
+
+
+def test_calendar__EventDescription__getInfo__7(
+        address_book, FieldFactory, EventFactory, utc_time_zone_pref):
+    """It does not omit numbers with the value of zero."""
+    num_field = FieldFactory(address_book, IEvent, u'Int', u'num').__name__
+    set_event_additional_fields(address_book, num_field)
+    ed = IEventDescription(EventFactory(address_book, **{num_field: 0}))
+    assert [u'0'] == ed.getInfo()
+
+
+def test_calendar__EventDescription__getInfo__8(
+        address_book, PersonFactory, EventFactory, utc_time_zone_pref):
+    """It returns external and internal persons if `persons` is  selected."""
+    p1 = PersonFactory(address_book, u'Tester', first_name=u'Hans')
+    set_event_additional_fields(address_book, 'persons')
+    ed = IEventDescription(EventFactory(
+        address_book,
+        persons=set([p1]),
+        external_persons=[u'Franz Vrozzek', u'Fritz Vrba']))
+    assert [u'Franz Vrozzek, Fritz Vrba, Hans Tester'] == ed.getInfo()
+
+
+def test_calendar__EventDescription__getInfo__9(
+        address_book, EventFactory, utc_time_zone_pref):
+    """It hyphenates the text."""
+    set_event_additional_fields(address_book, 'text')
+    ed = IEventDescription(EventFactory(
+        address_book, text=u'I contain longer words.'))
+    assert [u'I con&shy;tain longer word&shy;s.'] == ed.getInfo(lang='en')
+
+
+def test_calendar__EventDescription__getText__1(EventDescriptionFactory):
+    """It returns the alternative title if it is set."""
+    ed = EventDescriptionFactory(
+        category_name=u'birthday', alternative_title=u'foo bar')
+    assert u'foo bar' == ed.getText()
+
+
+def test_calendar__EventDescription__getText__2(
+        address_book, EventDescriptionFactory, CategoryFactory):
+    """It returns the category title if the alternative title is not set."""
+    ed = EventDescriptionFactory(
+        category=CategoryFactory(address_book, u'foo'), alternative_title=None)
+    assert u'foo' == ed.getText()
+
+
+def test_calendar__EventDescription__getText__3(EventDescriptionFactory):
+    """returns_empty_if_neither_alternative_title_nor_category_is_set."""
+    ed = EventDescriptionFactory(
+        category=None, alternative_title=None)
+    assert u'' == ed.getText()
+
+
+def test_calendar__EventDescription__getText__4(EventDescriptionFactory):
+    """It returns not hyphenated text by default."""
+    ed = EventDescriptionFactory(alternative_title=u'birthday')
+    assert u'birthday' == ed.getText()
+
+
+def test_calendar__EventDescription__getText__5(EventDescriptionFactory):
+    """It raises `UnknownLanguageError` for an unknown language."""
+    ed = EventDescriptionFactory()
+    with pytest.raises(UnknownLanguageError):
+        ed.getText(lang='Clingon')
+
+
+def test_calendar__EventDescription__getText__6(EventDescriptionFactory):
+    """getText_returns_hyphenated_respecting_set_language."""
+    ed = EventDescriptionFactory(alternative_title=u'Geburtstag')
+    assert (u'Ge&shy;burts&shy;tag', ed.getText(lang='de'))
+
+
+def test_calendar__hyphenated__1():
+    """It quotes text as html even if not hyphenating when no lang is set."""
+    @hyphenated
+    def func(ignored):
+        return u'<script>'
+    assert u'&lt;script&gt;' == func(any)
+
+
+def test_calendar__hyphenated__2():
+    """It hyphenates text and encodes it text for html."""
+    @hyphenated
+    def func(ignored, lang=None):
+        return u'Gebürtstag<>'
+
+    res = func(any, lang='de')
+    assert isinstance(res, unicode)
+    assert u'Ge&shy;bürts&shy;tag&lt;&gt;' == res
+
+
+def test_calendar__calendar_for_event_description__1(
+        address_book, EventFactory, EventDescriptionFactory):
+    """It adapts IEventDescription to ICalendar."""
+    ed = EventDescriptionFactory(event=EventFactory(address_book))
+    assert address_book.calendar == ICalendar(ed)
+
+
+def test_calendar__event_for_event_description__1(
+        address_book, EventFactory, EventDescriptionFactory):
+    """It adapts IEventDescription to IEvent."""
+    event = EventFactory(address_book)
+    ed = EventDescriptionFactory(event=event)
+    assert event == IEvent(ed)

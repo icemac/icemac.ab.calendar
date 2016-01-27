@@ -1,179 +1,191 @@
-from mock import Mock, patch, call
-import icemac.ab.calendar.testing
-import unittest
+from datetime import date
+from icemac.ab.calendar.browser.renderer.interfaces import IEventDescription
+from icemac.ab.calendar.browser.renderer.interfaces import IRenderer
+from icemac.ab.calendar.browser.renderer.interfaces import UnknownLanguageError
+from icemac.ab.calendar.browser.renderer.table import Table, TableEvent
+from icemac.ab.calendar.interfaces import ICalendarDisplaySettings, IEvent
+from icemac.addressbook.interfaces import IEntity
+from mechanize import LinkNotFoundError
+from mock import Mock, call
+from zope.interface.verify import verifyObject
+import lxml
+import pytest
+import zope.component
 
 
-class TableUTests(unittest.TestCase):
-
-    """Unit testing ..table.Table."""
-
-    def test_Table_fulfills_IRenderer_interface(self):
-        from zope.interface.verify import verifyObject
-        from ..interfaces import IRenderer
-        from ..table import Table
-        self.assertTrue(verifyObject(IRenderer, Table(None, None, None)))
+def test_table__Table__1():
+    """Table_fulfills_IRenderer_interface."""
+    assert verifyObject(IRenderer, Table(None, None, None))
 
 
-class TableITests(icemac.ab.calendar.testing.BrowserTestCase):
+def test_table__Table__render__1(
+        address_book, browser, EventFactory, DateTime):
+    """It renders two events at the same time with one time `dt`."""
+    today = date.today()
+    EventFactory(address_book, alternative_title=u'event1',
+                 datetime=DateTime(today.year, today.month, 22, 16, 14))
+    EventFactory(address_book, alternative_title=u'event2',
+                 datetime=DateTime(today.year, today.month, 22, 16, 14))
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_OVERVIEW_URL)
+    assert 1 == len(browser.etree.xpath('//dt'))
 
-    """Integration testing ..table.Table."""
 
-    def test_two_events_at_the_same_time_are_rendered_with_one_time_dt(self):
-        from datetime import date
-        today = date.today()
-        self.create_event(
-            datetime=self.get_datetime((today.year, today.month, 22, 16, 14)),
-            alternative_title=u'event1')
-        self.create_event(
-            datetime=self.get_datetime((today.year, today.month, 22, 16, 14)),
-            alternative_title=u'event2')
-        browser = self.get_browser('cal-visitor')
-        browser.open('http://localhost/ab/++attribute++calendar')
-        self.assertEqual(1, len(browser.etree.xpath('//dt')))
+def test_table__Table__render__2(address_book, browser):
+    """It translates weekdays into the language of the user."""
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_OVERVIEW_URL)
+    assert 'Sonntag' not in browser.contents  # default English locale
+    browser.lang('de-DE')
+    browser.reload()
+    assert 'Sonntag' in browser.contents  # switched to German locale
 
-    def test_weekdays_are_translated_to_language_of_customer(self):
-        browser = self.get_browser('cal-visitor')
-        browser.open('http://localhost/ab/++attribute++calendar')
-        self.assertNotIn('Sonntag', browser.contents)  # English locale
-        browser.addHeader('Accept-Language', 'de-DE')
-        browser.reload()
-        self.assertIn('Sonntag', browser.contents)  # German locale
 
-    def test_day_numbers_are_add_event_links_able_to_add_a_new_event(self):
-        from datetime import date
-        self.create_category(u'example')
-        browser = self.get_browser('cal-editor')
-        browser.open('http://localhost/ab/++attribute++calendar')
-        browser.getLink('15').click()
-        strftime = date.today().strftime
-        self.assertEqual(
-            '%s %s 15 ' % (strftime('%Y'), strftime('%m').lstrip('0')),
+def test_table__Table__render__3(
+        address_book, browser, CategoryFactory, DateTime):
+    """It renders the day numbers as links to add a new event."""
+    CategoryFactory(address_book, u'example')
+    browser.login('cal-editor')
+    browser.open(browser.CALENDAR_OVERVIEW_URL)
+    assert browser.getLink('15').url.startswith(browser.EVENT_ADD_URL)
+    browser.getLink('15').click()
+    assert (DateTime.format(date.today().replace(day=15)) ==
             browser.getControl('date').value)
-        self.assertEqual('12:00', browser.getControl('time').value)
-        # Whole day event:
-        self.assertTrue(browser.getControl('yes').selected)
-        browser.handleErrors = False
-        browser.getControl('Add', index=1).click()
-        self.assertEqual(['"example" added.'], browser.get_messages())
-
-    def test_day_numbers_are_text_for_visitors(self):
-        from mechanize import LinkNotFoundError
-        browser = self.get_browser('cal-visitor')
-        browser.open('http://localhost/ab/++attribute++calendar')
-        with self.assertRaises(LinkNotFoundError):
-            browser.getLink('15')
+    assert '12:00' == browser.getControl('time').value
+    # Whole day event:
+    assert browser.getControl('yes').selected
+    browser.getControl('Add', index=1).click()
+    assert '"example" added.' == browser.message
 
 
-class TableEvent_text_Tests(icemac.ab.calendar.testing.UnitTestCase):
+def test_table__Table__render__4(address_book, browser):
+    """It renders day numbers are text for visitors."""
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_OVERVIEW_URL)
+    with pytest.raises(LinkNotFoundError):
+        browser.getLink('15')
 
-    """Testing ..table.TableEvent.text()."""
 
-    def _make_one(self, text, lang):
-        from ..table import TableEvent
-        from ..interfaces import UnknownLanguageError
+@pytest.fixture('function')
+def TableEventUFactory(RequestFactory):
+    """Create a `TableEvent` view set up with some mocks for unit testing."""
+    def create_table_event(text, lang):
         view = TableEvent()
         view.context = Mock()
         view.context.getText.side_effect = [
             UnknownLanguageError, UnknownLanguageError, text]
-        view.request = self.get_request(HTTP_ACCEPT_LANGUAGE=lang)
+        view.request = RequestFactory(HTTP_ACCEPT_LANGUAGE=lang)
         return view
-
-    def test_tries_to_find_lang_code_getText_understands(self):
-        view = self._make_one('Foo', lang='de_DE')
-        self.assertEqual('Foo', view.text())
-        self.assertEqual([call(u'de_DE'), call(u'de'), call()],
-                         view.context.getText.call_args_list)
-
-    def test_returns_Edit_if_text_is_empty(self):
-        # So the user can edit events with empty text.
-        view = self._make_one('', lang='de_DE')
-        self.assertEqual(u'Edit', view.text())
+    return create_table_event
 
 
-class TableEventITests(icemac.ab.calendar.testing.ZODBTestCase):
+def test_table__TableEvent__text__1(TableEventUFactory):
+    """It tries to find a language code `getText` understands."""
+    view = TableEventUFactory('Foo', 'de_DE')
+    assert 'Foo' == view.text()
+    assert ([call(u'de_DE'), call(u'de'), call()] ==
+            view.context.getText.call_args_list)
 
-    """Integration testing ..table.TableEvent."""
 
-    def setUp(self):
-        super(TableEventITests, self).setUp()
-        get_time_zone_name = (
-            'icemac.addressbook.preferences.utils.get_time_zone_name')
-        patcher = patch(get_time_zone_name)
-        self.get_time_zone_name = patcher.start()
-        self.get_time_zone_name.return_value = 'UTC'
-        self.addCleanup(patcher.stop)
+def test_table__TableEvent__text__2(TableEventUFactory):
+    """It returns "Edit" if the text is empty.
 
-    def getVUT(
-            self, event, field_names=[], time_zone_name=None, request_kw={}):
-        from icemac.addressbook.interfaces import IEntity
-        from icemac.ab.calendar.browser.renderer.interfaces import (
-            IEventDescription)
-        from icemac.ab.calendar.interfaces import (
-            ICalendarDisplaySettings, IEvent)
-        from zope.component import getMultiAdapter
-        request = self.get_request(**request_kw)
-        ab = self.layer['addressbook']
+    So the user can edit events with empty text.
+    """
+    view = TableEventUFactory('', lang='de_DE')
+    assert u'Edit' == view.text()
+
+
+@pytest.fixture('function')
+def TableEventIFactory(address_book, utc_time_zone_pref, RequestFactory):
+    """Get a `TableEvent` view for integration testing."""
+    def get_table_event(event, field_names=[], request_kw={}):
+        request = RequestFactory(**request_kw)
         event_entity = IEntity(IEvent)
-        ICalendarDisplaySettings(ab.calendar).event_additional_fields = [
-            event_entity.getRawField(x) for x in field_names]
+        ICalendarDisplaySettings(
+            address_book.calendar).event_additional_fields = [
+                event_entity.getRawField(x) for x in field_names]
         event_description = IEventDescription(event)
-        return getMultiAdapter(
+        return zope.component.getMultiAdapter(
             (event_description, request), name='table-event')
+    return get_table_event
 
-    def test_renders_no_selected_event_additional_field_as_nothing(self):
-        event = self.create_event(datetime=self.get_datetime())
-        self.assertNotEllipsis('...class="info"...',
-                               self.getVUT(event, [])())
 
-    def test_renders_single_selected_event_additional_field_not_as_list(self):
-        event = self.create_event(datetime=self.get_datetime(),
-                                  external_persons=[u'Foo', u'Bar'])
-        self.assertEllipsis('...<span class="info">Bar, Foo</span>...',
-                            self.getVUT(event, ['persons'])())
+def test_table__TableEvent__render__1(
+        address_book, EventFactory, DateTime, TableEventIFactory):
+    """It renders nothing if no event additional field is selected."""
+    event = EventFactory(address_book, datetime=DateTime.now)
+    assert 'class="info"' not in TableEventIFactory(event, [])()
 
-    def test_renders_multiple_selected_event_additional_fields_as_list(self):
-        event = self.create_event(
-            datetime=self.get_datetime(),
-            external_persons=[u'Foo', u'Bar'], text=u'Cool!')
-        self.assertEllipsis('''...\
-        <ul class="info">
-          <li>Bar, Foo</li>
-          <li>Cool!</li>
-        </ul>
-        ...''', self.getVUT(event, ['persons', 'text'])())
 
-    def test_info_renders_user_defined_fields(self):
-        from icemac.addressbook.testing import create_field
-        ab = self.layer['addressbook']
-        field_name = create_field(
-            ab, 'icemac.ab.calendar.event.Event', u'Int', u'reservations')
-        data = {'datetime': self.get_datetime(), 'text': u'Text1',
-                field_name: 42}
-        event = self.create_event(**data)
-        self.assertEqual([{u'info': u'Text1'}, {u'info': u'42'}],
-                         self.getVUT(event, ['text', field_name]).info())
+def test_table__TableEvent__render__2(
+        address_book, EventFactory, DateTime, TableEventIFactory):
+    """It renders a single selected event additional field not as a list."""
+    event = EventFactory(address_book, datetime=DateTime.now,
+                         external_persons=[u'Foo', u'Bar'])
+    assert ('<span class="info">Bar, Foo</span>' in
+            TableEventIFactory(event, ['persons'])())
 
-    def test_time_is_converted_to_timezone_of_user(self):
-        event = self.create_event(
-            datetime=self.get_datetime((2013, 11, 2, 9, 27)))
-        self.get_time_zone_name.return_value = 'Australia/Currie'
-        self.assertEqual(u'20:27', self.getVUT(event).time())
 
-    def test_time_renders_Uhr_if_requested_language_is_German(self):
-        event = self.create_event(
-            datetime=self.get_datetime((2013, 11, 2, 9, 47)))
-        view = self.getVUT(event, request_kw={'HTTP_ACCEPT_LANGUAGE': 'de'})
-        self.assertEqual(u'09:47 Uhr', view.time())
+def test_table__TableEvent__render__3(
+        address_book, EventFactory, DateTime, TableEventIFactory):
+    """It renders multiple selected event additional fields as a list."""
+    event = EventFactory(address_book,
+                         datetime=DateTime.now,
+                         external_persons=[u'Foo', u'Bar'], text=u'Cool!')
+    etree = lxml.etree.HTML(
+        TableEventIFactory(event, ['persons', 'text'])())
+    assert [
+        'Bar, Foo',
+        'Cool!'
+    ] == etree.xpath('//ul[@class="info"]/li/text()')
 
-    def test_time_renders_AM_if_requested_language_is_English(self):
-        event = self.create_event(
-            datetime=self.get_datetime((2013, 11, 2, 9, 47)))
-        view = self.getVUT(event, request_kw={'HTTP_ACCEPT_LANGUAGE': 'en'})
-        self.assertEqual(u'9:47 AM', view.time())
 
-    def test_time_renders_no_time_for_whole_day_event(self):
-        event = self.create_event(
-            datetime=self.get_datetime((2013, 11, 2, 18)),
-            whole_day_event=True)
-        view = self.getVUT(event)
-        self.assertEqual(u'', view.time())
+def test_table__TableEvent__info_1(
+        address_book, EventFactory, FieldFactory, DateTime,
+        TableEventIFactory):
+    """It renders user defined fields."""
+    field_name = FieldFactory(
+        address_book, IEvent, u'Int', u'reservations').__name__
+    event = EventFactory(
+        address_book,
+        **{'datetime': DateTime.now, 'text': u'Text1', field_name: 42})
+    assert ([{u'info': u'Text1'}, {u'info': u'42'}] ==
+            TableEventIFactory(event, ['text', field_name]).info())
+
+
+def test_table__TableEvent__time__1(
+        address_book, EventFactory, DateTime, TableEventIFactory,
+        TimeZonePrefFactory):
+    """It converts the time to the time zone of the user."""
+    event = EventFactory(
+        address_book, datetime=DateTime(2013, 11, 2, 9, 27))
+    TimeZonePrefFactory('Australia/Currie')
+    assert u'20:27' == TableEventIFactory(event).time()
+
+
+def test_table__TableEvent__time__2(
+        address_book, EventFactory, DateTime, TableEventIFactory):
+    """It renders "Uhr" if the requested language is German."""
+    event = EventFactory(
+        address_book, datetime=DateTime(2013, 11, 2, 9, 47))
+    view = TableEventIFactory(event, request_kw={'HTTP_ACCEPT_LANGUAGE': 'de'})
+    assert u'09:47 Uhr' == view.time()
+
+
+def test_table__TableEvent__time__3(
+        address_book, EventFactory, DateTime, TableEventIFactory):
+    """It renders "AM" if the requested language is English."""
+    event = EventFactory(
+        address_book, datetime=DateTime(2013, 11, 2, 9, 47))
+    view = TableEventIFactory(event, request_kw={'HTTP_ACCEPT_LANGUAGE': 'en'})
+    assert u'9:47 AM' == view.time()
+
+
+def test_table__TableEvent__time__4(
+        address_book, EventFactory, DateTime, TableEventIFactory):
+    """It renders no time for a whole day event."""
+    event = EventFactory(
+        address_book, datetime=DateTime(2013, 11, 2, 18),
+        whole_day_event=True)
+    assert u'' == TableEventIFactory(event).time()

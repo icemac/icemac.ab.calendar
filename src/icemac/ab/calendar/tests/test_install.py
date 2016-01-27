@@ -1,42 +1,21 @@
-# Copyright (c) 2013-2014 Michael Howitz
-# See also LICENSE.txt
-
-import icemac.ab.calendar.install
-import icemac.ab.calendar.testing
-import icemac.addressbook.addressbook
-import icemac.addressbook.testing
-import unittest
+from icemac.ab.calendar.interfaces import ICalendar, ICategories
+from icemac.ab.calendar.interfaces import IRecurringEvents
+from icemac.addressbook.addressbook import AddressBookCreated
+from icemac.ab.calendar.install import install_calendar
 
 
-class TestInstall(unittest.TestCase,
-                  icemac.addressbook.testing.InstallationAssertions):
+def test_install__install_calendar__1(assert_address_book):
+    """It creates an calendar attribute."""
+    install_calendar(AddressBookCreated(assert_address_book.address_book))
+    assert_address_book.has_attribute('calendar', ICalendar)
+    assert_address_book.has_attribute('calendar_categories', ICategories)
+    assert_address_book.has_attribute(
+        'calendar_recurring_events', IRecurringEvents)
 
-    layer = icemac.ab.calendar.testing.ZODB_LAYER
 
-    def check_addressbook(self, ab):
-        self.assertAttribute(
-            ab, 'calendar', icemac.ab.calendar.interfaces.ICalendar)
-        self.assertAttribute(
-            ab, 'calendar_categories',
-            icemac.ab.calendar.interfaces.ICategories)
-        self.assertAttribute(
-            ab, 'calendar_recurring_events',
-            icemac.ab.calendar.interfaces.IRecurringEvents)
-
-    def setUp(self):
-        self.ab = self.layer['addressbook']
-
-    def test_create(self):
-        icemac.addressbook.addressbook.create_address_book_infrastructure(
-            self.ab)
-        icemac.ab.calendar.install.install_calendar(
-            icemac.addressbook.addressbook.AddressBookCreated(self.ab))
-        self.check_addressbook(self.ab)
-
-    def test_recall_create(self):
-        icemac.addressbook.addressbook.create_address_book_infrastructure(
-            self.ab)
-        event = icemac.addressbook.addressbook.AddressBookCreated(self.ab)
-        icemac.ab.calendar.install.install_calendar(event)
-        icemac.ab.calendar.install.install_calendar(event)
-        self.check_addressbook(self.ab)
+def test_install__install_calendar__2(assert_address_book):
+    """It does not break if it gets called twice."""
+    event = AddressBookCreated(assert_address_book.address_book)
+    install_calendar(event)
+    install_calendar(event)
+    assert_address_book.has_attribute('calendar', ICalendar)

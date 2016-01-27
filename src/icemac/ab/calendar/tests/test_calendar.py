@@ -1,168 +1,183 @@
-# Copyright (c) 2013-2014 Michael Howitz
-# See also LICENSE.txt
-import unittest
-import icemac.ab.calendar.testing
+from gocept.month import Month
+from icemac.ab.calendar.calendar import Calendar, CalendarDisplaySettings
+from icemac.ab.calendar.event import get_event_data_from_recurring_event
+from icemac.ab.calendar.interfaces import ICalendar, ICalendarDisplaySettings
+from icemac.ab.calendar.interfaces import IEvent
+from zope.interface.verify import verifyObject
+import pytest
 
 
-class CalendarUTests(unittest.TestCase):
-    """Unit testing ..calendar.*."""
-
-    def test_calendar_fulfills_ICalendar_interface(self):
-        from zope.interface.verify import verifyObject
-        from icemac.ab.calendar.interfaces import ICalendar
-        from icemac.ab.calendar.calendar import Calendar
-
-        self.assertTrue(verifyObject(ICalendar, Calendar()))
-
-    def test_CalendarDisplaySettings_fulfills_ICalendarDisplaySettings(self):
-        from zope.interface.verify import verifyObject
-        from icemac.ab.calendar.interfaces import ICalendarDisplaySettings
-        from icemac.ab.calendar.calendar import CalendarDisplaySettings
-
-        self.assertTrue(
-            verifyObject(ICalendarDisplaySettings, CalendarDisplaySettings()))
+def test_calendar__Calendar__1():
+    """It fulfills the `ICalendar` interface."""
+    assert verifyObject(ICalendar, Calendar())
 
 
-class Calendar_get_events_FTests(icemac.ab.calendar.testing.ZODBTestCase):
-    """Functional testing ..calendar.Calendar.get_events()"""
-
-    def setUp(self):
-        super(Calendar_get_events_FTests, self).setUp()
-        # Order of creation is important to test that the results are sorted:
-        self.create_event(alternative_title=u'start Mar 2013',
-                          datetime=self.get_datetime((2013, 3, 1, 0)))
-        self.create_event(alternative_title=u'start Feb 2013',
-                          datetime=self.get_datetime((2013, 2, 1, 0)))
-        self.create_event(alternative_title=u'end Jan 2013',
-                          datetime=self.get_datetime((2013, 1, 31, 23, 59)))
-        self.create_event(alternative_title=u'end Feb 2013',
-                          datetime=self.get_datetime((2013, 2, 28, 23, 59)))
-
-    def callMUT(self, month, year, timezone=None, show_date=False):
-        from gocept.month import Month
-        calendar = self.layer['addressbook'].calendar
-        events = calendar.get_events(Month(month, year), timezone=timezone)
-        if show_date:
-            return [(x.alternative_title, x.datetime.date().isoformat())
-                    for x in events]
-        return [x.alternative_title for x in events]
-
-    def test_returns_only_events_in_month(self):
-        self.assertEqual([u'start Feb 2013', u'end Feb 2013'],
-                         self.callMUT(2, 2013))
-
-    def test_respects_the_given_time_eastern_zone(self):
-        self.assertEqual([u'end Feb 2013', u'start Mar 2013'],
-                         self.callMUT(2, 2013, 'Etc/GMT+1'))
-
-    def test_respects_the_given_time_western_zone(self):
-        self.assertEqual([u'end Jan 2013', u'start Feb 2013'],
-                         self.callMUT(2, 2013, 'Etc/GMT-1'))
-
-    def test_returns_recurring_events_in_month(self):
-        self.create_recurring_event(
-            alternative_title=u'each week',
-            datetime=self.get_datetime((2013, 2, 14, 23, 0)),
-            period=u'weekly',
-            category=self.create_category(u'night lunch'))
-        self.create_recurring_event(
-            alternative_title=u'each week in future',
-            datetime=self.get_datetime((2013, 3, 1, 0)),
-            period=u'weekly',
-            category=self.create_category(u'midnight'))
-        self.assertEqual([(u'end Jan 2013', '2013-01-31'),
-                          (u'start Feb 2013', '2013-02-01'),
-                          (u'each week', '2013-02-14'),
-                          (u'each week', '2013-02-21')],
-                         self.callMUT(2, 2013, 'Etc/GMT-1', show_date=True))
-
-    def test_customized_recurred_event_hides_recurred_event(self):
-        from icemac.ab.calendar.event import (
-            get_event_data_from_recurring_event)
-        night_lunch = self.create_category(u'night lunch')
-        recurring_event = self.create_recurring_event(
-            alternative_title=u'each week',
-            datetime=self.get_datetime((2013, 3, 14, 23, 0)),
-            period=u'weekly',
-            category=night_lunch)
-        event_data = get_event_data_from_recurring_event(
-            recurring_event, self.get_datetime((2013, 3, 21, 23, 0)))
-        event_data['alternative_title'] = u'this week'
-        self.create_event(**event_data)
-        self.assertEqual([(u'each week', '2013-03-14'),
-                          (u'this week', '2013-03-21'),
-                          (u'each week', '2013-03-28')],
-                         self.callMUT(3, 2013, 'Etc/GMT+1', show_date=True))
-
-    def test_recurring_events_with_higher_prio_overrule(self):
-        category = self.create_category(u'night lunch')
-        self.create_recurring_event(
-            alternative_title=u'monthly lunch',
-            datetime=self.get_datetime((2013, 3, 10, 12)),
-            period=u'nth weekday of month',
-            category=category)
-        self.create_recurring_event(
-            alternative_title=u'weekly lunch',
-            datetime=self.get_datetime((2013, 3, 3, 12)),
-            period=u'weekly',
-            category=category)
-        self.assertEqual([(u'weekly lunch', '2013-03-03'),
-                          (u'monthly lunch', '2013-03-10'),
-                          (u'weekly lunch', '2013-03-17'),
-                          (u'weekly lunch', '2013-03-24'),
-                          (u'weekly lunch', '2013-03-31')],
-                         self.callMUT(3, 2013, 'Etc/GMT+1', show_date=True))
-
-    def test_does_not_return_deleted_events(self):
-        event = self.create_event(
-            alternative_title=u'deleted start of March 2013',
-            datetime=self.get_datetime((2013, 3, 1, 5)))
-        event.deleted = True
-        self.assertEqual([u'start Mar 2013'],
-                         self.callMUT(3, 2013, 'Etc/GMT'))
-
-    def test_whole_day_event_does_not_change_month_via_timezone(self):
-        self.create_event(
-            alternative_title=u'whole day',
-            datetime=self.get_datetime((2015, 4, 30, 23)),
-            whole_day_event=True)
-        self.create_event(
-            alternative_title=u'day',
-            datetime=self.get_datetime((2015, 4, 30, 23)))
-        self.assertEqual([u'whole day', u'day'],
-                         self.callMUT(4, 2015, 'Etc/GMT+8'))
-        self.assertEqual([u'whole day'],
-                         self.callMUT(4, 2015, 'Etc/GMT-7'))
+def test_calendar__CalendarDisplaySettings__1():
+    """It fulfills the `ICalendarDisplaySettings` interface."""
+    assert verifyObject(ICalendarDisplaySettings, CalendarDisplaySettings())
 
 
-class CalendarDisplaySettingsTests(icemac.ab.calendar.testing.ZODBTestCase):
-    """Testing ..calendar.CalendarDisplaySettings."""
+@pytest.fixture('function')
+def sample_events(address_book, EventFactory, DateTime):
+    """Fixture providing some example events for tests."""
+    # The order of creation is important to test that the results are sorted:
+    EventFactory(address_book, alternative_title=u'start Mar 2013',
+                 datetime=DateTime(2013, 3, 1, 0))
+    EventFactory(address_book, alternative_title=u'start Feb 2013',
+                 datetime=DateTime(2013, 2, 1, 0))
+    EventFactory(address_book, alternative_title=u'end Jan 2013',
+                 datetime=DateTime(2013, 1, 31, 23, 59))
+    EventFactory(address_book, alternative_title=u'end Feb 2013',
+                 datetime=DateTime(2013, 2, 28, 23, 59))
+    return address_book
 
-    def setUp(self):
-        from icemac.addressbook.testing import create_field
-        from icemac.addressbook.interfaces import IEntity
-        from icemac.ab.calendar.interfaces import IEvent
-        super(CalendarDisplaySettingsTests, self).setUp()
-        user_field_name = create_field(
-            self.layer['addressbook'], IEvent, 'Int', u'Num')
-        self.user_field = IEntity(IEvent).getRawField(user_field_name)
 
-    def getCUT(self):
-        from ..calendar import CalendarDisplaySettings
-        return CalendarDisplaySettings()
+def test_calendar__Calendar__get_events___only_events_in_month(sample_events):
+    """It returns only events in the given month."""
+    assert ([u'start Feb 2013', u'end Feb 2013'] ==
+            [x.alternative_title
+             for x in sample_events.calendar.get_events(Month(2, 2013))])
 
-    def test_event_additional_fields_stores_string_repr_of_fields(self):
-        from ..interfaces import IEvent
-        cds = self.getCUT()
-        cds.event_additional_fields = [IEvent['text'], self.user_field]
-        self.assertEqual(['IcemacAbCalendarEventEvent###text',
-                          'IcemacAbCalendarEventEvent###Field-1'],
-                         cds._event_additional_fields)
 
-    def test_event_additional_fields_returns_actual_fields(self):
-        from ..interfaces import IEvent
-        cds = self.getCUT()
-        cds._event_additional_fields = ['IcemacAbCalendarEventEvent###text',
-                                        'IcemacAbCalendarEventEvent###Field-1']
-        self.assertEqual([IEvent['text'], self.user_field],
-                         cds.event_additional_fields)
+def test_calendar__Calendar__get_events___timezone__east(sample_events):
+    """It respects the given time zone for an eastern time zone."""
+    assert ([u'end Feb 2013', u'start Mar 2013'] ==
+            [x.alternative_title
+             for x in sample_events.calendar.get_events(
+                 Month(2, 2013), 'Etc/GMT+1')])
+
+
+def test_calendar__Calendar__get_events___timezone__west(sample_events):
+    """It respects the given time zone for a western time zone."""
+    assert ([u'end Jan 2013', u'start Feb 2013'],
+            [x.alternative_title
+             for x in sample_events.calendar.get_events(
+                 Month(2, 2013), 'Etc/GMT-1')])
+
+
+def test_calendar__Calendar__get_events___recurring_events_in_month(
+        sample_events, address_book, RecurringEventFactory, CategoryFactory,
+        DateTime):
+    """It returns the recurring events in the given month."""
+    RecurringEventFactory(
+        address_book,
+        alternative_title=u'each week',
+        datetime=DateTime(2013, 2, 14, 23, 0),
+        period=u'weekly',
+        category=CategoryFactory(address_book, u'night lunch'))
+    RecurringEventFactory(
+        address_book,
+        alternative_title=u'each week in future',
+        datetime=DateTime(2013, 3, 1, 0),
+        period=u'weekly',
+        category=CategoryFactory(address_book, u'midnight'))
+    assert ([(u'end Jan 2013', '2013-01-31'),
+             (u'start Feb 2013', '2013-02-01'),
+             (u'each week', '2013-02-14'),
+             (u'each week', '2013-02-21')] ==
+            [(x.alternative_title, x.datetime.date().isoformat())
+             for x in address_book.calendar.get_events(
+                 Month(2, 2013), 'Etc/GMT-1')])
+
+
+def test_calendar__Calendar__get_events___customized_recurred_hides(
+        address_book, CategoryFactory, RecurringEventFactory, EventFactory,
+        DateTime):
+    """A customized recurred event hides the original recurred event."""
+    recurring_event = RecurringEventFactory(
+        address_book,
+        alternative_title=u'each week',
+        datetime=DateTime(2013, 3, 14, 23, 0),
+        period=u'weekly',
+        category=CategoryFactory(address_book, u'night lunch'))
+    event_data = get_event_data_from_recurring_event(
+        recurring_event, DateTime(2013, 3, 21, 23, 0))
+    event_data['alternative_title'] = u'this week'
+    EventFactory(address_book, **event_data)
+    assert ([(u'each week', '2013-03-14'),
+             (u'this week', '2013-03-21'),
+             (u'each week', '2013-03-28')] ==
+            [(x.alternative_title, x.datetime.date().isoformat())
+             for x in address_book.calendar.get_events(
+                 Month(3, 2013), 'Etc/GMT+1')])
+
+
+def test_calendar__Calendar__get_events___recurring_event_with_higher_prio(
+        address_book, CategoryFactory, RecurringEventFactory, DateTime):
+    """The recurring event with the higher prio in the category is rendered."""
+    category = CategoryFactory(address_book, u'night lunch')
+    RecurringEventFactory(
+        address_book,
+        alternative_title=u'monthly lunch',
+        datetime=DateTime(2013, 3, 10, 12),
+        period=u'nth weekday of month',
+        category=category)
+    RecurringEventFactory(
+        address_book,
+        alternative_title=u'weekly lunch',
+        datetime=DateTime(2013, 3, 3, 12),
+        period=u'weekly',
+        category=category)
+    assert ([(u'weekly lunch', '2013-03-03'),
+             (u'monthly lunch', '2013-03-10'),
+             (u'weekly lunch', '2013-03-17'),
+             (u'weekly lunch', '2013-03-24'),
+             (u'weekly lunch', '2013-03-31')] ==
+            [(x.alternative_title, x.datetime.date().isoformat())
+             for x in address_book.calendar.get_events(
+                 Month(3, 2013), 'Etc/GMT+1')])
+
+
+def test_calendar__Calendar__get_events___no_deleted_event(
+        sample_events, address_book, EventFactory, DateTime):
+    """It does not return deleted events."""
+    event = EventFactory(
+        address_book,
+        alternative_title=u'deleted start of March 2013',
+        datetime=DateTime(2013, 3, 1, 5))
+    event.deleted = True
+    assert ([u'start Mar 2013'] ==
+            [x.alternative_title
+             for x in address_book.calendar.get_events(
+                 Month(3, 2013), 'Etc/GMT')])
+
+
+def test_calendar__Calendar__get_events___whole_day_at_month_boundary(
+        address_book, EventFactory, DateTime):
+    """A whole day event does not change the month via timezone."""
+    EventFactory(address_book,
+                 alternative_title=u'whole day',
+                 datetime=DateTime(2015, 4, 30, 23),
+                 whole_day_event=True)
+    EventFactory(address_book,
+                 alternative_title=u'day',
+                 datetime=DateTime(2015, 4, 30, 23))
+    assert ([u'whole day', u'day'] ==
+            [x.alternative_title
+             for x in address_book.calendar.get_events(
+                 Month(4, 2015), 'Etc/GMT+8')])
+    assert ([u'whole day'] ==
+            [x.alternative_title
+             for x in address_book.calendar.get_events(
+                 Month(4, 2015), 'Etc/GMT-7')])
+
+
+def test_calendar__CalendarDisplaySettings___event_additional_fields__1(
+        address_book, FieldFactory):
+    """It stores a string representation of the fields."""
+    field = FieldFactory(address_book, IEvent, 'Int', u'Num')
+    cds = CalendarDisplaySettings()
+    cds.event_additional_fields = [IEvent['text'], field]
+    assert (['IcemacAbCalendarEventEvent###text',
+             'IcemacAbCalendarEventEvent###Field-1'] ==
+            cds._event_additional_fields)
+
+
+def test_calendar__CalendarDisplaySettings__event_additional_fields__1(
+        address_book, FieldFactory):
+    """It returns actual field objects."""
+    field = FieldFactory(address_book, IEvent, 'Int', u'Num')
+    cds = CalendarDisplaySettings()
+    cds._event_additional_fields = ['IcemacAbCalendarEventEvent###text',
+                                    'IcemacAbCalendarEventEvent###Field-1']
+    assert ([IEvent['text'], field] == cds.event_additional_fields)
