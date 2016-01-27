@@ -3,17 +3,18 @@ import icemac.ab.calendar.calendar
 import icemac.ab.calendar.category
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.addressbook
-import icemac.addressbook.utils
 import zc.catalog.catalogindex
 import zope.catalog.interfaces
 import zope.component
+import zope.component.hooks
 
 
 @zope.component.adapter(
     icemac.addressbook.addressbook.AddressBookCreated)
 def install_calendar(event):
-    with icemac.addressbook.utils.site(event.address_book) as address_book:
     """Install the calendar in the newly created addressbook."""
+    address_book = event.address_book
+    with zope.component.hooks.site(address_book):
         icemac.addressbook.addressbook.create_and_register(
             address_book, 'calendar', icemac.ab.calendar.calendar.Calendar,
             icemac.ab.calendar.interfaces.ICalendar)
@@ -26,7 +27,7 @@ def install_calendar(event):
 
 def update_calendar_infrastructure(address_book):
     """Update the calendar infrastructure to install new components."""
-    with icemac.addressbook.utils.site(address_book):
+    with zope.component.hooks.site(address_book):
         catalog = zope.component.getUtility(zope.catalog.interfaces.ICatalog)
         if DATE_INDEX not in catalog:
             catalog[DATE_INDEX] = zc.catalog.catalogindex.DateTimeValueIndex(
