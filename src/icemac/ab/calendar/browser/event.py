@@ -15,6 +15,7 @@ import z3c.form.object
 import zope.component
 import zope.traversing.browser
 
+
 MIDNIGHT = time(0, 0)
 NOON = time(12, 0)
 EVENT_CONFIRMATION_FIELDS = (
@@ -33,7 +34,6 @@ def date_from_iso_string(string):
 
 
 class EventDatetime(object):
-
     """Adapter to edit an event using the IDatetime object field.
 
     Needs to be registered via ZCML, as grok has no model based security.
@@ -57,7 +57,6 @@ class EventDatetime(object):
 
 
 class Datetime(grok.Adapter):
-
     """Adapter storing the IDatetime field data and computing `datetime`."""
 
     grok.context(icemac.ab.calendar.interfaces.IEvent)
@@ -102,7 +101,6 @@ z3c.form.object.registerFactoryAdapter(
 
 
 class EventFields(object):
-
     """Form fields to add or edit an event."""
 
     interface = None
@@ -124,7 +122,6 @@ class EventFields(object):
 
 
 class Add(EventFields, icemac.addressbook.browser.base.BaseAddForm):
-
     """Add form for an event."""
 
     label = _(u'Add new event')
@@ -147,7 +144,6 @@ class Add(EventFields, icemac.addressbook.browser.base.BaseAddForm):
 
 
 class Edit(EventFields, icemac.addressbook.browser.base.GroupEditForm):
-
     """Edit for for an event."""
 
     groups = (icemac.addressbook.browser.metadata.MetadataGroup,)
@@ -171,7 +167,6 @@ class Edit(EventFields, icemac.addressbook.browser.base.GroupEditForm):
 
 
 class Delete(icemac.addressbook.browser.base.BaseDeleteForm):
-
     """Confirmation when deleting an event."""
 
     label = _(u'Do you really want to delete this event?')
@@ -180,7 +175,6 @@ class Delete(icemac.addressbook.browser.base.BaseDeleteForm):
 
 
 class Clone(icemac.addressbook.browser.base.BaseCloneForm):
-
     """Clone event with confirmation."""
 
     label = _(u'Do you really want to clone this event?')
@@ -189,7 +183,6 @@ class Clone(icemac.addressbook.browser.base.BaseCloneForm):
 
 
 class CustomizeRecurredEvent(icemac.ab.calendar.browser.base.View):
-
     """Prepare customization of a RecurredEvent."""
 
     def __call__(self):
@@ -206,7 +199,6 @@ class CustomizeRecurredEvent(icemac.ab.calendar.browser.base.View):
 
 
 class RecurredEventFormMixIn(object):
-
     """Mix-In providing data of recurred event from session."""
 
     def getContent(self):
@@ -228,7 +220,6 @@ class AddFromRecurredEvent(icemac.ab.calendar.browser.base.View,
                            RecurredEventFormMixIn,
                            EventFields,
                            icemac.addressbook.browser.base.BaseAddForm):
-
     """Add form for changing a recurred event."""
 
     label = _(u'Edit recurred event')
@@ -259,7 +250,6 @@ class ViewRecurredEvent(icemac.ab.calendar.browser.base.View,
                         RecurredEventFormMixIn,
                         EventFields,
                         icemac.addressbook.browser.base.BaseEditForm):
-
     """View form for a recurred event."""
 
     label = _(u'View recurred event')
@@ -272,7 +262,6 @@ class DeleteRecurredEvent(icemac.ab.calendar.browser.base.View,
                           RecurredEventFormMixIn,
                           EventFields,
                           icemac.addressbook.browser.base.BaseDeleteForm):
-
     """Add form for deleting a recurred event."""
 
     label = _(u'Do you really want to delete this recurred event?')
@@ -293,7 +282,6 @@ class DeleteRecurredEvent(icemac.ab.calendar.browser.base.View,
 
 class RecurredEventAbsoluteURL(zope.traversing.browser.AbsoluteURL,
                                icemac.ab.calendar.browser.base.View):
-
     """URL to customize a recurred event."""
 
     def __str__(self):
