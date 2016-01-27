@@ -171,7 +171,6 @@ def test_calendar__MonthCalendar__3(address_book, browser):
         'ab.timeZone').time_zone = 'Pacific/Fiji'
     browser.login('cal-visitor')
     browser.open(browser.CALENDAR_MONTH_OVERVIEW_URL)
-    file('response.html', 'w').write(browser.contents)
     assert browser.PREFS_TIMEZONE_URL.startswith(
         browser.getLink('Pacific/Fiji').url)
 
