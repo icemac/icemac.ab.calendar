@@ -1,5 +1,3 @@
-# Copyright (c) 2013-2014 Michael Howitz
-# See also LICENSE.txt
 from icemac.addressbook.i18n import _
 import collections
 import datetime
@@ -81,6 +79,7 @@ class ICalendarProvider(zope.interface.Interface):
     This is necessary to meet security which otherwise raises a ForbiddenError.
 
     """
+
     calendar = zope.interface.Attribute(u'ICalendar')
 
 
@@ -90,6 +89,7 @@ class ICalendarMasterData(zope.interface.Interface):
     This is necessary to meet security which otherwise raises a ForbiddenError.
 
     """
+
     calendar_categories = zope.interface.Attribute(u'ICategories')
     calendar_recurring_events = zope.interface.Attribute(u'IRecurringEvents')
 
@@ -185,6 +185,7 @@ class IRecurringEvents(ICalendarObject):
 
 class RecurrencePeriodSource(icemac.addressbook.sources.TitleMappingSource):
     """Periods after which an event is repeated."""
+
     @zope.cachedescriptors.property.Lazy
     def _mapping(self):
         names_and_adapters = zope.component.getAdapters(
@@ -248,7 +249,10 @@ class IRecurredEvent(IBaseEvent):
         'RecurringEvent which was the source for the RecurredEvent.')
 
     def create_from(recurring_event, datetime):
-        "Create an instance with data from recurring event but for `datetime`."
+        """Create an instance with data from the recurring event but for ...
+
+        ... `datetime`.
+        """
 
 
 class INoSecurityProxyType(zope.interface.interfaces.IInterface):
