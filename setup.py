@@ -53,6 +53,7 @@ setuptools.setup(
         'gocept.month >= 1.2',
         'grokcore.annotation',
         'icemac.addressbook >= 2.6.0.dev0',
+        'icemac.recurrence >= 1.1.dev0',
         'js.classy',
         'setuptools',
         'zope.cachedescriptors',

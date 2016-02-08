@@ -7,6 +7,7 @@ import icemac.ab.calendar.testing
 import icemac.addressbook.conftest
 import icemac.addressbook.testing
 import icemac.addressbook.utils
+import icemac.recurrence.conftest
 import pytest
 import pytz
 import zope.component.hooks
@@ -86,50 +87,7 @@ def RecurringEventFactory():
 @pytest.fixture(scope='session')
 def DateTime():
     """Fixture to ease handling of datetime objects."""
-    class DateTime:
-        """Helper class to create and format datetime objects."""
-
-        @staticmethod
-        def __call__(*args, **kw):
-            """Create a datetime object.
-
-            `*args` ... time tuple parts
-                        If no `args` are given the current time is returned.
-            `**kw` ... the only allowed key is `tzinfo`.
-                       If `tzinfo` is None, UTC is used instead.
-
-            """
-            tzinfo = kw.pop('tzinfo', pytz.utc)
-            assert not kw  # make sure there are no kw left
-            assert args  # make sure there is at least one argument
-            return tzinfo.localize(datetime.datetime(*args))
-
-        @property
-        def now(self):
-            return pytz.utc.localize(datetime.datetime.now())
-
-        def format(self, dt, force_date=False):
-            """Format a datetime to the format needed in testbrowser."""
-            if isinstance(dt, datetime.datetime) and not force_date:
-                return dt.strftime('%y/%m/%d %H:%M')
-            else:
-                return self.format_date(dt)
-
-        def format_date(self, dt):
-            return "{0.year} {0.month} {0.day} ".format(dt)
-
-        @property
-        def today_8_32_am(self):
-            """Get a datetime object for today with fixed time."""
-            return datetime.datetime.combine(
-                datetime.date.today(), datetime.time(8, 32, tzinfo=pytz.utc))
-
-        @staticmethod
-        def add(dt, days):
-            """Add some days to `dt`."""
-            return dt + datetime.timedelta(days=days)
-
-    return DateTime()
+    return DateTimeClass()
 
 
 @pytest.yield_fixture('function')
@@ -181,3 +139,34 @@ def addressBookConnectionF(addressBookS):
     for connection in icemac.addressbook.conftest.pyTestStackDemoStorage(
             addressBookS, 'CalendarF'):
         yield connection
+
+
+# Fixture helpers
+
+class DateTimeClass(icemac.recurrence.conftest.DateTimeClass):
+    """Helper class to create and format datetime objects."""
+
+    @property
+    def now(self):
+        return pytz.utc.localize(datetime.datetime.now())
+
+    def format(self, dt, force_date=False):
+        """Format a datetime to the format needed in testbrowser."""
+        if isinstance(dt, datetime.datetime) and not force_date:
+            return dt.strftime('%y/%m/%d %H:%M')
+        else:
+            return self.format_date(dt)
+
+    def format_date(self, dt):
+        return "{0.year} {0.month} {0.day} ".format(dt)
+
+    @property
+    def today_8_32_am(self):
+        """Get a datetime object for today with fixed time."""
+        return datetime.datetime.combine(
+            datetime.date.today(), datetime.time(8, 32, tzinfo=pytz.utc))
+
+    @staticmethod
+    def add(dt, days):
+        """Add some days to `dt`."""
+        return dt + datetime.timedelta(days=days)

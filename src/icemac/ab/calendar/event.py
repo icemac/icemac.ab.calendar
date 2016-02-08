@@ -5,6 +5,7 @@ import grokcore.component as grok
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.entities
 import icemac.addressbook.utils
+import icemac.recurrence
 import itertools
 import persistent
 import pytz
@@ -129,14 +130,14 @@ class RecurringEvent(Event):
             end_datetime = self._get_end_datetime(interval_end.tzinfo)
             if end_datetime < interval_end:
                 interval_end = end_datetime
-        recurrence_dates = icemac.ab.calendar.recurrence.get_recurrences(
+        recurrence_dates = icemac.recurrence.get_recurrences(
             self.datetime, self.period, interval_start, interval_end)
         for dt in recurrence_dates:
             yield RecurredEvent.create_from(self, dt)
 
     @property
     def priority(self):
-        return icemac.ab.calendar.recurrence.get_recurring(
+        return icemac.recurrence.get_recurring(
             self.datetime, self.period).weight
 
     def _get_end_datetime(self, timzone):

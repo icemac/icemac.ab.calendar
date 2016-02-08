@@ -5,6 +5,7 @@ import icemac.addressbook.browser.base
 import icemac.addressbook.browser.metadata
 import icemac.addressbook.browser.table
 import icemac.addressbook.interfaces
+import icemac.recurrence
 import z3c.table.column
 
 
@@ -15,7 +16,7 @@ class RecurrenceColumn(z3c.table.column.I18nGetAttrColumn):
     header = _('recurrence period')
 
     def getValue(self, item):
-        recurring = icemac.ab.calendar.recurrence.get_recurring(
+        recurring = icemac.recurrence.get_recurring(
             item.datetime, item.period)
         return recurring.info
 

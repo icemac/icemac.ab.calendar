@@ -32,6 +32,8 @@ Other
 
 - Use py.test as new test runner.
 
+- Use package `icemac.recurrence` which was extracted for reuse from here.
+
 1.6.0 (2014-12-16)
 ==================
 

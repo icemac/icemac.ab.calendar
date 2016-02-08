@@ -1,4 +1,5 @@
 from icemac.addressbook.i18n import _
+from icemac.recurrence.interfaces import IRecurringDateTime
 import collections
 import datetime
 import gocept.reference.field
@@ -203,26 +204,6 @@ class IRecurrence(zope.interface.Interface):
 
     period = zope.schema.Choice(
         title=_('recurrence period'), source=recurrence_period_source)
-
-
-class IRecurringDateTime(zope.interface.Interface):
-    """Recurring of a datetime.
-
-    Period and base datetime are defined in class implementing the interface.
-
-    """
-    title = zope.interface.Attribute('Display title in RecurrencePeriodSource')
-    weight = zope.interface.Attribute(
-        'RecurrencePeriodSource uses `weight` to sort.')
-    info = zope.interface.Attribute(
-        'Information about recurrence period e. g. `every sunday`.')
-
-    def __call__(interval_start, interval_end):
-        """Iterable of recurrences of base datetime in the interval.
-
-        interval_start, interval_end ... `datetime.date` objects
-
-        """
 
 
 class IRecurringEventAdditionalSchema(IRecurrence):
