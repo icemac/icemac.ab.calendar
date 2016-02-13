@@ -2,6 +2,7 @@ from icemac.addressbook.i18n import _
 import grokcore.component as grok
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.browser.base
+import icemac.addressbook.browser.datamanager
 import icemac.addressbook.browser.metadata
 import icemac.addressbook.metadata.interfaces
 import z3c.form.field
