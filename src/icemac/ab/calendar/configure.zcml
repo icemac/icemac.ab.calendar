@@ -6,7 +6,8 @@
   <include package="grokcore.component" file="meta.zcml"/>
   <include package="grokcore.annotation" />
   <grok:grok package="."
-             exclude="generations" />
+             exclude="generations
+                      conftest" />
 
   <include package="zope.security" file="meta.zcml" />
   <include package="zope.component" file="meta.zcml" />

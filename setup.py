@@ -52,6 +52,7 @@ setuptools.setup(
         'decorator',
         'gocept.month >= 1.2',
         'grokcore.annotation',
+        'grokcore.component >= 2.7.dev1',
         'icemac.addressbook >= 2.6.0.dev0',
         'icemac.recurrence >= 1.1.dev0',
         'js.classy',
