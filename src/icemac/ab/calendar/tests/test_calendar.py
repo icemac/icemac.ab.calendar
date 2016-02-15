@@ -49,7 +49,7 @@ def test_calendar__Calendar__get_events___timezone__east(sample_events):
 
 def test_calendar__Calendar__get_events___timezone__west(sample_events):
     """It respects the given time zone for a western time zone."""
-    assert ([u'end Jan 2013', u'start Feb 2013'],
+    assert ([u'end Jan 2013', u'start Feb 2013'] ==
             [x.alternative_title
              for x in sample_events.calendar.get_events(
                  Month(2, 2013), 'Etc/GMT-1')])

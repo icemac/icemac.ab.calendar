@@ -445,7 +445,7 @@ def test_calendar__EventDescription__getText__5(EventDescriptionFactory):
 def test_calendar__EventDescription__getText__6(EventDescriptionFactory):
     """getText_returns_hyphenated_respecting_set_language."""
     ed = EventDescriptionFactory(alternative_title=u'Geburtstag')
-    assert (u'Ge&shy;burts&shy;tag', ed.getText(lang='de'))
+    assert u'Ge&shy;burts&shy;tag' == ed.getText(lang='de')
 
 
 def test_calendar__hyphenated__1():
