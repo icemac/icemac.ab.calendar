@@ -11,13 +11,15 @@ import zope.schema.fieldproperty
 
 
 class CategoryContainer(zope.container.btree.BTreeContainer):
-    "A container for calendar event categories."
+    """A container for calendar event categories."""
+
     zope.interface.implements(icemac.ab.calendar.interfaces.ICategories)
 
 
 class Category(persistent.Persistent,
                zope.container.contained.Contained):
-    "A category of an event."
+    """A category of an event."""
+
     zope.interface.implements(icemac.ab.calendar.interfaces.ICategory)
     zope.schema.fieldproperty.createFieldProperties(
         icemac.ab.calendar.interfaces.ICategory)

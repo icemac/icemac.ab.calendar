@@ -291,6 +291,7 @@ class RecurredEventAbsoluteURL(zope.traversing.browser.AbsoluteURL,
     """URL to customize a recurred event."""
 
     def __str__(self):
+        """URL of the recurrend event."""
         return self.url(self.context.__parent__, 'customize-recurred-event',
                         event=self.context.recurring_event.__name__,
                         date=self.context.datetime.date().isoformat())

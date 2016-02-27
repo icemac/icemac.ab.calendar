@@ -1,5 +1,6 @@
 from datetime import datetime, time
 from icemac.addressbook.i18n import _
+from icemac.addressbook.interfaces import IField
 import gocept.reference
 import grokcore.component as grok
 import icemac.ab.calendar.interfaces
@@ -151,15 +152,15 @@ recurring_event_entity = icemac.addressbook.entities.create_entity(
 
 def _get_field_name_on_IEvent(field, event_entity):
     """Get the name of the appropriate field on IEvent."""
-    if not icemac.addressbook.interfaces.IField.providedBy(field):
+    if not IField.providedBy(field):
         if field.__name__ in icemac.ab.calendar.interfaces.IBaseEvent:
             return field.__name__  # common field
         return None  # no-common field
     for name, recurring_field in event_entity.getRawFields(sorted=False):
-        if (icemac.addressbook.interfaces.IField.providedBy(recurring_field)
-                and field.title == recurring_field.title
-                and field.type == recurring_field.type
-                and field.values == recurring_field.values):
+        if (IField.providedBy(recurring_field) and
+                field.title == recurring_field.title and
+                field.type == recurring_field.type and
+                field.values == recurring_field.values):
             return name
     return None
 
