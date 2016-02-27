@@ -283,6 +283,7 @@ class DeleteRecurredEvent(icemac.ab.calendar.browser.base.View,
             self.context, icemac.ab.calendar.event.Event,
             category=content['category'],
             datetime=content['datetime'].datetime,
+            whole_day_event=content['datetime'].whole_day_event,
             deleted=True)
 
 

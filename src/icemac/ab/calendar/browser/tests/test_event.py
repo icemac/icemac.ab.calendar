@@ -2,6 +2,7 @@
 from icemac.ab.calendar.interfaces import IEvent, IRecurringEvent
 from mechanize import HTTPError
 from zope.traversing.browser import absoluteURL
+import calendar
 import pytest
 
 
@@ -223,8 +224,13 @@ def test_event__AddFromRecurredEvent__4(address_book, browser):
     assert 'HTTP Error 403: Forbidden' == str(err.value)
 
 
+def days_in_month(date):
+    """Number of days in the month `date` belongs to."""
+    return calendar.monthrange(date.year, date.month)[1]
+
+
 def test_event__DeleteRecurredEvent__1(
-        address_book, sample_recurred_event_url, browser):
+        address_book, sample_recurred_event_url, DateTime, browser):
     """It deletes the recurred event after a confirmation."""
     browser.login('cal-editor')
     browser.open(sample_recurred_event_url)
@@ -234,7 +240,23 @@ def test_event__DeleteRecurredEvent__1(
             browser.contents)
     browser.getControl('Yes').click()
     assert u'"foo bär" deleted.' == browser.message
+    days = days_in_month(DateTime.now)  # -1 deleted event +1 browser.message
+    assert days == browser.contents.count('foo bär')
     assert address_book.calendar['Event'].deleted
+
+
+def test_event__DeleteRecurredEvent__1_5(
+        address_book, sample_recurring_event, sample_recurred_event_url,
+        DateTime, browser):
+    """It deletes a whole day recurred event, too."""
+    sample_recurring_event.whole_day_event = True
+    browser.login('cal-editor')
+    browser.open(sample_recurred_event_url)
+    browser.getControl('Delete').click()
+    browser.getControl('Yes').click()
+    assert u'"foo bär" deleted.' == browser.message
+    days = days_in_month(DateTime.now)  # -1 deleted event +1 browser.message
+    assert days == browser.contents.count('foo bär')
 
 
 def test_event__DeleteRecurredEvent__2(
