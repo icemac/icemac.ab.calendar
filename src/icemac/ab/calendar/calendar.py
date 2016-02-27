@@ -37,15 +37,15 @@ class Calendar(zope.container.btree.BTreeContainer):
         recurred_events = [x.get_events(start, end) for x in recurring_events]
         events_map = {(x.category, x.in_timezone(timezone)): x
                       for x in itertools.chain(*recurred_events)}
-
         catalog = zope.component.getUtility(zope.catalog.interfaces.ICatalog)
         # The values for the index are: min, max, min_exclude, max_exclude
         single_events = catalog.searchResults(
             **{DATE_INDEX: {'between': (start, end, False, True)}})
         # A single_event with the same category and datetime overwrites the
         # recurred event as it is its customization:
-        events_map.update({(x.category, x.in_timezone(timezone)): x
-                           for x in single_events})
+        single_events_map = {(x.category, x.in_timezone(timezone)): x
+                             for x in single_events}
+        events_map.update(single_events_map)
         # Filter out deleted recurred events and sort:
         return sorted(filter(lambda x: not x.deleted, events_map.values()),
                       key=lambda x: x.in_timezone(timezone))

@@ -24,6 +24,10 @@ class Category(persistent.Persistent,
     zope.schema.fieldproperty.createFieldProperties(
         icemac.ab.calendar.interfaces.ICategory)
 
+    def __repr__(self):
+        """Human readable representation of the object."""
+        return u'<Category title="{}">'.format(self.title)
+
 
 unique_titles = icemac.addressbook.utils.unique_by_attr_factory(
     'title', _(u'This category already exists.'))
