@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2013-2014 Michael Howitz
-# See also LICENSE.txt
 from .interfaces import DATE_INDEX
 from datetime import datetime, time
 import grokcore.annotation as grok
@@ -31,7 +29,6 @@ class Calendar(zope.container.btree.BTreeContainer):
             datetime.combine(month.firstOfMonth(), midnight))
         end = timezone.normalize(
             datetime.combine((month + 1).firstOfMonth(), midnight))
-
         recurring_events = zope.component.getUtility(
             icemac.ab.calendar.interfaces.IRecurringEvents).get_events()
         recurred_events = [x.get_events(start, end) for x in recurring_events]
