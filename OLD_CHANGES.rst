@@ -5,6 +5,11 @@
 Changelog of releases more than 3 versions behind current version.
 
 
+1.4.0 (2014-03-07)
+==================
+
+- Color the current day on the calendar.
+
 1.3.1 (2014-02-09)
 ==================
 

@@ -78,12 +78,6 @@ Other
 
 - Add py.test to run the tests.
 
-
-1.4.0 (2014-03-07)
-==================
-
-- Color the current day on the calendar.
-
 Older versions
 ==============
 
