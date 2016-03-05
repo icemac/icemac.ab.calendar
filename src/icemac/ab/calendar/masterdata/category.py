@@ -35,8 +35,7 @@ class Add(icemac.addressbook.browser.base.BaseAddForm):
 def can_delete_category(form):
     """Button condition telling if the displayed category can be deleted."""
     return (
-        icemac.addressbook.browser.base.can_access('@@delete.html')(form)
-        and
+        icemac.addressbook.browser.base.can_access('@@delete.html')(form) and
         not gocept.reference.interfaces.IReferenceTarget(
             form.context).is_referenced())
 
