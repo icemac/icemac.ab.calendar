@@ -10,7 +10,6 @@ import z3c.table.column
 
 
 class RecurrenceColumn(z3c.table.column.I18nGetAttrColumn):
-
     """Column displaying the concrete recurrence of an event."""
 
     header = _('recurrence period')
@@ -22,7 +21,6 @@ class RecurrenceColumn(z3c.table.column.I18nGetAttrColumn):
 
 
 class PersonsColumn(z3c.table.column.Column):
-
     """Column displaying all persons assigned to an event."""
 
     header = _('persons')
@@ -44,7 +42,6 @@ class LocalizedDateTimeColumn(z3c.table.column.GetAttrFormatterColumn):
 
 
 class Table(icemac.addressbook.browser.table.Table):
-
     """List recurring events."""
 
     no_rows_message = _(u'No recurring events defined yet.')
@@ -79,7 +76,6 @@ class Table(icemac.addressbook.browser.table.Table):
 
 
 class Add(EventFields, icemac.addressbook.browser.base.BaseAddForm):
-
     """Add form for an recurring event."""
 
     label = _(u'Add new recurring event')
@@ -89,7 +85,6 @@ class Add(EventFields, icemac.addressbook.browser.base.BaseAddForm):
 
 
 class Edit(EventFields, icemac.addressbook.browser.base.GroupEditForm):
-
     """Edit form for recurring event."""
 
     groups = (icemac.addressbook.browser.metadata.MetadataGroup,)
@@ -115,7 +110,6 @@ class Edit(EventFields, icemac.addressbook.browser.base.GroupEditForm):
 
 
 class Delete(icemac.addressbook.browser.base.BaseDeleteForm):
-
     """Confirm delete of recurring event."""
 
     label = _(u'Do you really want to delete this recurring event?')
