@@ -18,7 +18,7 @@ Features
 
 - Add end date to recurring events.
 
-- Newlines in the `nodes` field now lead to new items in the caöendar view for
+- Newlines in the `nodes` field now lead to new items in the calendar view for
   each line.
 
 - Allow events to take place the whole day.
