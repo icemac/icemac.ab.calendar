@@ -45,7 +45,7 @@ class EventDatetime(object):
         icemac.ab.calendar.browser.interfaces.IEventDatetime)
 
     def __init__(self, context):
-        self.context = context
+        self.context = self.__parent__ = context
 
     @property
     def datetime(self):
@@ -75,6 +75,7 @@ class Datetime(grok.Adapter):
             self._datetime = self.context
         elif self.context is not None:
             # context seems to be an IEvent
+            self.__parent__ = context
             self._datetime = self.context.datetime
             self.whole_day_event = self.context.whole_day_event
         if self._datetime:

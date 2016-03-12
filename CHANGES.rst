@@ -5,8 +5,8 @@
 1.8 (unreleased)
 ================
 
-- Nothing changed yet.
-
+- Bugfix: Since 1.7.0 locally defined calendar users no longer where able to
+  edit events.
 
 1.7.0 (2016-03-05)
 ==================

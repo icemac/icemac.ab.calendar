@@ -64,6 +64,17 @@ def test_event__Edit__2(address_book, EventFactory, DateTime, browser):
             browser.all_control_names)
 
 
+def test_event__Edit__3(
+        address_book, UserFactory, EventFactory, DateTime, browser):
+    """It can be accessed by a local calendar user."""
+    UserFactory(address_book, u'Hans', u'Tester', u'hans@example.com',
+                '1qay2wsx', ['Calendar editor'])
+    EventFactory(address_book, datetime=DateTime.today_8_32_am)
+    browser.formlogin('hans@example.com', '1qay2wsx')
+    browser.open(browser.EVENT_EDIT_URL)
+    assert len(browser.all_control_names) > 2
+
+
 def test_event__Delete__1(address_book, EventFactory, DateTime, browser):
     """It allows to delete an event after a confirmation."""
     EventFactory(address_book, datetime=DateTime.today_8_32_am)
