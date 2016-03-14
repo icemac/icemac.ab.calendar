@@ -5,7 +5,8 @@
 1.7.2 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Listing of recurring events in calendar master data no longer displays a time
+  for whole-day events.
 
 
 1.7.1 (2016-03-12)

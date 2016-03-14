@@ -29,15 +29,36 @@ class PersonsColumn(z3c.table.column.Column):
         return ', '.join(item.listPersons())
 
 
-class LocalizedDateTimeColumn(z3c.table.column.GetAttrFormatterColumn):
+class StartColumn(z3c.table.column.GetAttrColumn):
+    """Column which renders the start date.
 
-    """Column which localizes its datetime to selected timezone."""
+    It localizes its datetime to selected timezone.
+    It omits the time part of whole day events.
+    """
+
+    attrName = 'datetime'
+    header = _('datetime')
+
+    def getFormatter(self, obj):
+        if obj.whole_day_event:
+            category = 'date'
+        else:
+            category = 'dateTime'
+        return self.request.locale.dates.getFormatter(
+            category, 'short', None, u'gregorian')
 
     def getValue(self, obj):
-        value = super(LocalizedDateTimeColumn, self).getValue(obj)
-        if value:
+        value = super(StartColumn, self).getValue(obj)
+        if value and not obj.whole_day_event:
             value = value.astimezone(
                 icemac.addressbook.preferences.utils.get_time_zone())
+        return value
+
+    def renderCell(self, obj):
+        value = self.getValue(obj)
+        if value:
+            formatter = self.getFormatter(obj)
+            value = formatter.format(value)
         return value
 
 
@@ -52,9 +73,7 @@ class Table(icemac.addressbook.browser.table.Table):
                 self, icemac.addressbook.browser.table.TitleLinkColumn,
                 'title'),
             z3c.table.column.addColumn(
-                self, LocalizedDateTimeColumn, 'datetime',
-                header=_('datetime'), attrName='datetime',
-                formatterLength='short', weight=10),
+                self, StartColumn, 'datetime', weight=10),
             z3c.table.column.addColumn(
                 self, RecurrenceColumn, 'period', weight=20),
             z3c.table.column.addColumn(
