@@ -29,8 +29,8 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
     default_text = _('Edit')  # allow at least to edit the entry
 
     def time(self):
-        if self.context.whole_day:  # and not event.has_text():
             return ''
+        if self.context.whole_day:
         formatter = self.request.locale.dates.getFormatter(
             'time', 'short')
         time = formatter.format(self.context.datetime)

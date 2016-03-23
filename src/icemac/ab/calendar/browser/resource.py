@@ -14,7 +14,6 @@ calendar_js = fanstatic.Resource(
 
 
 class CalendarResources(zope.viewlet.viewlet.ViewletBase):
-
     """Resources which are needed for the calendar."""
 
     def update(self):
