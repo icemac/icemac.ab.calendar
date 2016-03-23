@@ -184,8 +184,8 @@ def test_table__TableEvent__time__3(
 
 def test_table__TableEvent__time__4(
         address_book, EventFactory, DateTime, TableEventIFactory):
-    """It renders no time for a whole day event."""
+    """It renders a zero width space for a whole day event."""
     event = EventFactory(
         address_book, datetime=DateTime(2013, 11, 2, 18),
         whole_day_event=True)
-    assert u'' == TableEventIFactory(event).time()
+    assert u'&#x200b;' == TableEventIFactory(event).time()

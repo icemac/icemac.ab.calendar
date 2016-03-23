@@ -28,8 +28,8 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
     default_text = _('Edit')  # allow at least to edit the entry
 
     def time(self):
-            return ''
         if self.context.whole_day:
+            return '&#x200b;'  # zero width space to keep printing uniform
         formatter = self.request.locale.dates.getFormatter(
             'time', 'short')
         time = formatter.format(self.context.datetime)
@@ -39,6 +39,10 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
 
     def dd_class(self):
         return SPECIAL_CLASS_MAPPING.get(self.context.special_event)
+
+    def dt_class(self):
+        if self.context.whole_day:
+            return 'no-screen'
 
     def _localized(self, func):
         locale = self.request.locale
@@ -103,6 +107,10 @@ class Table(Calendar):
         self.write('  </thead>')
 
     def render(self):
+        calendar = self.request.locale.dates.calendars['gregorian']
+        day_names = calendar.getDayAbbreviations()
+        # Move Sunday to position one
+        day_names.insert(0, day_names.pop(-1))
         self.table_head()
         self.write('  <tbody>')
         today = datetime.date.today()
@@ -116,14 +124,17 @@ class Table(Calendar):
                 # week end
                 self.write('    </tr>')
             day = self.first_table_day + datetime.timedelta(delta)
-            css_classes = ['day-%s' % day.strftime('%w')]
+            day_number = int(day.strftime('%w'))
+            css_classes = ['day-{}'.format(day_number)]
             if day == today:
                 css_classes.append('today')
-            self.write('<td class="%s">', ' '.join(css_classes))
+            self.write('<td class="%s">', ' '.join(css_classes), newline=False)
             if day in self.month:
+                self.write('<span class="weekday no-screen">%s</span>',
+                           day_names[day_number])
                 if add_event_for_day_url:
                     self.write(
-                        '<a href="%s?date=%s" title="%s">',
+                        '<a class="number" href="%s?date=%s" title="%s">',
                         add_event_for_day_url, day.isoformat(),
                         self.translate(_('Add new event for this day.')))
                 self.write('<span class="number">%s</span>', day.day)

@@ -8,6 +8,8 @@
 - Listing of recurring events in calendar master data no longer displays a time
   for whole-day events.
 
+- Add a special style sheet for printing to render the calendar as a list on
+  paper.
 
 1.7.1 (2016-03-12)
 ==================

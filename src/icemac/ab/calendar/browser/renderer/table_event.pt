@@ -1,4 +1,4 @@
-<dt
+<dt tal:attributes="class view/dt_class"
     tal:content="structure view/time">10 o'clock</dt>
 <dd tal:attributes="class view/dd_class">
   <a tal:attributes="class view/action_class;

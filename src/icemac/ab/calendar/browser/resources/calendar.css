@@ -1,3 +1,9 @@
+@media only screen {
+    .no-screen {
+        display: none;
+    }
+}
+
 body.main {
     width: auto;
 }
