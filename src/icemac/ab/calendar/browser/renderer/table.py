@@ -23,7 +23,6 @@ SPECIAL_CLASS_MAPPING = {
 class TableEvent(icemac.addressbook.browser.base.BaseView):
     """View to render an event in the table."""
 
-    show_time = True
     action_class = 'edit'
     _action_url = None
     default_text = _('Edit')  # allow at least to edit the entry
@@ -117,7 +116,6 @@ class Table(Calendar):
                 # week end
                 self.write('    </tr>')
             day = self.first_table_day + datetime.timedelta(delta)
-            prev_datetime = None
             css_classes = ['day-%s' % day.strftime('%w')]
             if day == today:
                 css_classes.append('today')
@@ -144,9 +142,7 @@ class Table(Calendar):
                     view = zope.component.getMultiAdapter(
                         (ev, self.request),
                         name=self.render_event_adapter_name)
-                    view.show_time = (ev.datetime != prev_datetime)
                     self.write(view())
-                    prev_datetime = ev.datetime
                 if found_events_for_day:
                     self.write('</dl>')
             self.write('</td>')

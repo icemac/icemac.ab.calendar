@@ -1,5 +1,5 @@
-<dt tal:condition="view/show_time"
-    tal:content="view/time">10 o'clock</dt>
+<dt
+    tal:content="structure view/time">10 o'clock</dt>
 <dd tal:attributes="class view/dd_class">
   <a tal:attributes="class view/action_class;
                      href view/action_url"
