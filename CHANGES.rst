@@ -2,8 +2,8 @@
  Changelog
 ===========
 
-1.7.2 (unreleased)
-==================
+1.8 (unreleased)
+================
 
 - Listing of recurring events in calendar master data no longer displays a time
   for whole-day events.
