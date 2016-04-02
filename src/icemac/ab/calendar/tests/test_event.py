@@ -153,9 +153,8 @@ def test_event__RecurringEvent__get_events__2(
         address_book,
         datetime=DateTime(2014, 5, 2, 12),
         end=DateTime(2014, 5, 9, 0).date(),
-        text=u'foobar',
         period='weekly',
-        category=CategoryFactory(address_book, u'birthday'))
+        category=CategoryFactory(address_book, u'event'))
     events = list(recurring_event.get_events(
         DateTime(2014, 5, 1, 0), DateTime(2014, 5, 31, 0)))
     assert 2 == len(events)
