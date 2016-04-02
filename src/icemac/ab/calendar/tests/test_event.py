@@ -121,7 +121,7 @@ def test_event__RecurringEventContainer__get_events__1(
             [x.alternative_title for x in recurring_events.get_events()])
 
 
-def test_event__RecurringEvent__1(DateTime):
+def test_event__RecurringEvent__1(zcmlS, DateTime):
     """It implements the `IRecurringEvent` interface."""
     revent = RecurringEvent()
     revent.datetime = DateTime.now
