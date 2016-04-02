@@ -5,7 +5,7 @@ import pytest
 
 @pytest.fixture('session')
 def EventDescriptionFactory(DateTime):
-    """Creat an EventDescription object."""
+    """Create an EventDescription object."""
     def get_event_description(time_tuple=(), event=None, **kw):
         """Get an icemac.ab.calendar.browser.calendar.EventDescription.
 
