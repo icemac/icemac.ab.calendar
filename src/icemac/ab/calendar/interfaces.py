@@ -218,7 +218,7 @@ class IRecurringEvent(IBaseEvent, IRecurringEventAdditionalSchema):
     priority = zope.interface.Attribute(
         'Weight of the selected recurrence period.')
 
-    def get_events(interval_start, interval_end):
+    def get_events(interval_start, interval_end, timezone):
         """Get the events computed from recurrence in the datetime interval."""
 
 

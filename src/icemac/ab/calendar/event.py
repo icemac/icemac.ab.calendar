@@ -125,14 +125,15 @@ class RecurringEvent(Event):
     zope.schema.fieldproperty.createFieldProperties(
         icemac.ab.calendar.interfaces.IRecurringEventAdditionalSchema)
 
-    def get_events(self, interval_start, interval_end):
+    def get_events(self, interval_start, interval_end, timezone):
         """Get the events computed from recurrence in the interval."""
         if self.end is not None:
             end_datetime = self._get_end_datetime(interval_end.tzinfo)
             if end_datetime < interval_end:
                 interval_end = end_datetime
         recurrence_dates = icemac.recurrence.get_recurrences(
-            self.datetime, self.period, interval_start, interval_end)
+            timezone.normalize(self.datetime), self.period,
+            interval_start, interval_end)
         for dt in recurrence_dates:
             yield RecurredEvent.create_from(self, dt)
 

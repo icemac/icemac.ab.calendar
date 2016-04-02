@@ -31,7 +31,8 @@ class Calendar(zope.container.btree.BTreeContainer):
             datetime.combine((month + 1).firstOfMonth(), midnight))
         recurring_events = zope.component.getUtility(
             icemac.ab.calendar.interfaces.IRecurringEvents).get_events()
-        recurred_events = [x.get_events(start, end) for x in recurring_events]
+        recurred_events = [x.get_events(start, end, timezone)
+                           for x in recurring_events]
         events_map = {(x.category, x.in_timezone(timezone)): x
                       for x in itertools.chain(*recurred_events)}
         catalog = zope.component.getUtility(zope.catalog.interfaces.ICatalog)

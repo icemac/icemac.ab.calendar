@@ -5,7 +5,7 @@
 1.7.2 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Fix a bug with daylight saving time adding one hour to each event during DST.
 
 
 1.7.1 (2016-03-12)

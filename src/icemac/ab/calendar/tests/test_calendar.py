@@ -71,11 +71,11 @@ def test_calendar__Calendar__get_events___recurring_events_in_month(
         datetime=DateTime(2013, 3, 1, 0),
         period=u'weekly',
         category=CategoryFactory(address_book, u'midnight'))
-    assert ([(u'end Jan 2013', '2013-01-31'),
-             (u'start Feb 2013', '2013-02-01'),
-             (u'each week', '2013-02-14'),
-             (u'each week', '2013-02-21')] ==
-            [(x.alternative_title, x.datetime.date().isoformat())
+    assert ([(u'end Jan 2013', '2013-01-31T23:59:00+00:00'),
+             (u'start Feb 2013', '2013-02-01T00:00:00+00:00'),
+             (u'each week', '2013-02-15T00:00:00+01:00'),
+             (u'each week', '2013-02-22T00:00:00+01:00')] ==
+            [(x.alternative_title, x.datetime.isoformat())
              for x in address_book.calendar.get_events(
                  Month(2, 2013), 'Etc/GMT-1')])
 
