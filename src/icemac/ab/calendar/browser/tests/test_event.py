@@ -4,6 +4,7 @@ from mechanize import HTTPError
 from zope.traversing.browser import absoluteURL
 import calendar
 import pytest
+import pytz
 
 
 def test_event__Add__1(address_book, CategoryFactory, DateTime, browser):
@@ -156,11 +157,16 @@ def sample_recurring_event(
            'text': u'Important'})
 
 
-def get_recurred_event_url(recurring_event, request, DateTime):
-    """Get the URL of a recurred event."""
-    recurred_event = recurring_event.get_events(
+def get_recurred_event(recurring_event, DateTime):
+    """Get one recurred event."""
+    return recurring_event.get_events(
         DateTime.today_8_32_am,
-        DateTime.add(DateTime.today_8_32_am, days=1)).next()
+        DateTime.add(DateTime.today_8_32_am, days=1),
+        pytz.utc).next()
+
+
+def get_recurred_event_url(recurred_event, request):
+    """Get the URL of a recurred event."""
     return absoluteURL(recurred_event, request).replace(
         'http://127.0.0.1/', 'http://localhost/')
 
@@ -173,7 +179,7 @@ def sample_recurred_event_url(
     Returns the URL to the @@customize-recurred-event view.
     """
     return get_recurred_event_url(
-        sample_recurring_event, RequestFactory(), DateTime)
+        get_recurred_event(sample_recurring_event, DateTime), RequestFactory())
 
 
 def test_event__ViewRecurredEvent__1(
@@ -215,6 +221,26 @@ def test_event__AddFromRecurredEvent__2(
     assert '"birthday" added.' == browser.message
     browser.open(browser.EVENT_EDIT_URL)
     assert 'birthday' == browser.getControl('alternative').value
+
+
+def test_event__AddFromRecurredEvent__2_5(
+        address_book, CategoryFactory, RecurringEventFactory, DateTime,
+        RequestFactory, TimeZonePrefFactory, browser):
+    """It keeps the time value in DST."""
+    recurring_event = RecurringEventFactory(
+        address_book,
+        category=CategoryFactory(address_book, u'bar'),
+        datetime=DateTime(2016, 3, 24, 12),
+        period=u'weekly')
+    recurred_event = recurring_event.get_events(
+        DateTime(2016, 3, 27, 0), DateTime(2016, 4, 1, 0), pytz.utc).next()
+    url = get_recurred_event_url(recurred_event, RequestFactory())
+    TimeZonePrefFactory('Europe/Berlin')
+    browser.login('cal-editor')
+    browser.open(url)
+    # Without making sure the local time stays the same also in DST the time
+    # would be 14:00 because in DST Berlin is 2 hours ahead of UTC.
+    assert '13:00' == browser.getControl('time').value
 
 
 def test_event__AddFromRecurredEvent__3(
@@ -277,7 +303,8 @@ def test_event__DeleteRecurredEvent__2(
     sample_recurring_event.alternative_title = None
     browser.login('cal-editor')
     browser.open(get_recurred_event_url(
-        sample_recurring_event, RequestFactory(), DateTime))
+        get_recurred_event(sample_recurring_event, DateTime),
+        RequestFactory()))
     browser.getControl('Delete').click()
     browser.getControl('Yes').click()
     assert u'"bar" deleted.' == browser.message

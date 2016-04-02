@@ -139,7 +139,7 @@ def test_event__RecurringEvent__get_events__1(
         period='weekly',
         category=CategoryFactory(address_book, u'birthday'))
     events = list(recurring_event.get_events(
-        DateTime(2014, 5, 1, 0), DateTime(2014, 5, 8, 0)))
+        DateTime(2014, 5, 1, 0), DateTime(2014, 5, 8, 0), pytz.utc))
     assert 1 == len(events)
     event = events[0]
     assert isinstance(event, RecurredEvent)
@@ -156,10 +156,34 @@ def test_event__RecurringEvent__get_events__2(
         period='weekly',
         category=CategoryFactory(address_book, u'event'))
     events = list(recurring_event.get_events(
-        DateTime(2014, 5, 1, 0), DateTime(2014, 5, 31, 0)))
+        DateTime(2014, 5, 1, 0), DateTime(2014, 5, 31, 0), pytz.utc))
     assert 2 == len(events)
     assert ([DateTime(2014, 5, 2, 12),
              DateTime(2014, 5, 9, 12)] == [x.datetime for x in events])
+
+
+def test_event__RecurringEvent__get_events__3(
+        address_book, RecurringEventFactory, CategoryFactory, DateTime):
+    """The local time of the recurred event does not change in DST.
+
+    DST ... daylight saving time
+    """
+    recurring_event = RecurringEventFactory(
+        address_book,
+        datetime=DateTime(2016, 3, 24, 12),
+        period='weekly',
+        category=CategoryFactory(address_book, u'event'))
+    tz_berlin = pytz.timezone('Europe/Berlin')
+    # At 2016-03-27 DST starts in Europe/Berlin
+    events = list(recurring_event.get_events(
+        DateTime(2016, 3, 24, 0), DateTime(2016, 4, 1, 0), tz_berlin))
+    assert ([DateTime(2016, 3, 24, 13, tzinfo=tz_berlin),
+             DateTime(2016, 3, 31, 13, tzinfo=tz_berlin)] ==
+            [x.datetime for x in events])
+    # So the time in UTC changes to keep it the same in local time:
+    assert ([DateTime(2016, 3, 24, 12),
+             DateTime(2016, 3, 31, 11)] ==
+            [pytz.utc.normalize(x.datetime) for x in events])
 
 
 def test_event__RecurredEvent__create_from__1(

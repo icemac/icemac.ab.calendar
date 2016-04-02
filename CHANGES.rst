@@ -11,6 +11,9 @@
 - Add a special style sheet for printing to render the calendar as a list on
   paper.
 
+- Fix a bug with daylight saving time adding one hour to each event during DST.
+
+
 1.7.1 (2016-03-12)
 ==================
 
