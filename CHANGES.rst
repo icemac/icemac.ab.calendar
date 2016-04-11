@@ -7,6 +7,11 @@
 
 - Fix a bug with daylight saving time adding one hour to each event during DST.
 
+- Normalize non-recurring events to UTC to fix possibly wrong local time zone
+  values. **Caution:** Some events could not be fixed because they already have
+  a wrong time with the UTC time zone. But only some of the events with a UTC
+  time zone seem to have this offset. These ones have to be fixed by hand.
+  Sorry for the inconvenience.
 
 1.7.1 (2016-03-12)
 ==================
