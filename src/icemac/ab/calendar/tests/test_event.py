@@ -88,6 +88,16 @@ def test_event__Event__3(address_book, CategoryFactory, DateTime, browser):
     assert 'Data successfully updated.' == browser.message
 
 
+def test_event__Event____repr____1(zcmlS, DateTime):
+    """It returns some data of the event."""
+    event = Event()
+    event.datetime = DateTime(2016, 4, 6, 16)
+    event.alternative_title = u'my-title'
+    assert (
+        "<Event datetime='2016-04-06 16:00:00+00:00' title=u'my-title', "
+        "deleted=False>" == repr(event))
+
+
 def test_event__RecurringEventContainer__1():
     """It implements the `IRecurringEvents` interface."""
     assert verifyObject(IRecurringEvents, RecurringEventContainer())

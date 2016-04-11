@@ -63,6 +63,14 @@ class Event(persistent.Persistent,
         self.category = None
         self.persons = None
 
+    def __repr__(self):
+        """Custom repr to look inside the event for debugging purposes."""
+        fstr = (
+            "<Event datetime='{0.datetime}' title={1!r}, deleted={0.deleted}>")
+        return fstr.format(
+            self, icemac.addressbook.interfaces.ITitle(self, '<unknown>'))
+
+
 event_entity = icemac.addressbook.entities.create_entity(
     _(u'event'), icemac.ab.calendar.interfaces.IEvent, Event)
 
