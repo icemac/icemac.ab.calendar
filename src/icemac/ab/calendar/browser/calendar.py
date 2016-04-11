@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import zope.cachedescriptors.property
 from .renderer.interfaces import UnknownLanguageError, IEventDescription
 from datetime import date
 from icemac.addressbook.i18n import _
@@ -85,6 +86,7 @@ class TabularCalendar(icemac.ab.calendar.browser.base.View):
 
     form_class = NotImplemented
     css_class = NotImplemented
+    month_names = None  # set in `update()`
 
     @property
     def calendar_year(self):
@@ -106,6 +108,8 @@ class TabularCalendar(icemac.ab.calendar.browser.base.View):
         return self.url(self.context, to=target)
 
     def update(self):
+        locale_calendar = self.request.locale.dates.calendars['gregorian']
+        self.month_names = locale_calendar.getMonthNames()
         if self.form_class is not None:
             self.form = self.form_class(self, self.request)
             # Write the value the user entered on self:
@@ -121,6 +125,10 @@ class TabularCalendar(icemac.ab.calendar.browser.base.View):
     def time_zone_prefs_url(self):
         return self.url(icemac.addressbook.interfaces.IAddressBook(self),
                         '++preferences++/ab.timeZone')
+
+    def get_month_name(self, month):
+        """Render the month name of a gocept.month instance."""
+        return self.month_names[month.month - 1]
 
 
 class MonthCalendar(TabularCalendar):
@@ -143,7 +151,7 @@ class MonthCalendar(TabularCalendar):
     def calendar_month(self, value):
         self.session['calendar_month'] = value
 
-    @property
+    @zope.cachedescriptors.property.Lazy
     def month(self):
         """Month which should get displayed."""
         return gocept.month.Month(self.calendar_month, self.calendar_year)
@@ -161,7 +169,9 @@ class MonthCalendar(TabularCalendar):
                     self.month, self.time_zone_name())]
 
     def render_calendar(self):
-        return self.renderer()
+        return u'<h2 class="no-screen">{month} {year}</h2>\n{cal}'.format(
+            month=self.get_month_name(self.month), year=self.month.year,
+            cal=self.renderer())
 
 
 class IYearSelector(zope.interface.Interface):
@@ -196,12 +206,10 @@ class YearCalendar(TabularCalendar):
             events = [IEventDescription(x)
                       for x in self.context.get_events(month)]
             self.events.append((month, events))
-        locale_calendar = self.request.locale.dates.calendars['gregorian']
-        self.month_names = locale_calendar.getMonthNames()
 
     def render_events(self, month, events):
-        month_name = self.month_names[month.month - 1]
-        headline = u'<h2>{} {}</h2>'.format(month_name, month.year)
+        headline = u'<h2>{} {}</h2>'.format(
+            self.get_month_name(month), month.year)
         calendar = zope.component.getMultiAdapter(
             (month, self.request, events),
             icemac.ab.calendar.browser.renderer.interfaces.IRenderer,

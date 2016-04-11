@@ -131,7 +131,7 @@ def test_event__RecurringEventContainer__get_events__1(
             [x.alternative_title for x in recurring_events.get_events()])
 
 
-def test_event__RecurringEvent__1(DateTime):
+def test_event__RecurringEvent__1(zcmlS, DateTime):
     """It implements the `IRecurringEvent` interface."""
     revent = RecurringEvent()
     revent.datetime = DateTime.now
@@ -163,9 +163,8 @@ def test_event__RecurringEvent__get_events__2(
         address_book,
         datetime=DateTime(2014, 5, 2, 12),
         end=DateTime(2014, 5, 9, 0).date(),
-        text=u'foobar',
         period='weekly',
-        category=CategoryFactory(address_book, u'birthday'))
+        category=CategoryFactory(address_book, u'event'))
     events = list(recurring_event.get_events(
         DateTime(2014, 5, 1, 0), DateTime(2014, 5, 31, 0), pytz.utc))
     assert 2 == len(events)

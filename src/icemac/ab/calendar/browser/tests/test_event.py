@@ -136,7 +136,7 @@ def test_event__Clone__2(address_book, EventFactory, DateTime, browser):
 @pytest.fixture('function')
 def sample_recurring_event(
         address_book, FieldFactory, CategoryFactory, RecurringEventFactory,
-        PersonFactory, RequestFactory, DateTime):
+        PersonFactory, DateTime):
     """Example of a recurring event."""
     CategoryFactory(address_book, u'aaz')
     bar = CategoryFactory(address_book, u'bar')

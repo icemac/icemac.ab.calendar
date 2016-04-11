@@ -1,3 +1,9 @@
+@media only screen {
+    .no-screen {
+        display: none;
+    }
+}
+
 body.main {
     width: auto;
 }
@@ -177,7 +183,6 @@ div#content #calendar table td:last-child {
 #calendar table tr:last-child td {
     border-bottom: 0;
 }
-
 
 #calendar.year table {
     margin-top: 0;
