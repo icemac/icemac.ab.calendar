@@ -1,7 +1,3 @@
-# Copyright (c) 2013-2014 Michael Howitz
-# See also LICENSE.txt
-"""Database initialisation and upgrading."""
-
 import zope.generations.generations
 
 
