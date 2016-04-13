@@ -72,12 +72,15 @@
 
     #calendar table td dt {
         clear: left;
-        margin-left: 50px;
+        margin-left: 5px;
     }
 
     #calendar table td dt:first-child {
         clear: none;
-        margin-left: 5px;
+    }
+
+    #calendar table td dl {
+        float: left;
     }
 
     #calendar table td dl dd,
