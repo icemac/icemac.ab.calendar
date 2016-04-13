@@ -22,8 +22,9 @@
     #timezone {
         float: right;
         font-size: small;
-        position: relative;
+        position: absolute;
         right: 0px;
+        bottom: 0px;
         margin-top: 0px;
     }
 
@@ -37,6 +38,7 @@
         right: 7px;
         top: 7px;
     }
+
 
     #calendar table td,
     #calendar table th {
