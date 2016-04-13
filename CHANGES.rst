@@ -9,7 +9,8 @@
   for whole-day events.
 
 - Add a special style sheet for printing to render the calendar as a list on
-  paper.
+  paper. (Works in Safari, Firefox, Google Chrome and
+  Internet Explorer >= 10.x)
 
 1.7.2 (unreleased)
 ==================
