@@ -1,5 +1,6 @@
 @media only print {
-    #head,
+    #head .LoginLogoutBox,
+    #about-view,
     #main-menu,
     #add-menu,
     #content .header,
@@ -29,9 +30,11 @@
         background-color: #fff;
     }
 
-    #calendar .table {
+    #calendar .table h2 {
+        font-size: 32px;
         position: absolute;
-        top: 0;
+        right: 7px;
+        top: 7px;
     }
 
     #calendar table td,
