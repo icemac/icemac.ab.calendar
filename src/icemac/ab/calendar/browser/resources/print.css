@@ -57,7 +57,11 @@
         float: left;
     }
 
-    #calendar table td .weekday{
+    #calendar table td.day-0 .weekday {
+        font-weight: bold;
+    }
+
+    #calendar table td .weekday {
         width: 25px;
     }
 
