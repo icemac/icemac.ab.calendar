@@ -5,15 +5,8 @@
 1.8 (unreleased)
 ================
 
-- Listing of recurring events in calendar master data no longer displays a time
-  for whole-day events.
-
-- Add a special style sheet for printing to render the calendar as a list on
-  paper. (Works in Safari, Firefox, Google Chrome and
-  Internet Explorer >= 10.x)
-
-1.7.2 (unreleased)
-==================
+Bugfixes
+--------
 
 - Fix a bug with daylight saving time adding one hour to each event during DST.
 
@@ -22,6 +15,17 @@
   a wrong time with the UTC time zone. But only some of the events with a UTC
   time zone seem to have this offset. These ones have to be fixed by hand.
   Sorry for the inconvenience.
+
+- Listing of recurring events in calendar master data no longer displays a time
+  for whole-day events.
+
+Features
+--------
+
+- Add a special style sheet for printing to render the calendar as a list on
+  paper. (Works in Safari, Firefox, Google Chrome and
+  Internet Explorer >= 10.x)
+
 
 1.7.1 (2016-03-12)
 ==================
