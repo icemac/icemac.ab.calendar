@@ -24,13 +24,14 @@ class Calendar(grok.MultiAdapter,
         self.events = events
         self._fd = StringIO()
 
-    def write(self, string, *args):
+    def write(self, string, *args, **kw):
         """Store a string which might contain % marks which get replaced."""
         text = string % args
         # We have to encode the text here as the used cStringIO does not
         # support unicode charaters outside ASCII:
         self._fd.write(text.encode('utf-8'))
-        self._fd.write('\n')
+        if kw.pop('newline', True):
+            self._fd.write('\n')
 
     def read(self):
         """Get the stored information back as unicode."""

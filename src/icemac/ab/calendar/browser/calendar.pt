@@ -32,13 +32,13 @@
         </div>
     </div>
     <div class="body">
-        <div class="W border"></div>
-        <div class="O border"></div>
+        <div class="W border no-print"></div>
+        <div class="O border no-print"></div>
         <div class="table">
           <div tal:replace="structure view/render_calendar"></div>
         </div>
     </div>
-    <div class="footer">
+    <div class="footer no-print">
         <div class="SW"></div>
         <div class="SO"></div>
         <div class="S"></div>

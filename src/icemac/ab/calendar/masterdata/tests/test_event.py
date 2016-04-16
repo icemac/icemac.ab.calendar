@@ -1,7 +1,11 @@
 from __future__ import unicode_literals
+
+from ..event import StartColumn
+from icemac.ab.calendar.event import BaseEvent
 from mechanize import LinkNotFoundError, HTTPError
 from zope.security.interfaces import Unauthorized
 import pytest
+import pytz
 
 
 RECURRING_EVENT_ADD_TEXT = 'recurring event'
@@ -35,6 +39,26 @@ def test_event__Table__4(address_book, browser):
     browser.handleErrors = False  # needed to catch exception
     with pytest.raises(Unauthorized):
         browser.open(browser.CALENDAR_RECURRING_EVENTS_LIST_URL)
+
+
+def test_event__StartColumn__renderCell__1(
+        DateTime, RequestFactory, utc_time_zone_pref):
+    """It renders date and time on a non-whole-day event."""
+    event = BaseEvent()
+    event.datetime = DateTime(
+        2016, 3, 10, 8, 32, tzinfo=pytz.timezone('Europe/Berlin'))
+    event.whole_day_event = False
+    col = StartColumn(None, RequestFactory(), None)
+    assert '16/03/10 07:32' == col.renderCell(event)
+
+
+def test_event__StartColumn__renderCell__2(DateTime, RequestFactory):
+    """It renders only the date a whole-day event."""
+    event = BaseEvent()
+    event.datetime = DateTime(2016, 3, 10, 8, 32)
+    event.whole_day_event = True
+    col = StartColumn(None, RequestFactory(), None)
+    assert '16/03/10' == col.renderCell(event)
 
 
 def test_event__Add__1(address_book, CategoryFactory, DateTime, browser):
