@@ -57,6 +57,7 @@ setuptools.setup(
         'icemac.recurrence >= 1.2.dev0',
         'js.classy',
         'setuptools',
+        'z3c.form >= 3.3',
         'zope.cachedescriptors',
     ],
     extras_require=dict(

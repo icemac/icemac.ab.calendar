@@ -1,3 +1,4 @@
+import zope.catalog.interfaces
 from icemac.addressbook.i18n import _
 from icemac.recurrence.interfaces import IRecurringDateTime
 import collections
@@ -73,6 +74,15 @@ class ICalendarDisplaySettings(zope.interface.Interface):
         required=False,
         value_type=zope.schema.Choice(source=event_fields_source))
 
+    person_keyword = zope.schema.Choice(
+        title=_('Person keyword'),
+        description=_(
+            'Only persons having the keyword assigned which is selected here '
+            'will show up in the person list when editing an event. '
+            'If no keyword is selected all persons will show up.'),
+        source=icemac.addressbook.interfaces.keyword_source,
+        required=False)
+
 
 class ICalendarProvider(zope.interface.Interface):
     """Marker interface for objects providing a calendar on an attribute.
@@ -122,7 +132,15 @@ class PersonSource(zc.sourcefactory.basic.BasicSourceFactory):
     """Persons in addressbook."""
 
     def getValues(self):
-        return zope.component.hooks.getSite().values()
+        site = zope.component.hooks.getSite()
+        kw = ICalendarDisplaySettings(ICalendar(site)).person_keyword
+        if kw is None:
+            values = site.values()
+        else:
+            catalog = zope.component.getUtility(
+                zope.catalog.interfaces.ICatalog)
+            values = catalog.searchResults(keywords={'all_of': [kw.title]})
+        return values
 
     def getTitle(self, value):
         return icemac.addressbook.interfaces.ITitle(value)

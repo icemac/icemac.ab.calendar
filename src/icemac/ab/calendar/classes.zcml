@@ -40,6 +40,11 @@
        />
   </class>
 
+  <!-- CalendarDisplaySettings -->
+  <class class=".calendar.CalendarDisplaySettings">
+    <implements interface="zope.annotation.interfaces.IAttributeAnnotatable" />
+  </class>
+
   <!-- CategoriesContainer -->
   <class class=".category.CategoryContainer">
     <implements interface="zope.annotation.interfaces.IAttributeAnnotatable" />

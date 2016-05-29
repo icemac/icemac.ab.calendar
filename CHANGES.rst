@@ -5,7 +5,8 @@
 1.9 (unreleased)
 ================
 
-- Nothing changed yet.
+- Allow to restrict which persons are listed in the person list on the event
+  using: Master Data > Calendar > Settings > Person keyword.
 
 
 1.8 (2016-04-16)

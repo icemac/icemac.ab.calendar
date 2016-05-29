@@ -8,6 +8,9 @@
   <adapter factory=".event.EventDatetime"
            trusted="y"/>
 
+  <adapter factory=".event.NoLongerAllowedPerson"
+           name="message" />
+
   <class class=".event.EventDatetime">
     <require
        permission="icemac.ab.calendar.ViewEvent"
@@ -29,6 +32,15 @@
       set_schema=".interfaces.IDatetime"
       />
   </class>
+
+  <adapter
+     for="..interfaces.IBaseEvent
+          icemac.addressbook.browser.interfaces.IAddressBookLayer
+          *
+          zope.schema.interfaces.ICollection
+          zope.schema.interfaces.IIterableSource
+          z3c.form.interfaces.IWidget"
+     factory=".event.SourceFactoryMissingCollectionTermsSource" />
 
   <z3c:addMenuItem
      manager="icemac.addressbook.browser.menus.interfaces.IAddMenu"

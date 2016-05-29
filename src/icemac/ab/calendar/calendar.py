@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from .interfaces import DATE_INDEX
 from datetime import datetime, time
+import gocept.reference
 import grokcore.annotation as grok
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.fieldsource
@@ -55,7 +56,13 @@ class CalendarDisplaySettings(grok.Annotation):
     grok.context(icemac.ab.calendar.interfaces.ICalendar)
     grok.implements(icemac.ab.calendar.interfaces.ICalendarDisplaySettings)
 
+    person_keyword = gocept.reference.Reference(
+        'person_keyword', ensure_integrity=True)
     _event_additional_fields = []
+
+    def __init__(self, *args, **kw):
+        super(CalendarDisplaySettings, self).__init__(*args, **kw)
+        self.person_keyword = None
 
     @property
     def event_additional_fields(self):

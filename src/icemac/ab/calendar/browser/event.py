@@ -4,15 +4,18 @@ import grokcore.component as grok
 import icemac.ab.calendar.browser.base
 import icemac.ab.calendar.browser.interfaces
 import icemac.ab.calendar.event
+import icemac.ab.calendar.interfaces
 import icemac.addressbook.browser.base
 import icemac.addressbook.browser.metadata
 import icemac.addressbook.interfaces
 import icemac.addressbook.preferences.utils
 import pytz
 import z3c.form.button
+import z3c.form.error
 import z3c.form.form
 import z3c.form.interfaces
 import z3c.form.object
+import z3c.form.term
 import zope.component
 import zope.traversing.browser
 
@@ -100,6 +103,29 @@ class Datetime(grok.Adapter):
 # Factory needed for the add form to initially store the IDatetime values:
 z3c.form.object.registerFactoryAdapter(
     icemac.ab.calendar.browser.interfaces.IDatetime, Datetime)
+
+
+class SourceFactoryMissingCollectionTermsSource(
+        z3c.form.term.MissingCollectionTermsSource):
+    """MissingCollectionTermsSource adapted to zc.sourcefactory.
+
+    We need a zc.sourcefactory as base creating the `ITerms` adapter to
+    be able to `_makeMissingTerm()` properly.
+    """
+
+    def _makeMissingTerm(self, value):
+        term = self.terms.getTerm(value)
+        term.title = _(u'Missing: ${value}', mapping=dict(value=term.title))
+        return term
+
+
+NoLongerAllowedPerson = z3c.form.error.ErrorViewMessage(
+    _('Please deselect the persons prefixed with "Missing:" They are no '
+      'longer in the list of available persons. (Maybe reconsider the '
+      'following setting: Master Data > Calendar > Settings > '
+      'Person keyword)'),
+    error=zope.schema.interfaces.WrongContainedType,
+    field=icemac.ab.calendar.interfaces.IBaseEvent['persons'])
 
 
 class EventFields(object):

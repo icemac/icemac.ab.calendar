@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
+from icemac.ab.calendar.interfaces import ICalendarDisplaySettings
 from icemac.ab.calendar.interfaces import IEvent, IRecurringEvent
 from mechanize import HTTPError
 from zope.traversing.browser import absoluteURL
 import calendar
 import pytest
 import pytz
+import zope.component.hooks
 
 
 def test_event__Add__1(address_book, CategoryFactory, DateTime, browser):
@@ -74,6 +76,45 @@ def test_event__Edit__3(
     browser.formlogin('hans@example.com', '1qay2wsx')
     browser.open(browser.EVENT_EDIT_URL)
     assert len(browser.all_control_names) > 2
+
+
+def test_event__Edit__4(
+        address_book, EventFactory, PersonFactory, KeywordFactory,
+        CategoryFactory, DateTime, browser):
+    """It does not break if list of persons gets restricted by keyword.
+
+    If a person is selected which does not have the person restriction
+    keyword (see ICalendarDisplaySettings.person_keyword) the view does not
+    break but renders the person as "missing".
+
+    It renders an error message with the missing person selected.
+    After deselecting the person the event can be saved again.
+    """
+    EventFactory(address_book,
+                 datetime=DateTime.today_8_32_am,
+                 category=CategoryFactory(address_book, u'foo'),
+                 persons=set([PersonFactory(address_book, u'Tester')]))
+    browser.login('cal-editor')
+    browser.handleErrors = False
+    browser.open(browser.EVENT_EDIT_URL)
+    assert ['Tester'] == browser.getControl('persons').displayValue
+    browser.getControl('notes').value = 'Force save'
+    browser.getControl('Apply').click()
+    assert 'Data successfully updated.' == browser.message
+    kw = KeywordFactory(address_book, u'foo')
+    with zope.component.hooks.site(address_book):
+        ICalendarDisplaySettings(address_book.calendar).person_keyword = kw
+    browser.open(browser.EVENT_EDIT_URL)
+    assert ['Missing: Tester'] == browser.getControl('persons').displayValue
+    browser.getControl('notes').value = 'Force save, second time'
+    browser.handleErrors = False
+    browser.getControl('Apply').click()
+    assert 'There were some errors.' in browser.contents
+    assert ('Please deselect the persons prefixed with "Missing:"' in
+            browser.contents)
+    browser.getControl('persons').displayValue = []
+    browser.getControl('Apply').click()
+    assert 'Data successfully updated.' == browser.message
 
 
 def test_event__Delete__1(address_book, EventFactory, DateTime, browser):
