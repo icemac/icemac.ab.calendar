@@ -7,5 +7,5 @@ pipelines:
     - step:
         script: # Modify the commands below to build your repository.
           - python bootstrap.py
-          - bin/buildout -n
-          - bin/py.test --fixtures
+          - bin/buildout -n buildout:eggs-directory=../eggs
+          - bin/py.test
