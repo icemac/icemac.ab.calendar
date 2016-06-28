@@ -8,4 +8,4 @@ pipelines:
         script: # Modify the commands below to build your repository.
           - python bootstrap.py
           - bin/buildout -n
-          - bin/py.test -p no:sugar
+          - bin/py.test --fixtures
