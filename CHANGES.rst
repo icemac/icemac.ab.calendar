@@ -2,7 +2,7 @@
  Changelog
 ===========
 
-1.10 (unreleased)
+1.10 (2016-08-28)
 =================
 
 - Add some infrastructure for `icemac.ab.calexport`.
