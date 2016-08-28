@@ -130,6 +130,19 @@ class TabularCalendar(icemac.ab.calendar.browser.base.View):
         """Render the month name of a gocept.month instance."""
         return self.month_names[month.month - 1]
 
+    def events_in_interval(self, start, end, condition=lambda x: True):
+        """Get all events in an interval filtered by a condition function.
+
+        Returns list of tuples (month, [event-description, event-description]).
+        """
+        year = gocept.month.MonthInterval(start, end)
+        return [(
+            month,
+            [IEventDescription(x)
+             for x in self.context.get_events(month)
+             if condition(x)]
+        ) for month in year]
+
 
 class MonthCalendar(TabularCalendar):
     """Calendar display of one month."""
@@ -198,14 +211,9 @@ class YearCalendar(TabularCalendar):
 
     def update(self):
         super(YearCalendar, self).update()
-        year = gocept.month.MonthInterval(
+        self.events = self.events_in_interval(
             gocept.month.Month(1, self.calendar_year),
             gocept.month.Month(12, self.calendar_year))
-        self.events = []
-        for month in year:
-            events = [IEventDescription(x)
-                      for x in self.context.get_events(month)]
-            self.events.append((month, events))
 
     def render_events(self, month, events):
         headline = u'<h2>{} {}</h2>'.format(

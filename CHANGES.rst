@@ -5,7 +5,7 @@
 1.10 (unreleased)
 =================
 
-- Nothing changed yet.
+- Add some infrastructure for `icemac.ab.calexport`.
 
 
 1.9 (2016-06-25)
