@@ -2,16 +2,14 @@ syntax: glob
 
 *.egg-info
 *.pyc
-*.sublime-project
-*.sublime-workspace
 .DS_Store
-.cache
+.cache/
 .coverage
 .installed.cfg
 .mr.developer.cfg
-bin
+bin/
 cache/*.py
-develop-eggs
+develop-eggs/
 htmlcov/
 my-buildout.cfg
-parts
+parts/
