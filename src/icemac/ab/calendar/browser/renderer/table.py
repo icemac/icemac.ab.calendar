@@ -75,7 +75,6 @@ class Table(Calendar):
     """Tabular display of a calendar."""
 
     grok.name('table')
-    may_render_days_as_add_links = True
     render_event_adapter_name = 'table-event'
 
     def update(self):
@@ -120,9 +119,6 @@ class Table(Calendar):
             if (delta % 7) == 0:
                 # week start
                 self.write('    <tr>')
-            if (delta + 1 % 7) == 0:
-                # week end
-                self.write('    </tr>')
             day = self.first_table_day + datetime.timedelta(delta)
             day_number = int(day.strftime('%w'))
             css_classes = ['day-{}'.format(day_number)]
@@ -157,6 +153,9 @@ class Table(Calendar):
                 if found_events_for_day:
                     self.write('</dl>')
             self.write('</td>')
+            if (delta + 1) % 7 == 0:
+                # week end
+                self.write('    </tr>')
 
         self.write('  </tbody>')
         self.write('</table>')
@@ -165,12 +164,8 @@ class Table(Calendar):
     def get_add_event_for_day_url(self):
         """Get the URL to add a new a event for a day.
 
-        Takes `may_render_days_as_add_links` into account.
         Returns None if there should be no add link.
-
         """
-        if not self.may_render_days_as_add_links:
-            return None
         calendar = icemac.ab.calendar.interfaces.ICalendar(
             icemac.addressbook.interfaces.IAddressBook(None))
         if not can_access_uri_part(calendar, self.request, 'addEvent.html'):

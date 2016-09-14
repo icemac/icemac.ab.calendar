@@ -1,0 +1,16 @@
+[run]
+branch = True
+source = icemac.ab.calendar
+
+[report]
+precision = 2
+omit = */generations/*
+       */tests/*
+       */tests.py
+       */conftest.py
+exclude_lines =
+    pragma: no cover
+    class I[A-Z]\w+\((zope\.interface\.Interface|I[A-Z].*)\):
+
+[html]
+directory = htmlcov

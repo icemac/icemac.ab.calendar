@@ -5,7 +5,7 @@
 1.11 (unreleased)
 =================
 
-- Nothing changed yet.
+- Bring branch test coverage to 100 %.
 
 
 1.10 (2016-08-28)

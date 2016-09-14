@@ -61,6 +61,13 @@ def test_event__StartColumn__renderCell__2(DateTime, RequestFactory):
     assert '16/03/10' == col.renderCell(event)
 
 
+def test_event__StartColumn__renderCell__3(DateTime, RequestFactory):
+    """It returns en empty string if no `datetime` is set."""
+    event = BaseEvent()
+    col = StartColumn(None, RequestFactory(), None)
+    assert '' == col.renderCell(event)
+
+
 def test_event__Add__1(address_book, CategoryFactory, DateTime, browser):
     """It allows to add recurring events to the list."""
     CategoryFactory(address_book, 'birthday')

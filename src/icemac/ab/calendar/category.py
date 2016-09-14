@@ -26,7 +26,8 @@ class Category(persistent.Persistent,
 
     def __repr__(self):
         """Human readable representation of the object."""
-        return u'<Category title="{}">'.format(self.title)
+        return '<Category title={0!r}>'.format(
+            self.title.encode('ascii', 'replace'))
 
 
 unique_titles = icemac.addressbook.utils.unique_by_attr_factory(

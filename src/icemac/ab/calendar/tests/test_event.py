@@ -161,7 +161,7 @@ def test_event__RecurringEvent__get_events__2(
     """It ends the recurrence at the `end` date."""
     recurring_event = RecurringEventFactory(
         address_book,
-        datetime=DateTime(2014, 5, 2, 12),
+        datetime=DateTime(2014, 4, 18, 12),
         end=DateTime(2014, 5, 9, 0).date(),
         period='weekly',
         category=CategoryFactory(address_book, u'event'))
@@ -170,6 +170,14 @@ def test_event__RecurringEvent__get_events__2(
     assert 2 == len(events)
     assert ([DateTime(2014, 5, 2, 12),
              DateTime(2014, 5, 9, 12)] == [x.datetime for x in events])
+
+    # If the end date is not reached all recurrences until the requested
+    # interval end are returned:
+    events = list(recurring_event.get_events(
+        DateTime(2014, 4, 1, 0), DateTime(2014, 4, 30, 0), pytz.utc))
+    assert 2 == len(events)
+    assert ([DateTime(2014, 4, 18, 12),
+             DateTime(2014, 4, 25, 12)] == [x.datetime for x in events])
 
 
 def test_event__RecurringEvent__get_events__3(

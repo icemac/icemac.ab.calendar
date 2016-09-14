@@ -241,6 +241,19 @@ def test_calendar__MonthCalendar__6(
     ] == browser.etree.xpath('//ul[@class="info"]/li/text()')
 
 
+def test_calendar__YearCalendar__1(
+        address_book, EventFactory, DateTime, browser):
+    """It shows the events belonging to the selected year."""
+    now = DateTime.now
+    EventFactory(address_book, alternative_title=u'this year', datetime=now)
+    EventFactory(address_book, alternative_title=u'next year',
+                 datetime=now + timedelta(days=366))
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_YEAR_OVERVIEW_URL)
+    assert 'this year' in browser.contents
+    assert 'next year' not in browser.contents
+
+
 def test_calendar_js__1(address_book, webdriver):
     """It auto-submits on change in the month drop-down of the month view."""
     sel = webdriver.login('cal-visitor')

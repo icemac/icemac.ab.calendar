@@ -110,10 +110,9 @@ class TabularCalendar(icemac.ab.calendar.browser.base.View):
     def update(self):
         locale_calendar = self.request.locale.dates.calendars['gregorian']
         self.month_names = locale_calendar.getMonthNames()
-        if self.form_class is not None:
-            self.form = self.form_class(self, self.request)
-            # Write the value the user entered on self:
-            self.form.update()
+        self.form = self.form_class(self, self.request)
+        # Write the value the user entered on self:
+        self.form.update()
 
     def render_form(self):
         return self.form.render()
@@ -331,11 +330,7 @@ class EventDescription(grok.Adapter):
                     icemac.addressbook.entities.get_bound_schema_field(
                         self.context, None, field,
                         default_attrib_fallback=False))
-                try:
-                    value = schema_field.get(schema_field.context)
-                except AttributeError:
-                    # Field defined on IEvent but not on IRecurringEvent
-                    value = None
+                value = schema_field.get(schema_field.context)
                 if value is not None:
                     value = unicode(value)
             if value:

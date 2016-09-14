@@ -19,16 +19,18 @@ def test_table__Table__1():
 
 
 def test_table__Table__render__1(
-        address_book, browser, EventFactory, DateTime):
-    """It renders two events at the same time with one time `dt`."""
+        address_book, browser, EventFactory, CategoryFactory, DateTime):
+    """It renders two events at the same time with two `dt` elements."""
     today = date.today()
     EventFactory(address_book, alternative_title=u'event1',
-                 datetime=DateTime(today.year, today.month, 22, 16, 14))
+                 datetime=DateTime(today.year, today.month, 22, 16, 14),
+                 category=CategoryFactory(address_book, u'foo'))
     EventFactory(address_book, alternative_title=u'event2',
-                 datetime=DateTime(today.year, today.month, 22, 16, 14))
+                 datetime=DateTime(today.year, today.month, 22, 16, 14),
+                 category=CategoryFactory(address_book, u'bar'))
     browser.login('cal-visitor')
     browser.open(browser.CALENDAR_OVERVIEW_URL)
-    assert 1 == len(browser.etree.xpath('//dt'))
+    assert 2 == len(browser.etree.xpath('//dt'))
 
 
 def test_table__Table__render__2(address_book, browser):
