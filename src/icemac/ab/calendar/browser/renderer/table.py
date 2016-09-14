@@ -116,7 +116,7 @@ class Table(Calendar):
         events = self.events
         add_event_for_day_url = self.get_add_event_for_day_url()
         for delta in xrange(self.num_of_days):
-            if (delta % 7) == 0:
+            if delta % 7 == 0:
                 # week start
                 self.write('    <tr>')
             day = self.first_table_day + datetime.timedelta(delta)
