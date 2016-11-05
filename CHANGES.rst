@@ -7,6 +7,8 @@
 
 - Bring branch test coverage to 100 %.
 
+- Adapt code and role configuration to `icemac.addressbook >= 2.9`.
+
 
 1.10 (2016-08-28)
 =================

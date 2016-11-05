@@ -10,103 +10,36 @@
 
   <grant
      role="icemac.ab.calendar.Editor"
-     permission="zope.dublincore.view"
-     />
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="zope.View"
-     />
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.addressbook.ViewAddressBook"
-     />
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.addressbook.ViewSomePrincipals"
-     />
+     permissions="
+        icemac.ab.calendar.AddCategory
+        icemac.ab.calendar.AddEvent
+        icemac.ab.calendar.AddRecurringEvent
+        icemac.ab.calendar.CloneEvent
+        icemac.ab.calendar.EditCalendar
+        icemac.ab.calendar.EditCalendarAnnotations
+        icemac.ab.calendar.EditCategory
+        icemac.ab.calendar.EditCategoryContainer
+        icemac.ab.calendar.EditEvent
+        icemac.ab.calendar.EditRecurringEvent
+        icemac.ab.calendar.EditRecurringEventContainer
+        icemac.ab.calendar.ViewCalendar
+        icemac.ab.calendar.ViewCategory
+        icemac.ab.calendar.ViewCategoryContainer
+        icemac.ab.calendar.ViewEvent
+        icemac.ab.calendar.ViewRecurringEvent
+        icemac.ab.calendar.ViewRecurringEventContainer
+        icemac.addressbook.ViewAddressBook
+        icemac.addressbook.ViewPersonName
+        icemac.addressbook.ViewSomePrincipals
+        z3c.preference.EditPreference
+        zope.View
+        zope.dublincore.view
+     " />
 
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.ab.calendar.EditCalendar"
-     />
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.ab.calendar.EditCalendarAnnotations"
-     />
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.ab.calendar.ViewCalendar"
-     />
-
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.ab.calendar.EditCategoryContainer"
-     />
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.ab.calendar.ViewCategoryContainer"
-     />
-
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.ab.calendar.AddCategory"
-     />
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.ab.calendar.ViewCategory"
-     />
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.ab.calendar.EditCategory"
-     />
-
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.ab.calendar.AddEvent"
-     />
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.ab.calendar.ViewEvent"
-     />
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.ab.calendar.EditEvent"
-     />
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.ab.calendar.CloneEvent"
-     />
-
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.ab.calendar.EditRecurringEventContainer"
-     />
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.ab.calendar.ViewRecurringEventContainer"
-     />
-
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.ab.calendar.AddRecurringEvent"
-     />
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.ab.calendar.ViewRecurringEvent"
-     />
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.ab.calendar.EditRecurringEvent"
-     />
-
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="icemac.addressbook.ViewPersonName"
-     />
-
-  <grant
-     role="icemac.ab.calendar.Editor"
-     permission="z3c.preference.EditPreference" />
+  <subscriber
+    for="*"
+    provides="icemac.addressbook.principals.interfaces.IEditorRole"
+    factory=".roles.editor_role" />
 
 
   <!-- Visitor -->
@@ -118,66 +51,48 @@
 
   <grant
      role="icemac.ab.calendar.Visitor"
-     permission="zope.dublincore.view"
-     />
-  <grant
-     role="icemac.ab.calendar.Visitor"
-     permission="zope.View"
-     />
-  <grant
-     role="icemac.ab.calendar.Visitor"
-     permission="icemac.addressbook.ViewAddressBook"
-     />
-  <grant
-     role="icemac.ab.calendar.Visitor"
-     permission="icemac.addressbook.ViewSomePrincipals"
-     />
+     permissions="
+        icemac.ab.calendar.ViewCalendar
+        icemac.ab.calendar.ViewCategory
+        icemac.ab.calendar.ViewCategoryContainer
+        icemac.ab.calendar.ViewEvent
+        icemac.ab.calendar.ViewRecurringEvent
+        icemac.ab.calendar.ViewRecurringEventContainer
+        icemac.addressbook.ViewAddressBook
+        icemac.addressbook.ViewPersonName
+        icemac.addressbook.ViewSomePrincipals
+        z3c.preference.EditPreference
+        zope.View
+        zope.dublincore.view
+     " />
 
-  <grant
-     role="icemac.ab.calendar.Visitor"
-     permission="icemac.ab.calendar.ViewCalendar"
-     />
-
-  <grant
-     role="icemac.ab.calendar.Visitor"
-     permission="icemac.ab.calendar.ViewCategoryContainer"
-     />
-  <grant
-     role="icemac.ab.calendar.Visitor"
-     permission="icemac.ab.calendar.ViewCategory"
-     />
-  <grant
-     role="icemac.ab.calendar.Visitor"
-     permission="icemac.ab.calendar.ViewEvent"
-     />
-
-  <grant
-     role="icemac.ab.calendar.Visitor"
-     permission="icemac.ab.calendar.ViewRecurringEventContainer"
-     />
-  <grant
-     role="icemac.ab.calendar.Visitor"
-     permission="icemac.ab.calendar.ViewRecurringEvent"
-     />
-
-  <grant
-     role="icemac.ab.calendar.Visitor"
-     permission="icemac.addressbook.ViewPersonName"
-     />
-
-  <grant
-     role="icemac.ab.calendar.Visitor"
-     permission="z3c.preference.EditPreference" />
-
-
-  <subscriber
-    for="*"
-    provides="icemac.addressbook.principals.interfaces.IEditorRole"
-    factory=".roles.editor_role" />
   <subscriber
     for="*"
     provides="icemac.addressbook.principals.interfaces.IVisitorRole"
     factory=".roles.visitor_role" />
 
+
+  <!-- Administrator -->
+  <grant
+     role="icemac.addressbook.global.Administrator"
+     permissions="
+        icemac.ab.calendar.EditCalendar
+        icemac.ab.calendar.EditCalendarAnnotations
+        icemac.ab.calendar.ViewCalendar
+        icemac.ab.calendar.EditCategoryContainer
+        icemac.ab.calendar.ViewCategoryContainer
+        icemac.ab.calendar.AddCategory
+        icemac.ab.calendar.ViewCategory
+        icemac.ab.calendar.EditCategory
+        icemac.ab.calendar.AddEvent
+        icemac.ab.calendar.ViewEvent
+        icemac.ab.calendar.EditEvent
+        icemac.ab.calendar.CloneEvent
+        icemac.ab.calendar.EditRecurringEventContainer
+        icemac.ab.calendar.ViewRecurringEventContainer
+        icemac.ab.calendar.AddRecurringEvent
+        icemac.ab.calendar.ViewRecurringEvent
+        icemac.ab.calendar.EditRecurringEvent
+     " />
 
 </configure>

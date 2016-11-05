@@ -59,6 +59,7 @@ setuptools.setup(
         'setuptools',
         'z3c.form >= 3.3',
         'zope.cachedescriptors',
+        'zope.securitypolicy >= 4.1.0.dev0',
     ],
     extras_require=dict(
         test=[
