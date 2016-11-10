@@ -110,6 +110,9 @@ class TabularCalendar(icemac.ab.calendar.browser.base.View):
     def update(self):
         locale_calendar = self.request.locale.dates.calendars['gregorian']
         self.month_names = locale_calendar.getMonthNames()
+        self.update_form()
+
+    def update_form(self):
         self.form = self.form_class(self, self.request)
         # Write the value the user entered on self:
         self.form.update()
