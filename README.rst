@@ -1,6 +1,6 @@
 This package provides a calendar feature for `icemac.addressbook`_.
 
-.. _`icemac.addressbook` : http://pypi.python.org/pypi/icemac.addressbook
+.. _`icemac.addressbook` : https://pypi.org/project/icemac.addressbook/
 
 Copyright (c) 2010-2017 Michael Howitz
 

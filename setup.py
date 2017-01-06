@@ -22,7 +22,7 @@ setuptools.setup(
     keywords='icemac addressbook calendar event recurring',
     author='Michael Howitz',
     author_email='icemac@gmx.net',
-    download_url='http://pypi.python.org/pypi/icemac.ab.calendar',
+    download_url='https://pypi.org/project/icemac.ab.calendar',
     url='https://bitbucket.org/icemac/icemac.ab.calendar',
     license='ZPL 2.1',
     classifiers=[
