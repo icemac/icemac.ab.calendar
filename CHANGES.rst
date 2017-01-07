@@ -5,7 +5,8 @@
 1.12 (unreleased)
 =================
 
-- Nothing changed yet.
+- Fix an error in calendar display when rendering a user defined field which is
+  only defined on IEvent but not on IRecurringEvent.
 
 
 1.11 (2017-01-06)

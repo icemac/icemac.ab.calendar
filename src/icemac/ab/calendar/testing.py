@@ -1,4 +1,5 @@
 import icemac.addressbook.testing
+import pytz
 
 
 class Browser(icemac.addressbook.testing.Browser):
@@ -57,3 +58,14 @@ class Browser(icemac.addressbook.testing.Browser):
         'http://localhost/ab/++attribute++calendar/@@viewRecurredEvent.html')
     RECURRED_EVENT_DELETE_URL = ('http://localhost/ab/++attribute++calendar/'
                                  '@@delete-recurred-event.html')
+
+
+def get_recurred_event(recurring_event, DateTime):
+    """Get one recurred event at today.
+
+    DateTime ... the DateTime fixture instance.
+    """
+    return recurring_event.get_events(
+        DateTime.today_8_32_am,
+        DateTime.add(DateTime.today_8_32_am, days=1),
+        pytz.utc).next()

@@ -5,6 +5,7 @@ from icemac.ab.calendar.browser.renderer.interfaces import IEventDescription
 from icemac.ab.calendar.browser.renderer.interfaces import UnknownLanguageError
 from icemac.ab.calendar.interfaces import ICalendarDisplaySettings, ICalendar
 from icemac.ab.calendar.interfaces import IEvent, IRecurringEvent
+from icemac.ab.calendar.testing import get_recurred_event
 from icemac.addressbook.interfaces import IEntity
 from mechanize import LinkNotFoundError
 from zope.interface.verify import verifyObject
@@ -329,11 +330,12 @@ def test_calendar__EventDescription__getInfo__1(
     event.
 
     """
-    ed = IEventDescription(RecurringEventFactory(address_book, **{
+    recurring_event = RecurringEventFactory(address_book, **{
         'datetime': DateTime.now,
         'text': u'Text2',
-        'period': 'yearly',
-        'category': CategoryFactory(address_book, u'bar')}))
+        'period': 'daily',
+        'category': CategoryFactory(address_book, u'bar')})
+    ed = IEventDescription(get_recurred_event(recurring_event, DateTime))
     assert ['Text2'] == ed.getInfo()
 
 

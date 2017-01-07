@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from icemac.ab.calendar.interfaces import ICalendarDisplaySettings
 from icemac.ab.calendar.interfaces import IEvent, IRecurringEvent
+from icemac.ab.calendar.testing import get_recurred_event
 from mechanize import HTTPError
 from zope.traversing.browser import absoluteURL
 import calendar
@@ -196,14 +197,6 @@ def sample_recurring_event(
            'persons': set([tester]),
            'external_persons': [u'Mr. Developer'],
            'text': u'Important'})
-
-
-def get_recurred_event(recurring_event, DateTime):
-    """Get one recurred event."""
-    return recurring_event.get_events(
-        DateTime.today_8_32_am,
-        DateTime.add(DateTime.today_8_32_am, days=1),
-        pytz.utc).next()
 
 
 def get_recurred_event_url(recurred_event, request):
