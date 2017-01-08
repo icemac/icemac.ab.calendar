@@ -28,7 +28,7 @@ class Calendar(grok.MultiAdapter,
         """Store a string which might contain % marks which get replaced."""
         text = string % args
         # We have to encode the text here as the used cStringIO does not
-        # support unicode charaters outside ASCII:
+        # support unicode characters outside ASCII:
         self._fd.write(text.encode('utf-8'))
         if kw.pop('newline', True):
             self._fd.write('\n')
