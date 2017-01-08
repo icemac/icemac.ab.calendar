@@ -7,6 +7,7 @@ import icemac.addressbook.browser.interfaces
 import zope.i18n
 
 
+@grok.implementer(icemac.ab.calendar.browser.renderer.interfaces.IRenderer)
 class Calendar(grok.MultiAdapter,
                icemac.ab.calendar.browser.base.View):
     """Base of calendar view."""
@@ -16,7 +17,6 @@ class Calendar(grok.MultiAdapter,
         gocept.month.IMonth,
         icemac.addressbook.browser.interfaces.IAddressBookLayer,
         list)
-    grok.implements(icemac.ab.calendar.browser.renderer.interfaces.IRenderer)
 
     def __init__(self, month, request, events):
         self.request = request

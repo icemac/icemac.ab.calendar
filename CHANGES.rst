@@ -5,7 +5,7 @@
 1.12 (unreleased)
 =================
 
-- Nothing changed yet.
+- Adapt code to `icemac.addressbook >= 2.10`.
 
 
 1.11.1 (2017-01-07)
