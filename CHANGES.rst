@@ -5,7 +5,8 @@
 1.11.2 (unreleased)
 ===================
 
-- Nothing changed yet.
+- Stabialize the sort order of events with the same datetime. They are now
+  sorted by category.
 
 
 1.11.1 (2017-01-07)
