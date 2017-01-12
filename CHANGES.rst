@@ -11,7 +11,7 @@
 1.11.2 (2017-01-09)
 ===================
 
-- Stabialize the sort order of events with the same datetime. They are now
+- Stabilize the sort order of events with the same datetime. They are now
   sorted by category.
 
 
