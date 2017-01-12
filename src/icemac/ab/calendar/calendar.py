@@ -46,8 +46,11 @@ class Calendar(zope.container.btree.BTreeContainer):
                              for x in single_events}
         events_map.update(single_events_map)
         # Filter out deleted recurred events and sort:
-        return sorted(filter(lambda x: not x.deleted, events_map.values()),
-                      key=lambda x: (x.in_timezone(timezone), x.category))
+        return sorted(
+            filter(lambda x: not x.deleted, events_map.values()),
+            key=lambda x: (x.in_timezone(timezone),
+                           icemac.addressbook.interfaces.ITitle(
+                               x.category, None)))
 
 
 class CalendarDisplaySettings(grok.Annotation):

@@ -7,6 +7,9 @@
 
 - Adapt code so `grokcore.component >= 2.6` can be used.
 
+- Fix sort order of events with the same datetime again. They are now
+  sorted by the title of the category.
+
 
 1.11.2 (2017-01-09)
 ===================
