@@ -1,22 +1,12 @@
 @media only print {
-    #head .LoginLogoutBox,
-    #about-view,
-    #main-menu,
-    #add-menu,
-    #info-messages,
-    #content .header,
-    #content .body thead,
-    .no-print,
     #calendar table td:empty,
-    #foot {
+    #content .header,
+    #content .body thead {
         display: none;
     }
 
     #content {
         border: 0px;
-        padding: 0px;
-        min-height: inherit;
-        background-color: #fff;
     }
 
     #timezone {
@@ -28,12 +18,15 @@
         margin-top: 0px;
     }
 
+
+    #calendar table .day-0,
     #calendar table td.today {
         background-color: #fff;
     }
 
     #calendar .table h2 {
-        font-size: 32px;
+        display: block;
+        font-size: 24px;
         position: absolute;
         right: 7px;
         top: 7px;
@@ -48,6 +41,7 @@
         max-width: inherit;
         width: 50em;
         clear: left;
+        list-style: outside none none;
     }
 
     #calendar table td a,
@@ -87,7 +81,7 @@
 
     #calendar table td dl dd,
     div#content td ul {
-        margin-left: 3px;
+        margin-left: 5px;
         padding-left: 0px;
     }
     #calendar table td dl dd ul.info li {
