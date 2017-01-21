@@ -41,13 +41,6 @@
 - Add some infrastructure for `icemac.ab.calexport`.
 
 
-1.9 (2016-06-25)
-================
-
-- Allow to restrict which persons are listed in the person list on the event
-  using: Master Data > Calendar > Settings > Person keyword.
-
-
 Older versions
 ==============
 
