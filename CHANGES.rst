@@ -2,7 +2,7 @@
  Changelog
 ===========
 
-1.12 (unreleased)
+1.12 (2017-01-21)
 =================
 
 - Adapt code so `grokcore.component >= 2.6` can be used.
