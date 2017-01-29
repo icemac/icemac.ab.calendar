@@ -14,7 +14,7 @@ import zope.component.hooks
 import zope.publisher.browser
 
 
-pytest_plugins = 'icemac.addressbook.conftest'
+pytest_plugins = 'icemac.addressbook.fixtures'
 
 
 # Fixtures to set-up infrastructure which are usable in tests:
@@ -31,7 +31,7 @@ def address_book(addressBookConnectionF):
 @pytest.fixture(scope='function')
 def browser(browserWsgiAppS):
     """Fixture for testing with zope.testbrowser."""
-    assert icemac.addressbook.conftest.CURRENT_CONNECTION is not None, \
+    assert icemac.addressbook.testing.CURRENT_CONNECTION is not None, \
         "The `browser` fixture needs a database fixture like `address_book`."
     return icemac.ab.calendar.testing.Browser(wsgi_app=browserWsgiAppS)
 
@@ -112,17 +112,40 @@ def utc_time_zone_pref(TimeZonePrefFactory):
     return TimeZonePrefFactory('UTC')
 
 
+@pytest.fixture(scope='function')
+def sitemenu(browser):
+    """Helper fixture to test the selections in the site menu.
+
+    USABLE IN TESTS.
+
+    """
+    return icemac.addressbook.testing.SiteMenu
+
+
+@pytest.fixture(scope='function')
+def assert_address_book(address_book):
+    """Fixture returning an object providing a custom address book asserts."""
+    return icemac.addressbook.testing.AddressBookAssertions(address_book)
+
+
 # Infrastructure fixtures
 
 
 @pytest.yield_fixture(scope='session')
-def zcmlS(zcmlS):
+def zcmlS():
     """Load calendar ZCML on session scope."""
     layer = icemac.addressbook.testing.SecondaryZCMLLayer(
-        'Calendar', __name__, icemac.ab.calendar, [zcmlS])
+        'Calendar', __name__, icemac.ab.calendar)
     layer.setUp()
     yield layer
     layer.tearDown()
+
+
+@pytest.yield_fixture(scope='session')
+def zodbS(zcmlS):
+    """Create an empty test ZODB."""
+    for zodb in icemac.addressbook.testing.pyTestEmptyZodbFixture():
+        yield zodb
 
 
 @pytest.yield_fixture(scope='session')

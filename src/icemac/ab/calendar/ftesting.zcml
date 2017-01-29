@@ -1,5 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
+  <include package="icemac.addressbook" file="ftesting-base.zcml" />
   <include package="icemac.ab.calendar" />
 
   <!-- Principal who is able to make changes in the calendar -->
