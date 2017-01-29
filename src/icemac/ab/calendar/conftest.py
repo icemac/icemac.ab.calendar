@@ -1,5 +1,4 @@
 from icemac.ab.calendar.category import Category
-from mock import patch
 import datetime
 import icemac.ab.calendar.category
 import icemac.ab.calendar.interfaces
@@ -88,22 +87,6 @@ def RecurringEventFactory():
 def DateTime():
     """Fixture to ease handling of datetime objects."""
     return DateTimeClass()
-
-
-@pytest.yield_fixture('function')
-def TimeZonePrefFactory():
-    """Factory to set the time zone in the preferences."""
-    patchers = []
-
-    def set_time_zone_pref(time_zone_name):
-        patcher = patch(
-            'icemac.addressbook.preferences.utils.get_time_zone_name',
-            return_value=time_zone_name)
-        patcher.start()
-        patchers.append(patcher)
-    yield set_time_zone_pref
-    while patchers:
-        patchers.pop().stop()
 
 
 @pytest.fixture('function')
