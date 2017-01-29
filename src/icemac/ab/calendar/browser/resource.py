@@ -1,6 +1,7 @@
 from icemac.addressbook.browser.resource import base_css
 import fanstatic
 import icemac.ab.calendar.browser.interfaces
+import icemac.addressbook.browser.favicon
 import js.classy
 import js.jquery
 import zope.viewlet.viewlet
