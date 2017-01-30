@@ -15,6 +15,13 @@ Backward incompatible changes
   py.test version.
 
 
+Bug fixtures
+------------
+
+- The computation of Biweekly events was fixed: There are now always two weeks
+  between the events. Previously it could only be one if the recurrence in the
+  previous month was in the last week of the month.
+
 
 1.12 (2017-01-21)
 =================
