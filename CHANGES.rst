@@ -2,10 +2,18 @@
  Changelog
 ===========
 
-1.13 (unreleased)
-=================
+2.0 (unreleased)
+================
 
-- Update test infrastructure to `icemac.addressbook >= 3.0`.
+Backward incompatible changes
+-----------------------------
+
+- Update test infrastructure to `icemac.addressbook >= 3.0`, thus update to
+  `py.test >= 2.8`. The fixtures which can be reused where moved to
+  ``icemac.ab.calendar.fixtures``. ``icemac.ab.calendar.conftest`` should no
+  longer be used from foreign packages as this leads to problems with the new
+  py.test version.
+
 
 
 1.12 (2017-01-21)
