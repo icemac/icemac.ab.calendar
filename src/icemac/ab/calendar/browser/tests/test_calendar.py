@@ -12,6 +12,7 @@ from zope.interface.verify import verifyObject
 from zope.preference.interfaces import IDefaultPreferenceProvider
 from zope.security.interfaces import Unauthorized
 import pytest
+import pytz
 import zope.component
 
 
@@ -253,6 +254,31 @@ def test_calendar__YearCalendar__1(
     browser.open(browser.CALENDAR_YEAR_OVERVIEW_URL)
     assert 'this year' in browser.contents
     assert 'next year' not in browser.contents
+
+
+def test_calendar__YearCalendar__2(
+        address_book, RecurringEventFactory, TimeZonePrefFactory, DateTime,
+        CategoryFactory, browser):
+    """It renders events with a constant time even through DST changes."""
+    TimeZonePrefFactory('Europe/Berlin')
+    RecurringEventFactory(
+        address_book,
+        datetime=DateTime(
+            2014, 3, 11, 8, tzinfo=pytz.timezone('Europe/Berlin')),
+        end=DateTime(2014, 5, 2).date(),
+        category=CategoryFactory(address_book, u'my cat'),
+        period='nth weekday of month')
+    browser.login('cal-visitor')
+    # We need to explicitly set the language here because otherwise the month
+    # name is not displayed:
+    browser.lang('en')
+    browser.open(browser.CALENDAR_YEAR_OVERVIEW_URL)
+    browser.getControl('year').getControl('2014').selected = True
+    browser.handleErrors = False
+    browser.getControl('Apply').click()
+    assert 'Year changed.' == browser.message
+    # The time stays the same even there is a DST switch in between:
+    assert ['8:00 AM', '8:00 AM'] == browser.etree.xpath('//table//dt/text()')
 
 
 def test_calendar_js__1(address_book, webdriver):

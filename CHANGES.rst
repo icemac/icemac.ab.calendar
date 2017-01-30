@@ -22,6 +22,10 @@ Bug fixtures
   between the events. Previously it could only be one if the recurrence in the
   previous month was in the last week of the month.
 
+- Fix the bug with daylight saving time adding one hour to each event during
+  DST for the year calendar which was already fixed for the month calendar in
+  version 1.8.
+
 
 1.12 (2017-01-21)
 =================
