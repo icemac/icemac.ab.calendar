@@ -63,6 +63,7 @@ class EventFieldsSource(zc.sourcefactory.basic.BasicSourceFactory):
     def getTitle(self, value):
         return value.title
 
+
 event_fields_source = EventFieldsSource()
 
 
@@ -125,6 +126,7 @@ class CategorySource(zc.sourcefactory.basic.BasicSourceFactory):
     def getTitle(self, value):
         return value.title
 
+
 category_source = CategorySource()
 
 
@@ -144,6 +146,7 @@ class PersonSource(zc.sourcefactory.basic.BasicSourceFactory):
 
     def getTitle(self, value):
         return icemac.addressbook.interfaces.ITitle(value)
+
 
 person_source = PersonSource()
 
@@ -213,6 +216,7 @@ class RecurrencePeriodSource(icemac.addressbook.sources.TitleMappingSource):
             (name, adapter.title)
             for name, adapter in sorted(
                 names_and_adapters, key=lambda x: x[1].weight))
+
 
 recurrence_period_source = RecurrencePeriodSource()
 
