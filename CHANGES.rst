@@ -2,7 +2,7 @@
  Changelog
 ===========
 
-2.0 (unreleased)
+2.0 (2017-02-04)
 ================
 
 Backward incompatible changes
@@ -58,12 +58,6 @@ Bugs
 - Bring branch test coverage to 100 %.
 
 - Adapt code and role configuration to `icemac.addressbook >= 2.9`.
-
-
-1.10 (2016-08-28)
-=================
-
-- Add some infrastructure for `icemac.ab.calexport`.
 
 
 Older versions

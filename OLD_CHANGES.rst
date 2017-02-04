@@ -2,7 +2,14 @@
  Changelog older versions
 ==========================
 
-Changelog of releases more than 2 major versions behind current version.
+Changelog of releases more than 2 minor versions behind current version.
+
+
+1.10 (2016-08-28)
+=================
+
+- Add some infrastructure for `icemac.ab.calexport`.
+
 
 1.9 (2016-06-25)
 ================
