@@ -1,15 +1,15 @@
 from icemac.ab.calendar.interfaces import IEvent
 from icemac.addressbook.interfaces import IEntity
-from mechanize import LinkNotFoundError, HTTPError
+from zope.testbrowser.browser import LinkNotFoundError, HTTPError
 import pytest
 import zope.component.hooks
 
 
 def assert_fields_selected(browser, *fields):
     """Assert that some fields are selected in `event_additional_fields`."""
-    assert (list(fields) ==
-            browser.getControl(
-                name='form.widgets.event_additional_fields.to').displayOptions)
+    options = browser.getControl(
+        name='form.widgets.event_additional_fields.to').displayOptions
+    assert set(fields) == set(options)
 
 
 def test_calendar__CalendarView__1(address_book, FieldFactory, browser):

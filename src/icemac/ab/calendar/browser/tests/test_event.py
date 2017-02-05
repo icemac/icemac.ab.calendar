@@ -2,7 +2,7 @@
 from icemac.ab.calendar.interfaces import ICalendarDisplaySettings
 from icemac.ab.calendar.interfaces import IEvent, IRecurringEvent
 from icemac.ab.calendar.testing import get_recurred_event
-from mechanize import HTTPError
+from zope.testbrowser.browser import HTTPError
 from zope.traversing.browser import absoluteURL
 import calendar
 import pytest

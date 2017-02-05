@@ -53,7 +53,7 @@ setuptools.setup(
         'gocept.month >= 1.2',
         'grokcore.annotation',
         'grokcore.component >= 2.5.1.dev1',
-        'icemac.addressbook >= 3.0.dev0',
+        'icemac.addressbook >= 4.0.dev0',
         'icemac.recurrence >= 1.3.1.dev0',
         'js.classy',
         'setuptools',

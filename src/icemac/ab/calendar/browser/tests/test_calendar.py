@@ -7,7 +7,7 @@ from icemac.ab.calendar.interfaces import ICalendarDisplaySettings, ICalendar
 from icemac.ab.calendar.interfaces import IEvent, IRecurringEvent
 from icemac.ab.calendar.testing import get_recurred_event
 from icemac.addressbook.interfaces import IEntity
-from mechanize import LinkNotFoundError
+from zope.testbrowser.browser import LinkNotFoundError
 from zope.interface.verify import verifyObject
 from zope.preference.interfaces import IDefaultPreferenceProvider
 from zope.security.interfaces import Unauthorized
@@ -159,9 +159,9 @@ def test_calendar__MonthCalendar__2(
         period=u'weekly', category=CategoryFactory(address_book, u'bat'))
     browser.login('cal-visitor')
     browser.open(browser.CALENDAR_MONTH_OVERVIEW_URL)
-    assert browser.getLink('foo bär').url.startswith(
+    assert browser.getLink(u'foo bär').url.startswith(
         browser.RECURRED_EVENT_CUSTOMIZE_URL)
-    assert browser.getLink('foo bär').url.endswith(
+    assert browser.getLink(u'foo bär').url.endswith(
         '@@customize-recurred-event?date={}&event=RecurringEvent'.format(
             date.today().isoformat()))
 

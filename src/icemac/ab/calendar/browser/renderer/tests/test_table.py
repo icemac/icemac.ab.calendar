@@ -5,7 +5,7 @@ from icemac.ab.calendar.browser.renderer.interfaces import UnknownLanguageError
 from icemac.ab.calendar.browser.renderer.table import Table, TableEvent
 from icemac.ab.calendar.interfaces import ICalendarDisplaySettings, IEvent
 from icemac.addressbook.interfaces import IEntity
-from mechanize import LinkNotFoundError
+from zope.testbrowser.browser import LinkNotFoundError
 from mock import Mock, call
 from zope.interface.verify import verifyObject
 import lxml
@@ -39,7 +39,7 @@ def test_table__Table__render__2(address_book, browser):
     browser.open(browser.CALENDAR_OVERVIEW_URL)
     assert 'Sonntag' not in browser.contents  # default English locale
     browser.lang('de-DE')
-    browser.reload()
+    browser.open(browser.CALENDAR_OVERVIEW_URL)
     assert 'Sonntag' in browser.contents  # switched to German locale
 
 

@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from ..event import StartColumn
 from icemac.ab.calendar.event import BaseEvent
-from mechanize import LinkNotFoundError, HTTPError
+from zope.testbrowser.browser import LinkNotFoundError, HTTPError
 from zope.security.interfaces import Unauthorized
 import pytest
 import pytz

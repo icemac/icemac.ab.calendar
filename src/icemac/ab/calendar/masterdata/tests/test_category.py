@@ -1,4 +1,4 @@
-from mechanize import LinkNotFoundError, HTTPError
+from zope.testbrowser.browser import LinkNotFoundError, HTTPError
 from zope.security.interfaces import Unauthorized
 import pytest
 
