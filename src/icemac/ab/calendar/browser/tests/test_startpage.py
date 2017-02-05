@@ -1,3 +1,7 @@
+import pytest
+
+
+@pytest.mark.webdriver
 def test_startpage__calendar__1(address_book, webdriver):
     """It redirects to the calendar if this is set on the address book."""
     sel = webdriver.login('mgr')

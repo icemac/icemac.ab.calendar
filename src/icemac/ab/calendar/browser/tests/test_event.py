@@ -367,6 +367,7 @@ def assert_time(selenium, status):
     getattr(selenium, attr)('id=form-widgets-datetime-widgets-time')
 
 
+@pytest.mark.webdriver
 def test_event__WidgetToggle__1(sample_event, webdriver):
     """The time widget is initially hidden for whole day events."""
     sample_event.whole_day_event = True
@@ -375,6 +376,7 @@ def test_event__WidgetToggle__1(sample_event, webdriver):
     assert_time(sel, 'hidden')
 
 
+@pytest.mark.webdriver
 def test_event__WidgetToggle__2(sample_event, webdriver):
     """The time widget is initially shown for non whole day events."""
     sample_event.whole_day_event = False
@@ -383,6 +385,7 @@ def test_event__WidgetToggle__2(sample_event, webdriver):
     assert_time(sel, 'shown')
 
 
+@pytest.mark.webdriver
 def test_event__WidgetToggle__3(sample_event, webdriver):
     """Changing an event to a whole day event hides the time widget."""
     sample_event.whole_day_event = False
@@ -392,6 +395,7 @@ def test_event__WidgetToggle__3(sample_event, webdriver):
     assert_time(sel, 'hidden')
 
 
+@pytest.mark.webdriver
 def test_event__WidgetToggle__4(sample_event, webdriver):
     """Changing an event to a non-whole day event shows the time widget."""
     sample_event.whole_day_event = True
@@ -401,6 +405,7 @@ def test_event__WidgetToggle__4(sample_event, webdriver):
     assert_time(sel, 'shown')
 
 
+@pytest.mark.webdriver
 def test_event__WidgetToggle__5(sample_event, webdriver):
     """Clicking on a selected event kind does not toggle the time display."""
     sample_event.whole_day_event = True

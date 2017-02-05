@@ -281,6 +281,7 @@ def test_calendar__YearCalendar__2(
     assert ['8:00 AM', '8:00 AM'] == browser.etree.xpath('//table//dt/text()')
 
 
+@pytest.mark.webdriver
 def test_calendar_js__1(address_book, webdriver):
     """It auto-submits on change in the month drop-down of the month view."""
     sel = webdriver.login('cal-visitor')
@@ -291,6 +292,7 @@ def test_calendar_js__1(address_book, webdriver):
     assert u'Month changed.' == webdriver.message
 
 
+@pytest.mark.webdriver
 def test_calendar_js__2(address_book, webdriver):
     """It auto-submits on change in the year drop-down of the month view."""
     sel = webdriver.login('cal-visitor')
@@ -300,6 +302,7 @@ def test_calendar_js__2(address_book, webdriver):
     assert u'Month changed.' == webdriver.message
 
 
+@pytest.mark.webdriver
 def test_calendar_js__3(address_book, webdriver):
     """It auto-submits on change in the year drop-down of the year view."""
     sel = webdriver.login('cal-visitor')
