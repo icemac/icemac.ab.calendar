@@ -62,6 +62,33 @@ class Browser(icemac.addressbook.testing.Browser):
                                  '@@delete-recurred-event.html')
 
 
+class CalendarWebdriverPageObjectBase(
+        icemac.addressbook.testing.WebdriverPageObjectBase):
+    """Base for page object classes to used with to ``Webdriver.attach()``."""
+
+    browser = Browser
+
+
+class POCalendar(CalendarWebdriverPageObjectBase):
+    """Webdriver page object for the calendar itself."""
+
+    paths = [
+        'CALENDAR_MONTH_OVERVIEW_URL',
+        'CALENDAR_YEAR_OVERVIEW_URL',
+    ]
+
+    def select_month(self, month):
+        self._selenium.select(
+            'id=form-widgets-calendar_month', 'label={}'.format(month))
+
+    def select_year(self, year):
+        self._selenium.select(
+            'id=form-widgets-calendar_year', 'label={}'.format(year))
+
+
+icemac.addressbook.testing.Webdriver.attach(POCalendar, 'calendar')
+
+
 def get_recurred_event(recurring_event, DateTime):
     """Get one recurred event at today.
 

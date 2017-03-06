@@ -284,31 +284,27 @@ def test_calendar__YearCalendar__2(
 @pytest.mark.webdriver
 def test_calendar_js__1(address_book, webdriver):
     """It auto-submits on change in the month drop-down of the month view."""
-    sel = webdriver.login('cal-visitor')
-    sel.open('/ab/++attribute++calendar/@@month.html')
-    sel.select('id=form-widgets-calendar_month',
-               'label={}'.format(MONTH_FOR_TEST))
-    sel.waitForPageToLoad()
+    calendar = webdriver.calendar
+    webdriver.login('cal-visitor', calendar.CALENDAR_MONTH_OVERVIEW_URL)
+    calendar.select_month(MONTH_FOR_TEST)
     assert u'Month changed.' == webdriver.message
 
 
 @pytest.mark.webdriver
 def test_calendar_js__2(address_book, webdriver):
     """It auto-submits on change in the year drop-down of the month view."""
-    sel = webdriver.login('cal-visitor')
-    sel.open('/ab/++attribute++calendar/@@month.html')
-    sel.select('id=form-widgets-calendar_year', 'label=2024')
-    sel.waitForPageToLoad()
+    calendar = webdriver.calendar
+    webdriver.login('cal-visitor', calendar.CALENDAR_MONTH_OVERVIEW_URL)
+    calendar.select_year(2024)
     assert u'Month changed.' == webdriver.message
 
 
 @pytest.mark.webdriver
 def test_calendar_js__3(address_book, webdriver):
     """It auto-submits on change in the year drop-down of the year view."""
-    sel = webdriver.login('cal-visitor')
-    sel.open('/ab/++attribute++calendar/@@year.html')
-    sel.select('id=form-widgets-calendar_year', 'label=2024')
-    sel.waitForPageToLoad()
+    calendar = webdriver.calendar
+    webdriver.login('cal-visitor', calendar.CALENDAR_YEAR_OVERVIEW_URL)
+    calendar.select_year(2024)
     assert u'Year changed.' == webdriver.message
 
 

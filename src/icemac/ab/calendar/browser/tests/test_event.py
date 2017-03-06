@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from icemac.ab.calendar.interfaces import ICalendarDisplaySettings
 from icemac.ab.calendar.interfaces import IEvent, IRecurringEvent
+from icemac.ab.calendar.testing import CalendarWebdriverPageObjectBase
 from icemac.ab.calendar.testing import get_recurred_event
+from icemac.addressbook.testing import Webdriver
 from zope.testbrowser.browser import HTTPError
 from zope.traversing.browser import absoluteURL
 import calendar
@@ -358,59 +360,79 @@ def sample_event(address_book, EventFactory, DateTime):
     return EventFactory(address_book, datetime=DateTime.today_8_32_am)
 
 
-def assert_time(selenium, status):
-    """Assert display status of time widget: 'shown' or 'hidden'."""
-    if status == 'hidden':
-        attr = 'waitForNotVisible'
-    else:
-        attr = 'waitForVisible'
-    getattr(selenium, attr)('id=form-widgets-datetime-widgets-time')
+class POEvent(CalendarWebdriverPageObjectBase):
+    """Webdriver page object for an event object itself."""
+
+    paths = [
+        'EVENT_EDIT_URL',
+    ]
+
+    # property setter!
+    def set_whole_day_event(self, value):
+        self._selenium.click(
+            'id=form-widgets-datetime-widgets-whole_day_event-{}'.format(
+                int(not(value))))
+
+    whole_day_event = property(None, set_whole_day_event)
+
+    status_attr_map = {
+        'hidden': 'assertNotVisible',
+        'shown': 'assertVisible',
+        'wait-for-hidden': 'waitForNotVisible',
+        'wait-for-shown': 'waitForVisible',
+    }
+
+    def assert_time(self, status):
+        """Assert display status of time widget.
+
+        Possible status see keys of `status_attr_map`.
+        """
+        getattr(self._selenium, self.status_attr_map[status])(
+            'id=form-widgets-datetime-widgets-time')
+
+
+Webdriver.attach(POEvent, 'event')
 
 
 @pytest.mark.webdriver
 def test_event__WidgetToggle__1(sample_event, webdriver):
     """The time widget is initially hidden for whole day events."""
     sample_event.whole_day_event = True
-    sel = webdriver.login('cal-editor')
-    sel.open('/ab/++attribute++calendar/Event')
-    assert_time(sel, 'hidden')
+    webdriver.login('cal-editor', webdriver.event.EVENT_EDIT_URL)
+    webdriver.event.assert_time('hidden')
 
 
 @pytest.mark.webdriver
 def test_event__WidgetToggle__2(sample_event, webdriver):
     """The time widget is initially shown for non whole day events."""
     sample_event.whole_day_event = False
-    sel = webdriver.login('cal-editor')
-    sel.open('/ab/++attribute++calendar/Event')
-    assert_time(sel, 'shown')
+    webdriver.login('cal-editor', webdriver.event.EVENT_EDIT_URL)
+    webdriver.event.assert_time('shown')
 
 
 @pytest.mark.webdriver
 def test_event__WidgetToggle__3(sample_event, webdriver):
     """Changing an event to a whole day event hides the time widget."""
     sample_event.whole_day_event = False
-    sel = webdriver.login('cal-editor')
-    sel.open('/ab/++attribute++calendar/Event')
-    sel.click('id=form-widgets-datetime-widgets-whole_day_event-0')
-    assert_time(sel, 'hidden')
+    webdriver.login('cal-editor', webdriver.event.EVENT_EDIT_URL)
+    webdriver.event.whole_day_event = True
+    webdriver.event.assert_time('wait-for-hidden')
 
 
 @pytest.mark.webdriver
 def test_event__WidgetToggle__4(sample_event, webdriver):
     """Changing an event to a non-whole day event shows the time widget."""
     sample_event.whole_day_event = True
-    sel = webdriver.login('cal-editor')
-    sel.open('/ab/++attribute++calendar/Event')
-    sel.click('id=form-widgets-datetime-widgets-whole_day_event-1')
-    assert_time(sel, 'shown')
+    webdriver.login('cal-editor', webdriver.event.EVENT_EDIT_URL)
+    webdriver.event.whole_day_event = False
+    webdriver.event.assert_time('wait-for-shown')
 
 
 @pytest.mark.webdriver
 def test_event__WidgetToggle__5(sample_event, webdriver):
     """Clicking on a selected event kind does not toggle the time display."""
     sample_event.whole_day_event = True
-    sel = webdriver.login('cal-editor')
-    sel.open('/ab/++attribute++calendar/Event')
-    assert_time(sel, 'hidden')
-    sel.click('id=form-widgets-datetime-widgets-whole_day_event-0')
-    assert_time(sel, 'hidden')
+    webdriver.login('cal-editor', webdriver.event.EVENT_EDIT_URL)
+    webdriver.event.assert_time('hidden')
+    webdriver.event.whole_day_event = True
+    webdriver.event.assert_time('wait-for-hidden')
