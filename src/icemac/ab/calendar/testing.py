@@ -103,30 +103,12 @@ def get_recurred_event(recurring_event, DateTime):
 # Fixture helpers
 
 
-class DateTimeClass(icemac.recurrence.conftest.DateTimeClass):
+class DateTimeClass(icemac.recurrence.conftest.DateTimeClass,
+                    icemac.addressbook.testing.DateTimeClass):
     """Helper class to create and format datetime objects."""
-
-    @property
-    def now(self):
-        return pytz.utc.localize(datetime.datetime.now())
-
-    def format(self, dt, force_date=False):
-        """Format a datetime to the format needed in testbrowser."""
-        if isinstance(dt, datetime.datetime) and not force_date:
-            return dt.strftime('%y/%m/%d %H:%M')
-        else:
-            return self.format_date(dt)
-
-    def format_date(self, dt):
-        return "{0.year} {0.month} {0.day} ".format(dt)
 
     @property
     def today_8_32_am(self):
         """Get a datetime object for today with fixed time."""
         return datetime.datetime.combine(
             datetime.date.today(), datetime.time(8, 32, tzinfo=pytz.utc))
-
-    @staticmethod
-    def add(dt, days):
-        """Add some days to `dt`."""
-        return dt + datetime.timedelta(days=days)
