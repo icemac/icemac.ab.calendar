@@ -286,7 +286,7 @@ def test_calendar_js__1(address_book, webdriver):
     """It auto-submits on change in the month drop-down of the month view."""
     calendar = webdriver.calendar
     webdriver.login('cal-visitor', calendar.CALENDAR_MONTH_OVERVIEW_URL)
-    calendar.select_month(MONTH_FOR_TEST)
+    calendar.month = MONTH_FOR_TEST
     assert u'Month changed.' == webdriver.message
 
 
@@ -295,7 +295,7 @@ def test_calendar_js__2(address_book, webdriver):
     """It auto-submits on change in the year drop-down of the month view."""
     calendar = webdriver.calendar
     webdriver.login('cal-visitor', calendar.CALENDAR_MONTH_OVERVIEW_URL)
-    calendar.select_year(2024)
+    calendar.year = 2024
     assert u'Month changed.' == webdriver.message
 
 
@@ -304,7 +304,7 @@ def test_calendar_js__3(address_book, webdriver):
     """It auto-submits on change in the year drop-down of the year view."""
     calendar = webdriver.calendar
     webdriver.login('cal-visitor', calendar.CALENDAR_YEAR_OVERVIEW_URL)
-    calendar.select_year(2024)
+    calendar.year = 2024
     assert u'Year changed.' == webdriver.message
 
 

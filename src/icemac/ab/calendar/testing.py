@@ -77,13 +77,22 @@ class POCalendar(CalendarWebdriverPageObjectBase):
         'CALENDAR_YEAR_OVERVIEW_URL',
     ]
 
-    def select_month(self, month):
+    @property
+    def month(self):
+        return self._selenium.getSelectedLabel(
+            'id=form-widgets-calendar_month')
+
+    @month.setter
+    def month(self, month):
         self._selenium.select(
             'id=form-widgets-calendar_month', 'label={}'.format(month))
 
-    def select_year(self, year):
+    # setter without getter
+    def year_setter(self, year):
         self._selenium.select(
             'id=form-widgets-calendar_year', 'label={}'.format(year))
+
+    year = property(None, year_setter)
 
 
 icemac.addressbook.testing.Webdriver.attach(POCalendar, 'calendar')
