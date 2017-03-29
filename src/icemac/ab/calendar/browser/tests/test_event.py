@@ -355,7 +355,7 @@ def test_event__DeleteRecurredEvent__3(address_book, browser):
 
 
 @pytest.fixture('function')
-def sample_event(address_book, EventFactory, DateTime):
+def sample_event_webdriver(address_book, EventFactory, DateTime):
     """Create a sample event."""
     return EventFactory(address_book, datetime=DateTime.today_8_32_am)
 
@@ -395,43 +395,43 @@ Webdriver.attach(POEvent, 'event')
 
 
 @pytest.mark.webdriver
-def test_event__WidgetToggle__1(sample_event, webdriver):
+def test_event__WidgetToggle__1_webdriver(sample_event_webdriver, webdriver):
     """The time widget is initially hidden for whole day events."""
-    sample_event.whole_day_event = True
+    sample_event_webdriver.whole_day_event = True
     webdriver.login('cal-editor', webdriver.event.EVENT_EDIT_URL)
     webdriver.event.assert_time('hidden')
 
 
 @pytest.mark.webdriver
-def test_event__WidgetToggle__2(sample_event, webdriver):
+def test_event__WidgetToggle__2_webdriver(sample_event_webdriver, webdriver):
     """The time widget is initially shown for non whole day events."""
-    sample_event.whole_day_event = False
+    sample_event_webdriver.whole_day_event = False
     webdriver.login('cal-editor', webdriver.event.EVENT_EDIT_URL)
     webdriver.event.assert_time('shown')
 
 
 @pytest.mark.webdriver
-def test_event__WidgetToggle__3(sample_event, webdriver):
+def test_event__WidgetToggle__3_webdriver(sample_event_webdriver, webdriver):
     """Changing an event to a whole day event hides the time widget."""
-    sample_event.whole_day_event = False
+    sample_event_webdriver.whole_day_event = False
     webdriver.login('cal-editor', webdriver.event.EVENT_EDIT_URL)
     webdriver.event.whole_day_event = True
     webdriver.event.assert_time('wait-for-hidden')
 
 
 @pytest.mark.webdriver
-def test_event__WidgetToggle__4(sample_event, webdriver):
+def test_event__WidgetToggle__4_webdriver(sample_event_webdriver, webdriver):
     """Changing an event to a non-whole day event shows the time widget."""
-    sample_event.whole_day_event = True
+    sample_event_webdriver.whole_day_event = True
     webdriver.login('cal-editor', webdriver.event.EVENT_EDIT_URL)
     webdriver.event.whole_day_event = False
     webdriver.event.assert_time('wait-for-shown')
 
 
 @pytest.mark.webdriver
-def test_event__WidgetToggle__5(sample_event, webdriver):
+def test_event__WidgetToggle__5_webdriver(sample_event_webdriver, webdriver):
     """Clicking on a selected event kind does not toggle the time display."""
-    sample_event.whole_day_event = True
+    sample_event_webdriver.whole_day_event = True
     webdriver.login('cal-editor', webdriver.event.EVENT_EDIT_URL)
     webdriver.event.assert_time('hidden')
     webdriver.event.whole_day_event = True

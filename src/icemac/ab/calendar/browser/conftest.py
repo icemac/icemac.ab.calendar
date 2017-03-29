@@ -6,7 +6,7 @@ import pytest
 @pytest.fixture('session')
 def EventDescriptionFactory(DateTime):
     """Create an EventDescription object."""
-    def get_event_description(time_tuple=(), event=None, **kw):
+    def get_event_description(event=None, **kw):
         """Get an icemac.ab.calendar.browser.calendar.EventDescription.
 
         time_tuple ... `now` if empty.
@@ -16,10 +16,7 @@ def EventDescriptionFactory(DateTime):
         """
         if event is None:
             event = mock.MagicMock()
-        if time_tuple:
-            event.datetime = DateTime(*time_tuple)
-        else:
-            event.datetime = DateTime.now
+        event.datetime = DateTime.now
         for key, value in kw.items():
             setattr(event, key, value)
         ICalendarDisplaySettings = (

@@ -243,7 +243,8 @@ def test_calendar__MonthCalendar__6(
     ] == browser.etree.xpath('//ul[@class="info"]/li/text()')
 
 
-def test_calendar__MonthCalendar__7(address_book, webdriver):
+@pytest.mark.webdriver
+def test_calendar__MonthCalendar__7_webdriver(address_book, webdriver):
     """It renders previous and next links switching months."""
     cal = webdriver.calendar
     webdriver.login('cal-visitor', cal.CALENDAR_MONTH_OVERVIEW_URL)
@@ -297,7 +298,7 @@ def test_calendar__YearCalendar__2(
 
 
 @pytest.mark.webdriver
-def test_calendar_js__1(address_book, webdriver):
+def test_calendar_js__1_webdriver(address_book, webdriver):
     """It auto-submits on change in the month drop-down of the month view."""
     calendar = webdriver.calendar
     webdriver.login('cal-visitor', calendar.CALENDAR_MONTH_OVERVIEW_URL)
@@ -306,7 +307,7 @@ def test_calendar_js__1(address_book, webdriver):
 
 
 @pytest.mark.webdriver
-def test_calendar_js__2(address_book, webdriver):
+def test_calendar_js__2_webdriver(address_book, webdriver):
     """It auto-submits on change in the year drop-down of the month view."""
     calendar = webdriver.calendar
     webdriver.login('cal-visitor', calendar.CALENDAR_MONTH_OVERVIEW_URL)
@@ -315,7 +316,7 @@ def test_calendar_js__2(address_book, webdriver):
 
 
 @pytest.mark.webdriver
-def test_calendar_js__3(address_book, webdriver):
+def test_calendar_js__3_webdriver(address_book, webdriver):
     """It auto-submits on change in the year drop-down of the year view."""
     calendar = webdriver.calendar
     webdriver.login('cal-visitor', calendar.CALENDAR_YEAR_OVERVIEW_URL)

@@ -10,10 +10,7 @@ def DatetimeFactory():
     """Factory to create a mock object implementing the IDatetime interface."""
     def create_datetime(date, time, whole_day_event):
         mock = Mock()
-        if date:
-            mock.date = datetime.date(2015, 4, 15)
-        else:
-            mock.date = None
+        mock.date = datetime.date(2015, 4, 15)
         if time:
             mock.time = datetime.time(18, 29)
         else:

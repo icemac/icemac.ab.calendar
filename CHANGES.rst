@@ -7,6 +7,10 @@
 
 - Add links in month view to easily access the previous resp. next month.
 
+- Bring the test coverage to 100 % including the tests itself and the test
+  infrastructure but without the need to run the selenium tests to achieve
+  this.
+
 - Update to changes in test infrastructure in `icemac.addressbook >= 4.0`.
 
 
