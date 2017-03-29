@@ -134,6 +134,12 @@ class TabularCalendar(icemac.ab.calendar.browser.base.View):
         """Render the month name of a gocept.month instance."""
         return self.month_names[month.month - 1]
 
+    def previous_link(self):
+        return ''
+
+    def next_link(self):
+        return ''
+
     def events_in_interval(self, start, end, condition=lambda x: True):
         """Get all events in an interval filtered by a condition function.
 
@@ -179,6 +185,22 @@ class MonthCalendar(TabularCalendar):
             (self.month, self.request, self.get_event_descriptions()),
             icemac.ab.calendar.browser.renderer.interfaces.IRenderer,
             name=self.renderer_name)
+
+    def previous_link(self):
+        prev_month = self.month - 1
+        url = '#month={0.month}&year={0.year}'.format(prev_month)
+        return {'url': url,
+                'month': prev_month.month,
+                'year': prev_month.year,
+                'text': u'⬅︎'}
+
+    def next_link(self):
+        next_month = self.month + 1
+        url = '#month={0.month}&year={0.year}'.format(next_month)
+        return {'url': url,
+                'month': next_month.month,
+                'year': next_month.year,
+                'text': u'➡︎'}
 
     def get_event_descriptions(self):
         return [IEventDescription(x)

@@ -9,11 +9,27 @@
     <div class="header">
         <div class="NW-container">
           <div class="NW"></div>
-          <div class="NNW"></div>
+          <div class="NNW menu">
+            <a class="flip previous"
+               tal:define="link view/previous_link"
+               tal:condition="link"
+               tal:attributes="href link/url;
+                               data-month link/month;
+                               data-year link/year"
+               tal:content="link/text">previous</a>
+          </div>
         </div>
         <div class="NO-container">
           <div class="NO"></div>
-          <div class="NNO"></div>
+          <div class="NNO menu">
+            <a class="flip next"
+               tal:define="link view/next_link"
+               tal:condition="link"
+               tal:attributes="href link/url;
+                               data-month link/month;
+                               data-year link/year"
+               tal:content="link/text">next</a>
+          </div>
         </div>
         <div class="center menu">
           <ul>

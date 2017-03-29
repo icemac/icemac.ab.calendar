@@ -243,6 +243,21 @@ def test_calendar__MonthCalendar__6(
     ] == browser.etree.xpath('//ul[@class="info"]/li/text()')
 
 
+def test_calendar__MonthCalendar__7(address_book, webdriver):
+    """It renders previous and next links switching months."""
+    cal = webdriver.calendar
+    webdriver.login('cal-visitor', cal.CALENDAR_MONTH_OVERVIEW_URL)
+    cal.year = 2026
+    cal.month = 'January'
+    cal.switch_to_previous_month()
+    assert 'December' == cal.month
+    assert 2025 == cal.year
+    cal.switch_to_next_month()
+    cal.switch_to_next_month()
+    assert 'February' == cal.month
+    assert 2026 == cal.year
+
+
 def test_calendar__YearCalendar__1(
         address_book, EventFactory, DateTime, browser):
     """It shows the events belonging to the selected year."""

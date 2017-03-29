@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import datetime
 import icemac.addressbook.testing
 import icemac.recurrence.conftest
@@ -87,12 +88,21 @@ class POCalendar(CalendarWebdriverPageObjectBase):
         self._selenium.select(
             'id=form-widgets-calendar_month', 'label={}'.format(month))
 
-    # setter without getter
-    def year_setter(self, year):
+    def switch_to_previous_month(self):
+        self._selenium.click(u"link=⬅︎")
+
+    def switch_to_next_month(self):
+        self._selenium.click(u"link=➡︎")
+
+    @property
+    def year(self):
+        return int(self._selenium.getSelectedLabel(
+            'id=form-widgets-calendar_year'))
+
+    @year.setter
+    def year(self, year):
         self._selenium.select(
             'id=form-widgets-calendar_year', 'label={}'.format(year))
-
-    year = property(None, year_setter)
 
 
 icemac.addressbook.testing.Webdriver.attach(POCalendar, 'calendar')

@@ -52,4 +52,15 @@
             $('#calendar .body .table').height());
     });
     $(window).trigger('resize'); // Initially adapt size.
+
+    var flip_calendar = function(event) {
+        var node = $(event.target);
+        $('#form-widgets-calendar_month').val(node.data('month'));
+        $('#form-widgets-calendar_year').val(node.data('year'));
+        $('#form-widgets-calendar_month').change();
+        return false;
+    };
+
+    $('#calendar .header a.flip').on('click', flip_calendar);
+
 })(jQuery);

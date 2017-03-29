@@ -52,6 +52,15 @@ body.main {
     height: 126px;
 }
 
+#calendar .header .NNW .previous {
+    float: right;
+    margin-right: 5px;
+}
+
+#calendar .header a.flip {
+    margin-top: 68px;
+}
+
 #calendar .header .center {
     background: url(img/bg-calendar.png) no-repeat;
     background-position: -108px 0px;
@@ -72,6 +81,11 @@ body.main {
     margin-left: 148px;
     margin-right: 74px;
     height: 126px;
+}
+
+#calendar .header .NNO .next {
+    float: left;
+    margin-left: 5px;
 }
 
 #calendar .header .NO {

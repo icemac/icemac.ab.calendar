@@ -5,6 +5,8 @@
 2.1 (unreleased)
 ================
 
+- Add links in month view to easily access the previous resp. next month.
+
 - Update to changes in test infrastructure in `icemac.addressbook >= 4.0`.
 
 
