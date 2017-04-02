@@ -6,6 +6,7 @@ pipelines:
   default:
     - step:
         script: # Modify the commands below to build your repository.
+          - pip -U install setuptools
           - python bootstrap.py
           - bin/buildout -n buildout:eggs-directory=../eggs
           - bin/py.test -k "not webdriver"
