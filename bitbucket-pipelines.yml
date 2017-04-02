@@ -8,4 +8,4 @@ pipelines:
         script: # Modify the commands below to build your repository.
           - python bootstrap.py
           - bin/buildout -n buildout:eggs-directory=../eggs
-          - bin/py.test
+          - bin/py.test -k "not webdriver"
