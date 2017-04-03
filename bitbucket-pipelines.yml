@@ -6,6 +6,7 @@ pipelines:
   default:
     - step:
         script: # Modify the commands below to build your repository.
-          - pip install zc.buildout
-          - buildout buildout:eggs-directory=../eggs
+          - pip install virtualenv .
+          - bin/pip install zc.buildout
+          - bin/buildout buildout:eggs-directory=../eggs
           - bin/py.test -k "not webdriver"
