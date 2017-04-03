@@ -7,5 +7,5 @@ pipelines:
     - step:
         script: # Modify the commands below to build your repository.
           - pip install zc.buildout
-          - buildout -n buildout:eggs-directory=../eggs
+          - buildout buildout:eggs-directory=../eggs
           - bin/py.test -k "not webdriver"
