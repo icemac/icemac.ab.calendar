@@ -8,6 +8,6 @@ pipelines:
         script: # Modify the commands below to build your repository.
           - pip install virtualenv
           - virtualenv .
-          - bin/pip install setuptools==33.1.1 zc.buildout
+          - bin/pip install setuptools==34.3.0 zc.buildout
           - bin/buildout -n buildout:eggs-directory=../eggs
           - bin/py.test -k "not webdriver"
