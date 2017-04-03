@@ -17,7 +17,7 @@
                 // no-op if widget does not exist on page:
                 return;
             var self = this;
-            self.widget_selector = widget_selector
+            self.widget_selector = widget_selector;
             $(show_on).click(function() {
                 self.set_widget_display('show', 'fast');});
             $(hide_on).click(function() {
