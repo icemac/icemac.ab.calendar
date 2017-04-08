@@ -7,6 +7,9 @@
 
 - Add links in month view to easily access the previous resp. next month.
 
+- Rename the links to the month view and to the year view and add titles to
+  them.
+
 - Bring the test coverage to 100 % including the tests itself and the test
   infrastructure but without the need to run the selenium tests to achieve
   this.

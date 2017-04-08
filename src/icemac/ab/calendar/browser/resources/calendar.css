@@ -50,6 +50,7 @@ body.main {
     margin-right: 148px;
     margin-left: 74px;
     height: 126px;
+    min-width: 115px;
 }
 
 #calendar .header .NNW .previous {
@@ -58,7 +59,7 @@ body.main {
 }
 
 #calendar .header a.flip {
-    margin-top: 68px;
+    margin-top: 56px;
 }
 
 #calendar .header .center {
@@ -81,6 +82,7 @@ body.main {
     margin-left: 148px;
     margin-right: 74px;
     height: 126px;
+    overflow: hidden;
 }
 
 #calendar .header .NNO .next {
@@ -141,7 +143,7 @@ body.main {
 }
 
 #calendar #calendar-select-form {
-    padding-top: 37px;
+    padding-top: 55px;
 }
 
 #calendar #calendar-select-form .viewspace {
@@ -268,12 +270,14 @@ div#content #calendar table td:last-child {
 
 
 #calendar .menu ul {
-    padding-top: 9px;
+    margin-top: -23px;
     text-align: center;
 }
 
 #calendar .menu li {
     display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 #calendar .menu a {
