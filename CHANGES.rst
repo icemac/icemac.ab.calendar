@@ -5,7 +5,8 @@
 2.2 (unreleased)
 ================
 
-- Nothing changed yet.
+- Fix icons of links introduced in version 2.1 to be rendered equally on
+  Firefox, Safari, Internet Explorer and Chrome.
 
 
 2.1 (2017-04-08)

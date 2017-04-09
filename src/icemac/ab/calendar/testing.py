@@ -89,10 +89,10 @@ class POCalendar(CalendarWebdriverPageObjectBase):
             'id=form-widgets-calendar_month', 'label={}'.format(month))
 
     def switch_to_previous_month(self):
-        self._selenium.click(u"link=⬅︎")
+        self._selenium.click(u"link=◄")
 
     def switch_to_next_month(self):
-        self._selenium.click(u"link=➡︎")
+        self._selenium.click(u"link=►")
 
     @property
     def year(self):

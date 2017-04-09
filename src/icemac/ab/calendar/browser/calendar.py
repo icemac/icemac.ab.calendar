@@ -192,7 +192,7 @@ class MonthCalendar(TabularCalendar):
         return {'url': url,
                 'month': prev_month.month,
                 'year': prev_month.year,
-                'text': u'⬅︎'}
+                'text': u'◄'}
 
     def next_link(self):
         next_month = self.month + 1
@@ -200,7 +200,7 @@ class MonthCalendar(TabularCalendar):
         return {'url': url,
                 'month': next_month.month,
                 'year': next_month.year,
-                'text': u'➡︎'}
+                'text': u'►'}
 
     def get_event_descriptions(self):
         return [IEventDescription(x)
