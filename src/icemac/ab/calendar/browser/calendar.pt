@@ -7,53 +7,53 @@
   <div id="calendar"
        tal:attributes="class view/css_class">
     <div class="header">
-        <div class="NW-container">
-          <div class="NW"></div>
-          <div class="NNW menu">
-            <a class="flip previous"
-               title="switch to previous month"
+      <div class="NW-container">
+        <div class="NW"></div>
+        <div class="NNW menu">
+          <a class="flip previous"
+             title="switch to previous month"
+             i18n:attributes="title"
+             tal:define="link view/previous_link"
+             tal:condition="link"
+             tal:attributes="href link/url;
+                             data-month link/month;
+                             data-year link/year"
+             tal:content="link/text">previous</a>
+        </div>
+      </div>
+      <div class="NO-container">
+        <div class="NO"></div>
+        <div class="NNO menu">
+          <a class="flip next"
+             title="switch to next month"
+             i18n:attributes="title"
+             tal:define="link view/next_link"
+             tal:condition="link"
+             tal:attributes="href link/url;
+                             data-month link/month;
+                             data-year link/year"
+             tal:content="link/text">next</a>
+        </div>
+      </div>
+      <div class="center menu">
+        <ul>
+          <li>
+            <a tal:attributes="href python:view.menu_url('month');
+                               class python:view.selected_css_class('month')"
+               title="switch to the view for a single month"
                i18n:attributes="title"
-               tal:define="link view/previous_link"
-               tal:condition="link"
-               tal:attributes="href link/url;
-                               data-month link/month;
-                               data-year link/year"
-               tal:content="link/text">previous</a>
-          </div>
-        </div>
-        <div class="NO-container">
-          <div class="NO"></div>
-          <div class="NNO menu">
-            <a class="flip next"
-               title="switch to next month"
+               i18n:translate="">Month view</a>
+          </li>
+          <li>
+            <a tal:attributes="href python:view.menu_url('year');
+                               class python:view.selected_css_class('year')"
+               title="switch to the view for a whole year"
                i18n:attributes="title"
-               tal:define="link view/next_link"
-               tal:condition="link"
-               tal:attributes="href link/url;
-                               data-month link/month;
-                               data-year link/year"
-               tal:content="link/text">next</a>
-          </div>
-        </div>
-        <div class="center menu">
-          <ul>
-            <li>
-              <a tal:attributes="href python:view.menu_url('month');
-                                 class python:view.selected_css_class('month')"
-                 title="switch to the view for a single month"
-                 i18n:attributes="title"
-                 i18n:translate="">Month view</a>
-            </li>
-            <li>
-              <a tal:attributes="href python:view.menu_url('year');
-                                 class python:view.selected_css_class('year')"
-                 title="switch to the view for a whole year"
-                 i18n:attributes="title"
-                 i18n:translate="">Year view</a>
-            </li>
-          </ul>
-          <div tal:replace="structure view/render_form"></div>
-        </div>
+               i18n:translate="">Year view</a>
+          </li>
+        </ul>
+        <div tal:replace="structure view/render_form"></div>
+      </div>
     </div>
     <div class="body">
         <div class="W border no-print"></div>
