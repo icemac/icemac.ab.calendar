@@ -77,7 +77,7 @@ event_entity = icemac.addressbook.entities.create_entity(
 
 @grok.adapter(icemac.ab.calendar.interfaces.IEvent)
 @grok.implementer(icemac.addressbook.interfaces.ITitle)
-def title(event):
+def event_title(event):
     """Human readable title for an event."""
     if event.alternative_title:
         return event.alternative_title
@@ -233,3 +233,14 @@ class RecurredEvent(BaseEvent):
             'recurring_event': recurring_event})
 
         return icemac.addressbook.utils.create_obj(cls, **data)
+
+    def __repr__(self):
+        """Custom repr to look inside the recurred event to debug it."""
+        return "<RecurredEvent datetime='{0.datetime}' title={1!r}>".format(
+            self, icemac.addressbook.interfaces.ITitle(self, '<unknown>'))
+
+
+@grok.adapter(icemac.ab.calendar.interfaces.IRecurredEvent)
+@grok.implementer(icemac.addressbook.interfaces.ITitle)
+def recurred_event_title(event):
+    return event_title(event)

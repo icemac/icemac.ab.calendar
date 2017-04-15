@@ -246,6 +246,22 @@ def test_event__RecurredEvent__1():
     assert verifyObject(IRecurredEvent, RecurredEvent())
 
 
+def test_event__RecurredEvent____repr____1(
+        address_book, CategoryFactory, RecurringEventFactory, DateTime):
+    """It returns some data of the recurred event."""
+    recurring_event = RecurringEventFactory(
+        address_book,
+        datetime=DateTime(2014, 5, 2, 12),
+        period='weekly',
+        category=CategoryFactory(address_book, u'birthday'))
+    events = list(recurring_event.get_events(
+        DateTime(2014, 5, 1, 0), DateTime(2014, 5, 8, 0), pytz.utc))
+    recurred_event = events[0]
+    assert isinstance(recurred_event, RecurredEvent)
+    assert ("<RecurredEvent datetime='2014-05-02 12:00:00+00:00' "
+            "title=u'birthday'>" == repr(recurred_event))
+
+
 def test_event__EventDateTime__1(address_book, EventFactory, DateTime):
     """A whole day event gets indexed as noon in timzone utc."""
     event = EventFactory(address_book,
