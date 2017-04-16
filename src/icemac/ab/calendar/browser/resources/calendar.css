@@ -174,6 +174,18 @@ body.main {
 
 /* month list view */
 
+
+#calendar.month-list .table {
+    background-color: white;
+    margin-right: 20px;
+}
+
+
+#calendar.month-list table {
+    margin-left: 64px;
+    margin-right: 64px;
+}
+
 #calendar.month-list table td:empty,
 #calendar.month-list .body thead {
     display: none;
@@ -205,7 +217,7 @@ body.main {
     border: 0px;
     height: inherit;
     max-width: inherit;
-    width: 50em;
+    width: 100%;
     clear: left;
     list-style: outside none none;
 }
@@ -218,14 +230,15 @@ body.main {
 #calendar.month-list table td dd ul li,
 #calendar.month-list table td .weekday {
     float: left;
+    font-size: 28px;
 }
 
 #calendar.month-list table td .weekday {
-    width: 25px;
+    width: 40px;
 }
 
 #calendar.month-list table td .number {
-    width: 20px;
+    width: 32px;
     text-align: right;
 }
 
@@ -251,7 +264,6 @@ body.main {
 #calendar.month-list table td span.number {
     float: none;
     color: #000;
-    font-size: inherit;
     width: 1.5em;
 }
 
