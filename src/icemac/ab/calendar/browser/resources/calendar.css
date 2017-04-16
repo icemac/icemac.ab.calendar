@@ -211,6 +211,7 @@ body.main {
 }
 
 #calendar.month-list table td a,
+#calendar.month-list table td dl,
 #calendar.month-list table td dt,
 #calendar.month-list table td dd,
 #calendar.month-list table td dd ul,
@@ -235,10 +236,6 @@ body.main {
 
 #calendar.month-list table td dt:first-child {
     clear: none;
-}
-
-#calendar.month-list table td dl {
-    float: left;
 }
 
 #calendar.month-list table td dl dd,
