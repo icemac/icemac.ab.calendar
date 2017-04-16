@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+from mock import Mock, patch
 from datetime import timedelta, date
 from icemac.ab.calendar.browser.calendar import EventDescription, hyphenated
+from icemac.ab.calendar.browser.calendar import TabularCalendar
 from icemac.ab.calendar.browser.renderer.interfaces import IEventDescription
 from icemac.ab.calendar.browser.renderer.interfaces import UnknownLanguageError
 from icemac.ab.calendar.interfaces import ICalendarDisplaySettings, ICalendar
@@ -73,6 +75,26 @@ def test_calendar__TabularCalendar__4(address_book, browser):
     browser.handleErrors = False  # needed to catch exception
     with pytest.raises(Unauthorized):
         browser.open(browser.CALENDAR_OVERVIEW_URL)
+
+
+def test_calendar__TabularCalendar__selected_css_class__1(zcmlS):
+    """It returns 'month' as selected if there is nothing in the session."""
+    view = TabularCalendar()
+    view.request = Mock()
+    with patch('icemac.addressbook.browser.base.get_session') as session:
+        session().get.return_value = None
+        assert 'selected' == view.selected_css_class('month')
+        assert None is view.selected_css_class('year')
+
+
+def test_calendar__TabularCalendar__selected_css_class__2(zcmlS):
+    """It returns the view stored in the session as selected."""
+    view = TabularCalendar()
+    view.request = Mock()
+    with patch('icemac.addressbook.browser.base.get_session') as session:
+        session().get.return_value = 'year'
+        assert 'selected' == view.selected_css_class('year')
+        assert None is view.selected_css_class('month')
 
 
 def test_calendar__MonthSelectorForm__1(address_book, browser, DateTime):

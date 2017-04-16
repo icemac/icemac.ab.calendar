@@ -103,7 +103,11 @@ class TabularCalendar(icemac.ab.calendar.browser.base.View):
         self.session['calendar_year'] = value
 
     def selected_css_class(self, name):
-        if self.session.get('calendar_view') == name:
+        calendar_view = self.session.get('calendar_view')
+        if calendar_view == name:
+            return 'selected'
+        # no selection in session, use default:
+        if calendar_view is None and name == 'month':
             return 'selected'
 
     def menu_url(self, target):
