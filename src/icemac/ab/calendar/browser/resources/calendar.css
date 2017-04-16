@@ -21,7 +21,7 @@ body.main {
 #timezone {
     position: absolute;
     right: 155px;
-    margin-top: 10px;
+    margin-top: 36px;
 }
 
 #calendar .header {
@@ -39,7 +39,9 @@ body.main {
 
 #calendar .header .NW-container {
     float: left;
+    clear: left;
     margin-right: -148px;
+    margin-top: 10px;
     width: 50%;
     height: 126px;
 }
@@ -68,11 +70,13 @@ body.main {
     width: 296px;
     height: 126px;
     float: left;
+    margin-top: 10px;
 }
 
 #calendar .header .NO-container {
     float: right;
     margin-left: -148px;
+    margin-top: 10px;
     width: 50%;
     height: 126px;
 }
@@ -167,6 +171,99 @@ body.main {
 #calendar {
  clear: both;
 }
+
+/* month list view */
+
+#calendar.month-list table td:empty,
+#calendar.month-list .body thead {
+    display: none;
+}
+
+#calendar.month-list table .day-0,
+#calendar.month-list table td.today {
+    background-color: #fff;
+}
+
+#calendar.month-list table .day-0 .number,
+#calendar.month-list table td.day-0 .weekday {
+    color: #FF0000;
+}
+
+#calendar.month-list table .weekday {
+    display: block;
+}
+
+#calendar.month-list table td.today .number,
+#calendar.month-list table td.today .weekday {
+    color: #e07000;
+
+}
+
+#calendar.month-list table td,
+#calendar.month-list table th {
+    display: list-item;
+    border: 0px;
+    height: inherit;
+    max-width: inherit;
+    width: 50em;
+    clear: left;
+    list-style: outside none none;
+}
+
+#calendar.month-list table td a,
+#calendar.month-list table td dt,
+#calendar.month-list table td dd,
+#calendar.month-list table td dd ul,
+#calendar.month-list table td dd ul li,
+#calendar.month-list table td .weekday {
+    float: left;
+}
+
+#calendar.month-list table td .weekday {
+    width: 25px;
+}
+
+#calendar.month-list table td .number {
+    width: 20px;
+    text-align: right;
+}
+
+#calendar.month-list table td dt {
+    clear: left;
+    margin-left: 5px;
+}
+
+#calendar.month-list table td dt:first-child {
+    clear: none;
+}
+
+#calendar.month-list table td dl {
+    float: left;
+}
+
+#calendar.month-list table td dl dd,
+#calendar.month-list td ul {
+    margin-left: 5px;
+    padding-left: 0px;
+}
+
+#calendar.month-list table td dl dd ul.info li {
+    margin-left: 20px;
+}
+
+#calendar.month-list table td span.number {
+    float: none;
+    color: #000;
+    font-size: inherit;
+    width: 1.5em;
+}
+
+#calendar.month-list table td dl dd span.info {
+    display: inline;
+    margin-left: 3px;
+}
+
+/* year tabular view */
 
 #calendar.year h2 {
     padding-top: 10px;

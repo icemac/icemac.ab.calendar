@@ -7,6 +7,26 @@
   <div id="calendar"
        tal:attributes="class view/css_class">
     <div class="header">
+      <ul id="secondary-menu">
+        <li tal:attributes="class python:view.selected_css_class('month')">
+          <a tal:attributes="href python:view.menu_url('month')"
+             title="switch to the tabular view for a single month"
+             i18n:attributes="title"
+             i18n:translate="">Month tabular view</a>
+        </li>
+        <li tal:attributes="class python:view.selected_css_class('month-list')">
+          <a tal:attributes="href python:view.menu_url('month-list')"
+             title="switch to the list view for a single month"
+             i18n:attributes="title"
+             i18n:translate="">Month list view</a>
+        </li>
+        <li tal:attributes="class python:view.selected_css_class('year')">
+          <a tal:attributes="href python:view.menu_url('year')"
+             title="switch to the tabular view for a whole year"
+             i18n:attributes="title"
+             i18n:translate="">Year tabular view</a>
+        </li>
+      </ul>
       <div class="NW-container">
         <div class="NW"></div>
         <div class="NNW menu">
@@ -35,23 +55,7 @@
              tal:content="link/text">next</a>
         </div>
       </div>
-      <div class="center menu">
-        <ul>
-          <li>
-            <a tal:attributes="href python:view.menu_url('month');
-                               class python:view.selected_css_class('month')"
-               title="switch to the view for a single month"
-               i18n:attributes="title"
-               i18n:translate="">Month view</a>
-          </li>
-          <li>
-            <a tal:attributes="href python:view.menu_url('year');
-                               class python:view.selected_css_class('year')"
-               title="switch to the view for a whole year"
-               i18n:attributes="title"
-               i18n:translate="">Year view</a>
-          </li>
-        </ul>
+      <div class="center">
         <div tal:replace="structure view/render_form"></div>
       </div>
     </div>

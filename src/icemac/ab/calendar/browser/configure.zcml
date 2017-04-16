@@ -24,6 +24,15 @@
   <gocept:pagelet
      for="icemac.ab.calendar.interfaces.ICalendar"
      layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="month-list.html"
+     template="calendar.pt"
+     class=".calendar.MonthListCalendar"
+     permission="icemac.ab.calendar.ViewCalendar"
+     />
+
+  <gocept:pagelet
+     for="icemac.ab.calendar.interfaces.ICalendar"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
      name="year.html"
      template="calendar.pt"
      class=".calendar.YearCalendar"

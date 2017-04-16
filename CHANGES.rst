@@ -5,7 +5,7 @@
 2.2 (unreleased)
 ================
 
-- Nothing changed yet.
+- Add a month list view which looks like the print version of the month view.
 
 
 2.1.1 (2017-04-09)

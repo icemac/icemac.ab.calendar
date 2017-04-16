@@ -22,10 +22,17 @@ class CalendarMenuItemSelectedChecker(
                 icemac.addressbook.browser.menus.menu.MainMenu,
                 CalendarMenuItem)
 
+    CALENDAR_VIEW_NAMES = (
+        'addEvent.html',
+        'month.html',
+        'month-list.html',
+        'year.html',
+    )
+
     @property
     def selected(self):
         if icemac.ab.calendar.interfaces.IEvent.providedBy(self.context):
             return True
-        if self.view.__name__ in ('month.html', 'year.html', 'addEvent.html'):
+        if self.view.__name__ in self.CALENDAR_VIEW_NAMES:
             return True
         return False
