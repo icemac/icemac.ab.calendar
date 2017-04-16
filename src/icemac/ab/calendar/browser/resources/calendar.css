@@ -98,6 +98,10 @@ body.main {
     float: right;
 }
 
+#calendar .footer {
+    clear: both;
+}
+
 #calendar .footer .SW {
     background: url(img/bg-calendar.png) no-repeat;
     background-position: bottom left;
