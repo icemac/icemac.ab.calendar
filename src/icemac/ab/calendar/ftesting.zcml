@@ -16,7 +16,7 @@
   <!-- Principal who is able to view the calendar -->
   <principal
       id="icemac.ab.calendar.Visitor"
-      title="calendar vistor"
+      title="calendar visitor"
       login="cal-visitor"
       password="cal-visitor"
       />
