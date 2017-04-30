@@ -1,5 +1,3 @@
-# Copyright (c) 2013-2014 Michael Howitz
-# See also LICENSE.txt
 from ..install import update_calendar_infrastructure
 import icemac.addressbook.generations.utils
 

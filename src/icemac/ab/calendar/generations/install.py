@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-# Copyright (c) 2013-2014 Michael Howitz
-# See also LICENSE.txt
 """Initial generation."""
 
 
