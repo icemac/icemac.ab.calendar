@@ -33,14 +33,14 @@ def sample_events(address_book, EventFactory, DateTime):
     return address_book
 
 
-def test_calendar__Calendar__get_events___only_events_in_month(sample_events):
+def test_calendar__Calendar__get_events__1(sample_events):
     """It returns only events in the given month."""
     assert ([u'start Feb 2013', u'end Feb 2013'] ==
             [x.alternative_title
              for x in sample_events.calendar.get_events(Month(2, 2013))])
 
 
-def test_calendar__Calendar__get_events___timezone__east(sample_events):
+def test_calendar__Calendar__get_events__2(sample_events):
     """It respects the given time zone for an eastern time zone."""
     assert ([u'end Feb 2013', u'start Mar 2013'] ==
             [x.alternative_title
@@ -48,7 +48,7 @@ def test_calendar__Calendar__get_events___timezone__east(sample_events):
                  Month(2, 2013), 'Etc/GMT+1')])
 
 
-def test_calendar__Calendar__get_events___timezone__west(sample_events):
+def test_calendar__Calendar__get_events__3(sample_events):
     """It respects the given time zone for a western time zone."""
     assert ([u'end Jan 2013', u'start Feb 2013'] ==
             [x.alternative_title
@@ -56,7 +56,7 @@ def test_calendar__Calendar__get_events___timezone__west(sample_events):
                  Month(2, 2013), 'Etc/GMT-1')])
 
 
-def test_calendar__Calendar__get_events___recurring_events_in_month(
+def test_calendar__Calendar__get_events__4(
         sample_events, address_book, RecurringEventFactory, CategoryFactory,
         DateTime):
     """It returns the recurring events in the given month."""
@@ -81,7 +81,7 @@ def test_calendar__Calendar__get_events___recurring_events_in_month(
                  Month(2, 2013), 'Etc/GMT-1')])
 
 
-def test_calendar__Calendar__get_events___customized_recurred_hides(
+def test_calendar__Calendar__get_events__5(
         address_book, CategoryFactory, RecurringEventFactory, EventFactory,
         DateTime):
     """A customized recurred event hides the original recurred event."""
@@ -103,7 +103,7 @@ def test_calendar__Calendar__get_events___customized_recurred_hides(
                  Month(3, 2013), 'Etc/GMT+1')])
 
 
-def test_calendar__Calendar__get_events___recurring_event_with_higher_prio(
+def test_calendar__Calendar__get_events__6(
         address_book, CategoryFactory, RecurringEventFactory, DateTime):
     """The recurring event with the higher prio in the category is rendered."""
     category = CategoryFactory(address_book, u'night lunch')
@@ -129,7 +129,7 @@ def test_calendar__Calendar__get_events___recurring_event_with_higher_prio(
                  Month(3, 2013), 'Etc/GMT+1')])
 
 
-def test_calendar__Calendar__get_events___no_deleted_event(
+def test_calendar__Calendar__get_events__7(
         sample_events, address_book, EventFactory, DateTime):
     """It does not return deleted events."""
     event = EventFactory(
@@ -143,7 +143,7 @@ def test_calendar__Calendar__get_events___no_deleted_event(
                  Month(3, 2013), 'Etc/GMT')])
 
 
-def test_calendar__Calendar__get_events___whole_day_at_month_boundary(
+def test_calendar__Calendar__get_events__8(
         address_book, EventFactory, DateTime):
     """A whole day event does not change the month via timezone."""
     EventFactory(address_book,
