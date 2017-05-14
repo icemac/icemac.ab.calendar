@@ -5,6 +5,7 @@ from icemac.ab.calendar.interfaces import ICalendar, ICalendarDisplaySettings
 from icemac.ab.calendar.interfaces import IEvent
 from zope.interface.verify import verifyObject
 import pytest
+import pytz
 
 
 def test_calendar__Calendar__1():
@@ -160,6 +161,24 @@ def test_calendar__Calendar__get_events___whole_day_at_month_boundary(
             [x.alternative_title
              for x in address_book.calendar.get_events(
                  Month(4, 2015), 'Etc/GMT-7')])
+
+
+def test_calendar__Calendar__get_events__9(
+        address_book, EventFactory, CategoryFactory, DateTime):
+    """Deleted events are depressed in favour of not deleted ones.
+
+    This behaviour requires the events to have the same category and the same
+    time. It is needed to be able to delete a recurring event and add a new one
+    later at the same place for the same category.
+    """
+    category = CategoryFactory(address_book, u'my cat')
+    date = DateTime(2017, 5, 14, 13, 50, tzinfo=pytz.timezone('Europe/Berlin'))
+    e1 = EventFactory(address_book, category=category, datetime=date)
+    e1.deleted = True
+    EventFactory(address_book, category=category, datetime=date)
+    assert ([False] == [x.deleted
+                        for x in address_book.calendar.get_events(
+                            Month(5, 2017), 'Europe/Berlin')])
 
 
 def test_calendar__CalendarDisplaySettings___event_additional_fields__1(
