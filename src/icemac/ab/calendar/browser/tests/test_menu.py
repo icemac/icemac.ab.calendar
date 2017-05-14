@@ -32,7 +32,7 @@ def test_menu__calendar_menu__4(calendar_menu):
 
 
 def test_menu__calendar_menu__5(address_book, calendar_menu, EventFactory):
-    """The calendar_tab_is_selected_on_event_view."""
+    """The calendar tab is selected on the event clone view."""
     EventFactory(address_book)
     calendar_menu.item_selected(calendar_menu.browser.EVENT_CLONE_URL)
 

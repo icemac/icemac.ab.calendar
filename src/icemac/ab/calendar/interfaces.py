@@ -199,7 +199,7 @@ class IEventDateTime(zope.interface.Interface):
 
 
 class IRecurringEvents(ICalendarObject):
-    """Container for recurrign events."""
+    """Container for recurring events."""
 
     def get_events():
         """Return the events sorted by priority (ascending)."""
