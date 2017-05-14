@@ -5,7 +5,13 @@
 2.2 (unreleased)
 ================
 
+Features
+--------
+
 - Add a month list view which looks like the print version of the month view.
+
+Bug fixes
+---------
 
 - Allow to delete a recurred event and put a new event with the same category
   into its place. Before this fix the new event might not be displayed.
