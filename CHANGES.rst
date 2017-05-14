@@ -2,7 +2,7 @@
  Changelog
 ===========
 
-2.1.2 (unreleased)
+2.1.2 (2017-05-14)
 ==================
 
 - Allow to delete a recurred event and put a new event with the same category
