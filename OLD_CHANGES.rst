@@ -5,6 +5,17 @@
 Changelog of releases more than 2 minor versions behind current version.
 
 
+1.12 (2017-01-21)
+=================
+
+- Adapt code so `grokcore.component >= 2.6` can be used.
+
+- Fix sort order of events with the same datetime again. They are now
+  sorted by the title of the category.
+
+- Adapt styling to `icemac.addressbook >= 2.10`.
+
+
 1.11.2 (2017-01-09)
 ===================
 

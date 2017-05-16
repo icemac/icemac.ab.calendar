@@ -71,17 +71,6 @@ Bugs
   version 1.8.
 
 
-1.12 (2017-01-21)
-=================
-
-- Adapt code so `grokcore.component >= 2.6` can be used.
-
-- Fix sort order of events with the same datetime again. They are now
-  sorted by the title of the category.
-
-- Adapt styling to `icemac.addressbook >= 2.10`.
-
-
 Older versions
 ==============
 
