@@ -159,10 +159,10 @@ class TabularCalendar(icemac.ab.calendar.browser.base.View):
         ) for month in year]
 
 
+@zope.interface.implementer(IMonthSelector)
 class MonthCalendar(TabularCalendar):
     """Calendar display of one month."""
 
-    zope.interface.implements(IMonthSelector)
     form_class = MonthSelectorForm
     css_class = 'month'
     renderer_name = 'table'
@@ -239,10 +239,10 @@ class YearSelectorForm(icemac.addressbook.browser.base.BaseForm,
     id = 'calendar-select-form'
 
 
+@zope.interface.implementer(IYearSelector)
 class YearCalendar(TabularCalendar):
     """Calendar displaying a whole year."""
 
-    zope.interface.implements(IYearSelector)
     form_class = YearSelectorForm
     css_class = 'year'
 

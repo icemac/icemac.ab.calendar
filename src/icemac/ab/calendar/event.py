@@ -42,14 +42,14 @@ class BaseEvent(object):
         return timezone.normalize(self.datetime)
 
 
+@zope.interface.implementer(
+    icemac.ab.calendar.interfaces.IEvent,
+    zope.annotation.interfaces.IAttributeAnnotatable)
 class Event(persistent.Persistent,
             zope.container.contained.Contained,
             BaseEvent):
     """An event in the calendar."""
 
-    zope.interface.implements(
-        icemac.ab.calendar.interfaces.IEvent,
-        zope.annotation.interfaces.IAttributeAnnotatable)
     zope.schema.fieldproperty.createFieldProperties(
         icemac.ab.calendar.interfaces.IEvent, omit=['category', 'persons'])
 
@@ -117,19 +117,18 @@ class EventDateTime(grok.Adapter):
         return self.context.datetime
 
 
+@zope.interface.implementer(icemac.ab.calendar.interfaces.IRecurringEvents)
 class RecurringEventContainer(zope.container.btree.BTreeContainer):
     """A container for recurring events."""
-
-    zope.interface.implements(icemac.ab.calendar.interfaces.IRecurringEvents)
 
     def get_events(self):
         return sorted(self.values(), key=lambda x: x.priority)
 
 
+@zope.interface.implementer(icemac.ab.calendar.interfaces.IRecurringEvent)
 class RecurringEvent(Event):
     """An event which repeats after a defined period."""
 
-    zope.interface.implements(icemac.ab.calendar.interfaces.IRecurringEvent)
     zope.schema.fieldproperty.createFieldProperties(
         icemac.ab.calendar.interfaces.IRecurringEventAdditionalSchema)
 
@@ -210,12 +209,12 @@ def calendar_of_recurring_event(recurring_event):
         icemac.addressbook.interfaces.IAddressBook(None))
 
 
+@zope.interface.implementer(
+    icemac.ab.calendar.interfaces.IRecurredEvent,
+    icemac.addressbook.interfaces.IUserFieldStorage)
 class RecurredEvent(BaseEvent):
     """An event computed from RecurringEvent."""
 
-    zope.interface.implements(
-        icemac.ab.calendar.interfaces.IRecurredEvent,
-        icemac.addressbook.interfaces.IUserFieldStorage)
     zope.schema.fieldproperty.createFieldProperties(
         icemac.ab.calendar.interfaces.IRecurredEvent)
 

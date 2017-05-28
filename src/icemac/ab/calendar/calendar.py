@@ -14,10 +14,9 @@ import zope.container.btree
 import zope.interface
 
 
+@zope.interface.implementer(icemac.ab.calendar.interfaces.ICalendar)
 class Calendar(zope.container.btree.BTreeContainer):
     """Calendar containing dates."""
-
-    zope.interface.implements(icemac.ab.calendar.interfaces.ICalendar)
 
     def get_events(self, month, timezone=None):
         """Get all events which belong to `month`."""

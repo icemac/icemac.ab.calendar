@@ -37,15 +37,14 @@ def date_from_iso_string(string):
     return date(*tuple(int(x) for x in string.split('-')))
 
 
+@zope.component.adapter(icemac.ab.calendar.interfaces.IEvent)
+@zope.interface.implementer(
+    icemac.ab.calendar.browser.interfaces.IEventDatetime)
 class EventDatetime(object):
     """Adapter to edit an event using the IDatetime object field.
 
     Needs to be registered via ZCML, as grok has no model based security.
     """
-
-    zope.component.adapts(icemac.ab.calendar.interfaces.IEvent)
-    zope.interface.implements(
-        icemac.ab.calendar.browser.interfaces.IEventDatetime)
 
     def __init__(self, context):
         self.context = self.__parent__ = context
