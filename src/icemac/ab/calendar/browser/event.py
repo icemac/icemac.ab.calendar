@@ -151,7 +151,7 @@ class EventFields(object):
 class Add(EventFields, icemac.addressbook.browser.base.BaseAddForm):
     """Add form for an event."""
 
-    label = _(u'Add new event')
+    title = _(u'Add new event')
     interface = icemac.ab.calendar.interfaces.IEvent
     class_ = icemac.ab.calendar.event.Event
     next_url = 'parent'
@@ -173,8 +173,8 @@ class Add(EventFields, icemac.addressbook.browser.base.BaseAddForm):
 class Edit(EventFields, icemac.addressbook.browser.base.GroupEditForm):
     """Edit for for an event."""
 
+    title = _('Edit event')
     groups = (icemac.addressbook.browser.metadata.MetadataGroup,)
-    label = _('Edit event')
     interface = icemac.ab.calendar.interfaces.IEvent
     next_url = 'parent'
     z3c.form.form.extends(icemac.addressbook.browser.base.GroupEditForm,
@@ -196,6 +196,7 @@ class Edit(EventFields, icemac.addressbook.browser.base.GroupEditForm):
 class Delete(icemac.addressbook.browser.base.BaseDeleteForm):
     """Confirmation when deleting an event."""
 
+    title = _('Delete event')
     label = _(u'Do you really want to delete this event?')
     interface = icemac.ab.calendar.interfaces.IEvent
     field_names = EVENT_CONFIRMATION_FIELDS
@@ -204,6 +205,7 @@ class Delete(icemac.addressbook.browser.base.BaseDeleteForm):
 class Clone(icemac.addressbook.browser.base.BaseCloneForm):
     """Clone event with confirmation."""
 
+    title = _('Clone event')
     label = _(u'Do you really want to clone this event?')
     interface = icemac.ab.calendar.interfaces.IEvent
     field_names = EVENT_CONFIRMATION_FIELDS
@@ -253,7 +255,7 @@ class AddFromRecurredEvent(icemac.ab.calendar.browser.base.View,
                            icemac.addressbook.browser.base.BaseAddForm):
     """Add form for changing a recurred event."""
 
-    label = _(u'Edit recurred event')
+    title = _(u'Edit recurred event')
     interface = icemac.ab.calendar.interfaces.IEvent
     class_ = icemac.ab.calendar.event.Event
     next_url = 'parent'
@@ -295,6 +297,7 @@ class DeleteRecurredEvent(icemac.ab.calendar.browser.base.View,
                           icemac.addressbook.browser.base.BaseDeleteForm):
     """Add form for deleting a recurred event."""
 
+    title = _('Delete recurred event')
     label = _(u'Do you really want to delete this recurred event?')
     interface = icemac.ab.calendar.interfaces.IEvent
     field_names = EVENT_CONFIRMATION_FIELDS

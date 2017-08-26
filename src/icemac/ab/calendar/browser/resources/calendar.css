@@ -19,9 +19,8 @@ body.main {
 }
 
 #timezone {
-    position: absolute;
-    right: 155px;
-    margin-top: 36px;
+    float: right;
+    clear: both;
 }
 
 #calendar .header {
@@ -39,7 +38,7 @@ body.main {
 
 #calendar .header .NW-container {
     float: left;
-    clear: left;
+    clear: both;
     margin-right: -148px;
     margin-top: 10px;
     width: 50%;
@@ -170,10 +169,6 @@ body.main {
 #calendar #calendar-select-form .required-info,
 #calendar #calendar-select-form .label {
     display: none;
-}
-
-#calendar {
- clear: both;
 }
 
 /* month list view */

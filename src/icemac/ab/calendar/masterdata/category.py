@@ -1,15 +1,30 @@
 from icemac.addressbook.i18n import _
 import gocept.reference.interfaces
+import grokcore.component as grok
 import icemac.ab.calendar.interfaces
+import icemac.ab.calendar.masterdata.breadcrumb
 import icemac.addressbook.browser.base
+import icemac.addressbook.browser.breadcrumb
 import icemac.addressbook.browser.metadata
 import icemac.addressbook.browser.table
 import z3c.table.column
 
 
+class CategoriesBreadCrumb(
+        icemac.ab.calendar.masterdata.breadcrumb.CalendarMDChildBreadcrumb):
+    """Breadcrumb for categories."""
+
+    grok.adapts(
+        icemac.ab.calendar.interfaces.ICategories,
+        icemac.addressbook.browser.interfaces.IAddressBookLayer)
+
+    title = _('Event categories')
+
+
 class Table(icemac.addressbook.browser.table.Table):
     """List event categories."""
 
+    title = icemac.addressbook.browser.breadcrumb.DO_NOT_SHOW
     no_rows_message = _(u'No event categories defined yet.')
 
     def setUpColumns(self):
@@ -26,7 +41,7 @@ class Table(icemac.addressbook.browser.table.Table):
 class Add(icemac.addressbook.browser.base.BaseAddForm):
     """Add form for event category."""
 
-    label = _(u'Add new event category')
+    title = _(u'Add new event category')
     interface = icemac.ab.calendar.interfaces.ICategory
     class_ = icemac.ab.calendar.category.Category
     next_url = 'parent'
@@ -43,8 +58,8 @@ def can_delete_category(form):
 class Edit(icemac.addressbook.browser.base.GroupEditForm):
     """Edit form for event category."""
 
+    title = _(u'Edit event category')
     groups = (icemac.addressbook.browser.metadata.MetadataGroup,)
-    label = _(u'Edit event category')
     interface = icemac.ab.calendar.interfaces.ICategory
     next_url = 'parent'
     z3c.form.form.extends(icemac.addressbook.browser.base.GroupEditForm,
@@ -67,6 +82,7 @@ class Edit(icemac.addressbook.browser.base.GroupEditForm):
 class Delete(icemac.addressbook.browser.base.BaseDeleteForm):
     """Form to delete a category."""
 
+    title = _('Delete event category')
     label = _('Do you really want to delete this event category?')
     interface = icemac.ab.calendar.interfaces.ICategory
     field_names = ('title', )

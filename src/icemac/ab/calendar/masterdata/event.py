@@ -1,12 +1,26 @@
 from ..browser.event import EVENT_CONFIRMATION_FIELDS, EventFields
 from icemac.addressbook.i18n import _
+import grokcore.component as grok
 import icemac.ab.calendar.interfaces
+import icemac.ab.calendar.masterdata.breadcrumb
 import icemac.addressbook.browser.base
+import icemac.addressbook.browser.breadcrumb
 import icemac.addressbook.browser.metadata
 import icemac.addressbook.browser.table
 import icemac.addressbook.interfaces
 import icemac.recurrence
 import z3c.table.column
+
+
+class RecurringEventsBreadCrumb(
+        icemac.ab.calendar.masterdata.breadcrumb.CalendarMDChildBreadcrumb):
+    """Breadcrumb for recurring events."""
+
+    grok.adapts(
+        icemac.ab.calendar.interfaces.IRecurringEvents,
+        icemac.addressbook.browser.interfaces.IAddressBookLayer)
+
+    title = _('Recurring Events')
 
 
 class RecurrenceColumn(z3c.table.column.I18nGetAttrColumn):
@@ -65,6 +79,7 @@ class StartColumn(z3c.table.column.GetAttrColumn):
 class Table(icemac.addressbook.browser.table.Table):
     """List recurring events."""
 
+    title = icemac.addressbook.browser.breadcrumb.DO_NOT_SHOW
     no_rows_message = _(u'No recurring events defined yet.')
 
     def setUpColumns(self):
@@ -97,7 +112,7 @@ class Table(icemac.addressbook.browser.table.Table):
 class Add(EventFields, icemac.addressbook.browser.base.BaseAddForm):
     """Add form for an recurring event."""
 
-    label = _(u'Add new recurring event')
+    title = _(u'Add new recurring event')
     interface = icemac.ab.calendar.interfaces.IRecurringEvent
     class_ = icemac.ab.calendar.event.RecurringEvent
     next_url = 'parent'
@@ -106,8 +121,8 @@ class Add(EventFields, icemac.addressbook.browser.base.BaseAddForm):
 class Edit(EventFields, icemac.addressbook.browser.base.GroupEditForm):
     """Edit form for recurring event."""
 
+    title = _(u'Edit recurring event')
     groups = (icemac.addressbook.browser.metadata.MetadataGroup,)
-    label = _(u'Edit recurring event')
     interface = icemac.ab.calendar.interfaces.IRecurringEvent
     next_url = 'parent'
     z3c.form.form.extends(icemac.addressbook.browser.base.GroupEditForm,
@@ -131,6 +146,7 @@ class Edit(EventFields, icemac.addressbook.browser.base.GroupEditForm):
 class Delete(icemac.addressbook.browser.base.BaseDeleteForm):
     """Confirm delete of recurring event."""
 
+    title = _('Delete recurring event')
     label = _('Do you really want to delete this recurring event?')
     interface = icemac.ab.calendar.interfaces.IRecurringEvent
     field_names = EVENT_CONFIRMATION_FIELDS

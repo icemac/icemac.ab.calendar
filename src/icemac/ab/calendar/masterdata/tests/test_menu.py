@@ -38,7 +38,7 @@ def test_menu__CalendarMasterDataManager__1(address_book, browser):
     browser.open(browser.MASTER_DATA_URL)
     browser.getLink('Calendar', index=1).click()
     assert browser.CALENDAR_MASTERDATA_URL == browser.url
-    assert 'Edit calendar master data' in browser.contents
+    assert 'Event categories' in browser.contents
 
 
 def test_menu__CalendarMasterDataManager__2(address_book, browser):

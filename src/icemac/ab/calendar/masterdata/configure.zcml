@@ -20,6 +20,7 @@
       layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
       name="calendar-masterdata.html"
       template="calendar-masterdata.pt"
+      class=".calendar.MasterData"
       permission="icemac.ab.calendar.ViewCalendar" />
 
   <subscriber

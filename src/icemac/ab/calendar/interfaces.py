@@ -25,7 +25,8 @@ class ICalendarObject(zope.interface.Interface):
     """
 
 
-class ICalendar(ICalendarObject):
+class ICalendar(ICalendarObject,
+                zope.location.interfaces.ILocation):
     """Calender and storage for dates."""
 
     def get_events(month, timezone=None):

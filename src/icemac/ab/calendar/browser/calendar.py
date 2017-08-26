@@ -166,6 +166,7 @@ class MonthCalendar(TabularCalendar):
     form_class = MonthSelectorForm
     css_class = 'month'
     renderer_name = 'table'
+    title = _('Month tabular view')
 
     @property
     def calendar_month(self):
@@ -222,6 +223,7 @@ class MonthListCalendar(MonthCalendar):
     """List display of a month calendar. (like the print style)"""
 
     css_class = 'month-list'
+    title = _('Month list view')
 
 
 class IYearSelector(zope.interface.Interface):
@@ -245,6 +247,7 @@ class YearCalendar(TabularCalendar):
 
     form_class = YearSelectorForm
     css_class = 'year'
+    title = _('Year tabular view')
 
     def update(self):
         super(YearCalendar, self).update()

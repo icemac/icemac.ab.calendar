@@ -5,6 +5,8 @@
 2.3 (unreleased)
 ================
 
+- Add breadcrumbs.
+
 - Change `zope.interface.implements[Only]` and `zope.component.adapts` to
   class decorators.
 
