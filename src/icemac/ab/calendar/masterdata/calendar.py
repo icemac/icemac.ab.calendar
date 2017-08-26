@@ -24,7 +24,6 @@ class ModifierMetadataGroup(
 
 
 class CalendarView(icemac.addressbook.browser.base.GroupEditForm):
-
     """Edit the calendar view settings."""
 
     label = _(u'Edit calendar display settings')
@@ -35,7 +34,6 @@ class CalendarView(icemac.addressbook.browser.base.GroupEditForm):
 
 class AnnotationField(icemac.addressbook.browser.datamanager.AnnotationField,
                       grok.MultiAdapter):
-
     """Special AnnotationField for calendar."""
 
     grok.adapts(icemac.ab.calendar.interfaces.ICalendar,
