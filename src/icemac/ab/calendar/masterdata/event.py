@@ -131,6 +131,6 @@ class Edit(EventFields, icemac.addressbook.browser.base.GroupEditForm):
 class Delete(icemac.addressbook.browser.base.BaseDeleteForm):
     """Confirm delete of recurring event."""
 
-    label = _(u'Do you really want to delete this recurring event?')
+    label = _('Do you really want to delete this recurring event?')
     interface = icemac.ab.calendar.interfaces.IRecurringEvent
     field_names = EVENT_CONFIRMATION_FIELDS

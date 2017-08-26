@@ -67,6 +67,6 @@ class Edit(icemac.addressbook.browser.base.GroupEditForm):
 class Delete(icemac.addressbook.browser.base.BaseDeleteForm):
     """Form to delete a category."""
 
-    label = _(u'Do you really want to delete this event category?')
+    label = _('Do you really want to delete this event category?')
     interface = icemac.ab.calendar.interfaces.ICategory
     field_names = ('title', )
