@@ -10,6 +10,8 @@
 - Change `zope.interface.implements[Only]` and `zope.component.adapts` to
   class decorators.
 
+- Adapt the code to `icemac.addressbook >= 4.2`.
+
 
 2.2 (2017-05-16)
 ================

@@ -5,6 +5,12 @@
         $('#calendar #calendar-select-form #form-buttons-apply').click();
     });
 
+    // Change width of drop downs in month select on calendar back to "normal"
+    // width:
+    $('form#calendar-select-form select.choice-field').select2({
+        width: "auto",
+    });
+
     var WidgetToggle = Class.$extend({
         /* Toggle the display of a widget and its label depending on clicks. */
 

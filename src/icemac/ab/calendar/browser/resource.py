@@ -1,4 +1,4 @@
-from icemac.addressbook.browser.resource import base_css
+from icemac.addressbook.browser.resource import base_css, form
 import fanstatic
 import icemac.ab.calendar.browser.interfaces
 import icemac.addressbook.browser.favicon
@@ -11,7 +11,10 @@ lib = fanstatic.Library('calendar', 'resources')
 calendar_css = fanstatic.Resource(lib, 'calendar.css', depends=[base_css])
 print_css = fanstatic.Resource(lib, 'print.css', depends=[calendar_css])
 calendar_js = fanstatic.Resource(
-    lib, 'calendar.js', depends=[js.jquery.jquery, js.classy.classy],
+    lib, 'calendar.js', depends=[
+        js.jquery.jquery,
+        js.classy.classy,
+        form],
     bottom=True)
 
 
