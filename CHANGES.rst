@@ -7,8 +7,10 @@
 
 - Add breadcrumbs.
 
-- Fix rendering of day numbers in calendar for read-only users to be the same
-  size as for r/w users.
+- Fix rendering of month list:
+
+  + day numbers in calendar for read-only users are now the same size as for
+    r/w users.
 
 - Change `zope.interface.implements[Only]` and `zope.component.adapts` to
   class decorators.
