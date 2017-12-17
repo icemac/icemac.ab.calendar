@@ -130,12 +130,16 @@ class Table(Calendar):
                            day_names[day_number])
                 if add_event_for_day_url:
                     self.write(
-                        '<a class="number" href="%s?date=%s" title="%s">',
+                        '<a class="wrapper" href="%s?date=%s" title="%s">',
                         add_event_for_day_url, day.isoformat(),
                         self.translate(_('Add new event for this day.')))
+                else:
+                    self.write('<span class="wrapper">')
                 self.write('<span class="number">%s</span>', day.day)
                 if add_event_for_day_url:
                     self.write('</a>')
+                else:
+                    self.write('</span>')
                 found_events_for_day = False
                 for ev in events[:]:
                     if ev.datetime.date() != day:

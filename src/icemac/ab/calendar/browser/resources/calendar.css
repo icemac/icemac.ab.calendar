@@ -261,7 +261,7 @@ body.main {
 }
 
 #calendar.month-list table td span.number {
-    float: none;
+    float: left;
     color: #000;
     width: 1.5em;
 }
@@ -342,7 +342,7 @@ div#content #calendar table td:last-child {
     font-weight: bold;
 }
 
-#calendar table td a .number {
+#calendar table td .number {
     color: #aaa;
     font-size: 28px;
     margin-right: 2px;
