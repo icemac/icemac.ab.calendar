@@ -1,5 +1,7 @@
 /*global jQuery, Class */
 (function($) {
+    "use strict";
+
     // Auto submit month and year drop downs:
     $('#calendar #calendar-select-form select').on('change', function() {
         $('#calendar #calendar-select-form #form-buttons-apply').click();
