@@ -5,13 +5,6 @@ import pytest
 import zope.component.hooks
 
 
-def assert_fields_selected(browser, *fields):
-    """Assert that some fields are selected in `event_additional_fields`."""
-    options = browser.getControl(
-        name='form.widgets.event_additional_fields.to').displayOptions
-    assert set(fields) == set(options)
-
-
 def test_calendar__CalendarView__1(address_book, FieldFactory, browser):
     """It allows to select fields for display in the calendar."""
     field = FieldFactory(
@@ -20,19 +13,25 @@ def test_calendar__CalendarView__1(address_book, FieldFactory, browser):
     browser.open(browser.CALENDAR_MASTERDATA_URL)
     browser.getLink('Calendar view').click()
     assert browser.CALENDAR_MASTERDATA_EDIT_DISPLAY_URL == browser.url
-    browser.in_out_widget_select('form.widgets.event_additional_fields',
-                                 [browser.getControl('persons'),
-                                  browser.getControl('reservations')])
+    browser.getControl('Additional event fields').displayValue = [
+        'persons',
+        'reservations',
+    ]
     browser.getControl('Apply').click()
     assert 'Data successfully updated.' == browser.message
     browser.open(browser.CALENDAR_MASTERDATA_EDIT_DISPLAY_URL)
-    assert_fields_selected(browser, 'reservations', 'persons')
+    assert browser.getControl('Additional event fields').displayValue == [
+        'persons',
+        'reservations',
+    ]
     # It does not break on selected but deleted user defined field:
     with zope.component.hooks.site(address_book):
         event_entity = IEntity(IEvent)
         event_entity.removeField(event_entity.getRawField(field))
     browser.open(browser.CALENDAR_MASTERDATA_EDIT_DISPLAY_URL)
-    assert_fields_selected(browser, 'persons')
+    assert browser.getControl('Additional event fields').displayValue == [
+        'persons',
+    ]
 
 
 def test_calendar__CalendarView__2(address_book, browser):
