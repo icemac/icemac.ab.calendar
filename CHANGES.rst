@@ -12,6 +12,9 @@
   + day numbers in calendar for read-only users are now the same size as for
     r/w users.
 
+  + the dots in front of text when rendering multiple items per event no longer
+    overlap with previous text.
+
 - Change `zope.interface.implements[Only]` and `zope.component.adapts` to
   class decorators.
 
