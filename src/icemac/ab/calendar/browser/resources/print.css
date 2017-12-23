@@ -44,13 +44,18 @@
         list-style: outside none none;
     }
 
-    #calendar table td a,
+    #calendar table td .wrapper,
     #calendar table td dt,
     #calendar table td dd,
+    #calendar table td dd a,
     #calendar table td dd ul,
     #calendar table td dd ul li,
     #calendar table td .weekday {
         float: left;
+    }
+
+    #calendar table td .number {
+        text-align: right;
     }
 
     #calendar table td.day-0 .weekday {
@@ -90,7 +95,7 @@
     }
 
     #calendar table td span.number {
-        float: none;
+        float: left;
         color: #000;
         font-size: inherit;
         width: 1.5em;

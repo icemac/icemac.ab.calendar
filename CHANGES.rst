@@ -17,6 +17,9 @@
 
   + when printing it is rendered like the month calendar.
 
+- Fix printing view of month list to render the event title first and align
+  day numbers right.
+
 - Change `zope.interface.implements[Only]` and `zope.component.adapts` to
   class decorators.
 
