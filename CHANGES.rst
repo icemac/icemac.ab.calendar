@@ -15,6 +15,8 @@
   + the dots in front of text when rendering multiple items per event no longer
     overlap with previous text.
 
+  + when printing it is rendered like the month calendar.
+
 - Change `zope.interface.implements[Only]` and `zope.component.adapts` to
   class decorators.
 
