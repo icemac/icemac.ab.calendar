@@ -256,13 +256,14 @@ class YearCalendar(TabularCalendar):
             gocept.month.Month(12, self.calendar_year))
 
     def render_events(self, month, events):
-        headline = u'<h2>{} {}</h2>'.format(
+        prefix = u'<div class="month">\n<h2>{} {}</h2>'.format(
             self.get_month_name(month), month.year)
+        suffix = u'</div>'
         calendar = zope.component.getMultiAdapter(
             (month, self.request, events),
             icemac.ab.calendar.browser.renderer.interfaces.IRenderer,
             name='table')()
-        return '\n'.join((headline, calendar))
+        return '\n'.join((prefix, calendar, suffix))
 
     def render_calendar(self):
         result = [self.render_events(month, events)

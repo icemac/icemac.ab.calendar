@@ -20,6 +20,8 @@
 - Fix printing view of month list to render the event title first and align
   day numbers right.
 
+- Fix printing view of year calendar to render each month on a single page.
+
 - Change `zope.interface.implements[Only]` and `zope.component.adapts` to
   class decorators.
 

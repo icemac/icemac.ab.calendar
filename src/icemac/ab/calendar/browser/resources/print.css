@@ -32,6 +32,14 @@
         top: 7px;
     }
 
+    #calendar.year .table h2 {
+        position: inherit;
+        float: right;
+    }
+
+    #calendar.year .table .month {
+        page-break-inside: avoid;
+    }
 
     #calendar table td,
     #calendar table th {
