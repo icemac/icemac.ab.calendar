@@ -27,6 +27,7 @@
 
 - Adapt the code to `icemac.addressbook >= 5.0`.
 
+- Also release as wheel.
 
 2.2 (2017-05-16)
 ================
