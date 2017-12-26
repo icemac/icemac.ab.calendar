@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-import os.path
 import setuptools
 
 
-def read(*path_elements):
+def read(path):
     """Read file."""
-    return file(os.path.join(*path_elements)).read()
+    with open(path) as f:
+        return f.read()
 
 
 version = '2.3.dev0'

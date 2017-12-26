@@ -73,32 +73,9 @@ Other changes
 - Update to changes in test infrastructure in `icemac.addressbook >= 4.0`.
 
 
-2.0 (2017-02-04)
-================
-
-Backward incompatible changes
------------------------------
-
-- Update test infrastructure to `icemac.addressbook >= 3.0`, thus update to
-  `py.test >= 2.8`. The fixtures which can be reused where moved to
-  ``icemac.ab.calendar.fixtures``. ``icemac.ab.calendar.conftest`` should no
-  longer be used from foreign packages as this leads to problems with the new
-  py.test version.
-
-
-Bugs
-----
-
-- The computation of Biweekly events was fixed: There are now always two weeks
-  between the events. Previously it could only be one if the recurrence in the
-  previous month was in the last week of the month.
-
-- Fix the bug with daylight saving time adding one hour to each event during
-  DST for the year calendar which was already fixed for the month calendar in
-  version 1.8.
-
-
 Older versions
 ==============
 
-See OLD_CHANGES.rst inside the package.
+See `OLD_CHANGES.rst`_.
+
+.. _`OLD_CHANGES.rst` : https://bitbucket.org/icemac/icemac.ab.calendar/raw/tip/OLD_CHANGES.rst
