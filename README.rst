@@ -2,7 +2,7 @@ This package provides a calendar feature for `icemac.addressbook`_.
 
 .. _`icemac.addressbook` : https://pypi.org/project/icemac.addressbook/
 
-Copyright (c) 2010-2017 Michael Howitz
+Copyright (c) 2010-2018 Michael Howitz
 
 All Rights Reserved.
 
