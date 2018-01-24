@@ -41,7 +41,7 @@ class IEventViewConfiguration(zope.interface.Interface):
     start = zope.schema.Choice(
         title=_('start date'),
         description=_(
-            'The actual start date is computed relative to current date,'
-            ' when the view is rendered.'),
+            'The start date used in the view will be differing from the'
+            ' current date by the chosen period of time.'),
         source=start_date_source,
     )
