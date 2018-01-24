@@ -42,6 +42,7 @@
 
 
   <include package=".browser" />
+  <include package=".eventview" />
   <include package=".generations" />
   <include package=".masterdata" />
 

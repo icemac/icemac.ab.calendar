@@ -1,6 +1,8 @@
 from .interfaces import DATE_INDEX
 import icemac.ab.calendar.calendar
 import icemac.ab.calendar.category
+import icemac.ab.calendar.eventview.interfaces
+import icemac.ab.calendar.eventview.model
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.addressbook
 import zc.catalog.catalogindex
@@ -42,3 +44,8 @@ def update_calendar_infrastructure(address_book):
             icemac.ab.calendar.interfaces.IRecurringEvents)
         icemac.addressbook.addressbook.add_entity_to_order(
             address_book.orders, icemac.ab.calendar.interfaces.IRecurringEvent)
+
+        icemac.addressbook.addressbook.create_and_register(
+            address_book, 'calendar_eventviews',
+            icemac.ab.calendar.eventview.model.EventViewContainer,
+            icemac.ab.calendar.eventview.interfaces.IEventViewContainer)
