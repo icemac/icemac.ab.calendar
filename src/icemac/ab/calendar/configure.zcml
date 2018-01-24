@@ -8,7 +8,8 @@
   <grok:grok package="."
              exclude="generations
                       fixtures
-                      conftest" />
+                      conftest
+                      test_*" />
 
   <include package="zope.security" file="meta.zcml" />
   <include package="zope.component" file="meta.zcml" />

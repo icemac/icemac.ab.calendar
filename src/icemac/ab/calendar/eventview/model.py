@@ -30,4 +30,4 @@ class EventViewConfiguration(persistent.Persistent,
 
 
 unique_titles = icemac.addressbook.utils.unique_by_attr_factory(
-    'title', _(u'This event view already exists.'))
+    'title', _('This title is already used for an event view configuration.'))
