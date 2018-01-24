@@ -1,6 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
   <include file="model.zcml" />
-  <include file="browser.zcml" />
+  <include file="masterdata.zcml" />
 
 </configure>

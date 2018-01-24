@@ -1,4 +1,4 @@
-def test_browser__Table__1(address_book, browser):
+def test_masterdata__Table__1(address_book, browser):
     """It renders a message if there are no event views configured, yet."""
     browser.login('mgr')
     browser.open(browser.CALENDAR_MASTERDATA_URL)

@@ -19,14 +19,14 @@
      for="*"
      provides="
         icemac.addressbook.browser.masterdata.interfaces.IMasterDataMenuItemOn"
-     factory=".browser.event_views" />
+     factory=".masterdata.event_views" />
 
   <gocept:pagelet
      name="index.html"
      for=".interfaces.IEventViewContainer"
      permission="icemac.ab.calendar.ViewEventViewContainer"
      layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
-     class=".browser.Table"
+     class=".masterdata.Table"
      />
 
 </configure>
