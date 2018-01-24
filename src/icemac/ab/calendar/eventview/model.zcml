@@ -1,0 +1,84 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           i18n_domain="icemac.addressbook">
+
+
+  <!-- EventViewContainer -->
+  <permission
+     id="icemac.ab.calendar.ViewEventViewContainer"
+     title="ViewEventViewContainer"
+     />
+  <permission
+     id="icemac.ab.calendar.EditEventViewContainer"
+     title="EditEventViewContainer"
+     />
+
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permissions="
+        icemac.ab.calendar.ViewEventViewContainer
+     " />
+  <grant
+     role="icemac.ab.calendar.Visitor"
+     permissions="
+        icemac.ab.calendar.ViewEventViewContainer
+     " />
+  <grant
+     role="icemac.addressbook.global.Administrator"
+     permissions="
+        icemac.ab.calendar.ViewEventViewContainer
+        icemac.ab.calendar.EditEventViewContainer
+     " />
+
+  <class class=".model.EventViewContainer">
+    <require
+       permission="icemac.ab.calendar.ViewEventViewContainer"
+       interface=".interfaces.IEventViewContainer
+                  zope.container.interfaces.IReadContainer"
+       />
+    <require
+       permission="icemac.ab.calendar.EditEventViewContainer"
+       interface="zope.container.interfaces.IWriteContainer"
+       set_schema=".interfaces.IEventViewContainer"
+      />
+  </class>
+
+
+  <!-- EventViewConfiguration -->
+  <permission
+     id="icemac.ab.calendar.ViewEventViewConfiguration"
+     title="ViewEventViewConfiguration"
+     />
+  <permission
+     id="icemac.ab.calendar.EditEventViewConfiguration"
+     title="EditEventViewConfiguration"
+     />
+
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permissions="
+        icemac.ab.calendar.ViewEventViewConfiguration
+     " />
+  <grant
+     role="icemac.ab.calendar.Visitor"
+     permissions="
+        icemac.ab.calendar.ViewEventViewConfiguration
+     " />
+  <grant
+     role="icemac.addressbook.global.Administrator"
+     permissions="
+        icemac.ab.calendar.ViewEventViewConfiguration
+        icemac.ab.calendar.EditEventViewConfiguration
+     " />
+
+  <class class=".model.EventViewConfiguration">
+    <require
+       permission="icemac.ab.calendar.ViewEventViewConfiguration"
+       interface=".interfaces.IEventViewConfiguration"
+       />
+    <require
+      permission="icemac.ab.calendar.EditEventViewConfiguration"
+      set_schema=".interfaces.IEventViewConfiguration"
+      />
+  </class>
+
+</configure>

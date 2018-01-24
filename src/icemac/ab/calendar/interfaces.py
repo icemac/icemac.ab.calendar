@@ -105,6 +105,7 @@ class ICalendarMasterData(zope.interface.Interface):
 
     calendar_categories = zope.interface.Attribute(u'ICategories')
     calendar_recurring_events = zope.interface.Attribute(u'IRecurringEvents')
+    calendar_eventviews = zope.interface.Attribute(u'IEventViewContainer')
 
 
 class ICategories(zope.interface.Interface):
