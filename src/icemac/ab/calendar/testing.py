@@ -8,61 +8,40 @@ import pytz
 class Browser(icemac.addressbook.testing.Browser):
     """Browser adapted for calendar."""
 
-    CALENDAR_OVERVIEW_URL = 'http://localhost/ab/++attribute++calendar'
-    CALENDAR_MONTH_OVERVIEW_URL = (
-        'http://localhost/ab/++attribute++calendar/@@month.html')
-    CALENDAR_MONTH_LIST_VIEW_URL = (
-        'http://localhost/ab/++attribute++calendar/@@month-list.html')
-    CALENDAR_YEAR_OVERVIEW_URL = (
-        'http://localhost/ab/++attribute++calendar/@@year.html')
+    BASE = 'http://localhost/ab/++attribute++calendar'
+    CALENDAR_OVERVIEW_URL = BASE
+    CALENDAR_MONTH_OVERVIEW_URL = BASE + '/@@month.html'
+    CALENDAR_MONTH_LIST_VIEW_URL = BASE + '/@@month-list.html'
+    CALENDAR_YEAR_OVERVIEW_URL = BASE + '/@@year.html'
 
     CALENDAR_MASTERDATA_URL = 'http://localhost/ab/@@calendar-masterdata.html'
-    CALENDAR_MASTERDATA_EDIT_DISPLAY_URL = (
-        'http://localhost/ab/++attribute++calendar/@@edit-display.html')
+    CALENDAR_MASTERDATA_EDIT_DISPLAY_URL = BASE + '/@@edit-display.html'
 
     CALENDAR_EVENT_FIELDS_LIST_URL = (
         'http://localhost/ab/++attribute++entities/'
         'icemac.ab.calendar.event.Event')
 
-    CALENDAR_CATEGORIES_LIST_URL = (
-        'http://localhost/ab/++attribute++calendar_categories')
-    CALENDAR_CATEGORY_ADD_URL = (
-        'http://localhost/ab/++attribute++calendar_categories/'
-        '@@addEventCategory.html')
-    CALENDAR_CATEGORY_EDIT_URL = (
-        'http://localhost/ab/++attribute++calendar_categories/Category')
-    CALENDAR_CATEGORY_DELETE_URL = (
-        'http://localhost/ab/++attribute++calendar_categories/Category/'
-        '@@delete.html')
+    CALENDAR_CATEGORIES_LIST_URL = BASE + '_categories'
+    CALENDAR_CATEGORY_ADD_URL = BASE + '_categories/@@addEventCategory.html'
+    CALENDAR_CATEGORY_EDIT_URL = BASE + '_categories/Category'
+    CALENDAR_CATEGORY_DELETE_URL = BASE + '_categories/Category/@@delete.html'
 
-    CALENDAR_RECURRING_EVENTS_LIST_URL = (
-        'http://localhost/ab/++attribute++calendar_recurring_events')
-    CALENDAR_RECURRING_EVENT_ADD_URL = (
-        'http://localhost/ab/++attribute++calendar_recurring_events/'
-        '@@addRecurringEvent.html')
-    CALENDAR_RECURRING_EVENT_EDIT_URL = (
-        'http://localhost/ab/++attribute++calendar_recurring_events/'
-        'RecurringEvent')
+    RE_BASE = BASE + '_recurring_events'
+    CALENDAR_RECURRING_EVENTS_LIST_URL = RE_BASE
+    CALENDAR_RECURRING_EVENT_ADD_URL = RE_BASE + '/@@addRecurringEvent.html'
+    CALENDAR_RECURRING_EVENT_EDIT_URL = RE_BASE + '/RecurringEvent'
     CALENDAR_RECURRING_EVENT_DELETE_URL = (
-        'http://localhost/ab/++attribute++calendar_recurring_events/'
-        'RecurringEvent/@@delete.html')
+        RE_BASE + '/RecurringEvent/@@delete.html')
 
-    EVENT_ADD_URL = 'http://localhost/ab/++attribute++calendar/@@addEvent.html'
-    EVENT_EDIT_URL = 'http://localhost/ab/++attribute++calendar/Event'
-    EVENT_CLONE_URL = (
-        'http://localhost/ab/++attribute++calendar/Event/@@clone.html')
-    EVENT_DELETE_URL = (
-        'http://localhost/ab/++attribute++calendar/Event/@@delete.html')
+    EVENT_ADD_URL = BASE + '/@@addEvent.html'
+    EVENT_EDIT_URL = BASE + '/Event'
+    EVENT_CLONE_URL = BASE + '/Event/@@clone.html'
+    EVENT_DELETE_URL = BASE + '/Event/@@delete.html'
 
-    RECURRED_EVENT_CUSTOMIZE_URL = (
-        'http://localhost/ab/++attribute++calendar/@@customize-recurred-event')
-    RECURRED_EVENT_ADD_URL = (
-        'http://localhost/ab/++attribute++calendar/@@addFromRecurredEvent.html'
-    )
-    RECURRED_EVENT_VIEW_URL = (
-        'http://localhost/ab/++attribute++calendar/@@viewRecurredEvent.html')
-    RECURRED_EVENT_DELETE_URL = ('http://localhost/ab/++attribute++calendar/'
-                                 '@@delete-recurred-event.html')
+    RECURRED_EVENT_CUSTOMIZE_URL = BASE + '/@@customize-recurred-event'
+    RECURRED_EVENT_ADD_URL = BASE + '/@@addFromRecurredEvent.html'
+    RECURRED_EVENT_VIEW_URL = BASE + '/@@viewRecurredEvent.html'
+    RECURRED_EVENT_DELETE_URL = BASE + '/@@delete-recurred-event.html'
 
 
 class CalendarWebdriverPageObjectBase(
