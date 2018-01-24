@@ -12,5 +12,9 @@ CalendarMasterDataManager = zope.viewlet.manager.ViewletManager(
 
 
 calendar_views = icemac.addressbook.browser.menus.menu.SelectMenuItemOn(
-    'calendar-masterdata.html', icemac.ab.calendar.interfaces.ICategories,
+    'calendar-masterdata.html',
+    icemac.ab.calendar.interfaces.ICategories,
+    icemac.ab.calendar.interfaces.ICategory,
+    icemac.ab.calendar.interfaces.IRecurringEvents,
+    icemac.ab.calendar.interfaces.IRecurringEvent,
     'edit-display.html')
