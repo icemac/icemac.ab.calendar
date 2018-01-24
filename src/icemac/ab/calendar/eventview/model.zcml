@@ -71,8 +71,8 @@
      role="icemac.addressbook.global.Administrator"
      permissions="
         icemac.ab.calendar.AddEventViewConfiguration
-        icemac.ab.calendar.ViewEventViewConfiguration
         icemac.ab.calendar.EditEventViewConfiguration
+        icemac.ab.calendar.ViewEventViewConfiguration
      " />
 
   <class class=".model.EventViewConfiguration">
