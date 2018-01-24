@@ -110,7 +110,7 @@ class Table(icemac.addressbook.browser.table.Table):
 
 
 class Add(EventFields, icemac.addressbook.browser.base.BaseAddForm):
-    """Add form for an recurring event."""
+    """Add form for a recurring event."""
 
     title = _(u'Add new recurring event')
     interface = icemac.ab.calendar.interfaces.IRecurringEvent

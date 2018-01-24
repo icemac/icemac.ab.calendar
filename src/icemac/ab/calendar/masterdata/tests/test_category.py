@@ -123,7 +123,7 @@ def test_category__Delete__1(address_book, CategoryFactory, browser):
 
 def test_category__Delete__2(
         address_book, CategoryFactory, EventFactory, browser):
-    """It used_category_cannot_be_deleted."""
+    """It assures that a used category cannot be deleted."""
     EventFactory(
         address_book, category=CategoryFactory(address_book, u'birthday'))
     browser.login('cal-editor')
