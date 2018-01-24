@@ -1,3 +1,5 @@
+from icemac.ab.calendar.interfaces import IEvent
+from icemac.ab.calendar.interfaces import IRecurringEvent
 import grokcore.component as grok
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.browser.interfaces
@@ -24,6 +26,7 @@ class CalendarMenuItemSelectedChecker(
 
     CALENDAR_VIEW_NAMES = (
         'addEvent.html',
+        'addFromRecurredEvent.html',
         'month.html',
         'month-list.html',
         'year.html',
@@ -31,8 +34,8 @@ class CalendarMenuItemSelectedChecker(
 
     @property
     def selected(self):
-        if icemac.ab.calendar.interfaces.IEvent.providedBy(self.context):
-            return True
+        if IEvent.providedBy(self.context):
+            return not(IRecurringEvent.providedBy(self.context))
         if self.view.__name__ in self.CALENDAR_VIEW_NAMES:
             return True
         return False
