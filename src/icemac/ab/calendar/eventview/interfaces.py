@@ -19,12 +19,12 @@ class StartDateSource(icemac.addressbook.sources.TitleMappingSource):
         (-3, _('3 days in past')),
         (-1, _('1 day in past')),
         (0, _('current day')),
-        (-1, _('1 day in future')),
-        (-3, _('3 days in future')),
-        (-7, _('1 week in future')),
-        (-14, _('2 weeks in future')),
-        (-21, _('3 weeks in future')),
-        (-28, _('4 weeks in future')),
+        (1, _('1 day in future')),
+        (3, _('3 days in future')),
+        (7, _('1 week in future')),
+        (14, _('2 weeks in future')),
+        (21, _('3 weeks in future')),
+        (28, _('4 weeks in future')),
     ))
 
 
