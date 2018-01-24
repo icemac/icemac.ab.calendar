@@ -139,6 +139,16 @@ def test_event__RecurringEvent__1(zcmlS, DateTime):
     assert verifyObject(IRecurringEvent, revent)
 
 
+def test_event__RecurringEvent____repr____1(zcmlS, DateTime):
+    """It returns some data of the recurring event."""
+    event = RecurringEvent()
+    event.datetime = DateTime(2016, 4, 6, 16)
+    event.alternative_title = u'my-rec-title'
+    assert (
+        "<RecurringEvent datetime='2016-04-06 16:00:00+00:00' "
+        "title=u'my-rec-title', deleted=False>" == repr(event))
+
+
 def test_event__RecurringEvent__get_events__1(
         address_book, RecurringEventFactory, CategoryFactory, DateTime):
     """It returns an iterable of `RecurredEvent` instances."""

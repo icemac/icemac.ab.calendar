@@ -66,7 +66,11 @@ class Event(persistent.Persistent,
     def __repr__(self):
         """Custom repr to look inside the event for debugging purposes."""
         fstr = (
-            "<Event datetime='{0.datetime}' title={1!r}, deleted={0.deleted}>")
+            "<{0.__class__.__name__}"
+            " datetime='{0.datetime}'"
+            " title={1!r},"
+            " deleted={0.deleted}>"
+        )
         return fstr.format(
             self, icemac.addressbook.interfaces.ITitle(self, '<unknown>'))
 
