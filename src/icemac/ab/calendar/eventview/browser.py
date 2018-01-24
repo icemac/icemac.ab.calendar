@@ -18,6 +18,12 @@ class RecurringEventsBreadCrumb(
     title = _('Event views')
 
 
+event_views = icemac.addressbook.browser.menus.menu.SelectMenuItemOn(
+    icemac.ab.calendar.eventview.interfaces.IEventViewContainer,
+    icemac.ab.calendar.eventview.interfaces.IEventViewConfiguration,
+)
+
+
 class Table(icemac.addressbook.browser.table.Table):
     """List event views."""
 
