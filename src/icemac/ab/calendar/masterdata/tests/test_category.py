@@ -46,7 +46,7 @@ def test_category__Add__1(address_book, browser):
     browser.getControl('Add').click()
     assert '"birthday" added.' == browser.message
     # The new category shows up in the list:
-    assert 'birthday' in browser.contents
+    assert '>birthday<' in browser.contents
 
 
 def test_category__Add__2(address_book, CategoryFactory, browser):
