@@ -1,0 +1,106 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           i18n_domain="icemac.addressbook">
+
+
+  <!-- EventViewContainer -->
+  <permission
+     id="icemac.ab.calendar.ViewEventViewContainer"
+     title="ViewEventViewContainer"
+     />
+  <permission
+     id="icemac.ab.calendar.EditEventViewContainer"
+     title="EditEventViewContainer"
+     />
+
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permissions="
+        icemac.ab.calendar.ViewEventViewContainer
+     " />
+  <grant
+     role="icemac.ab.calendar.Visitor"
+     permissions="
+        icemac.ab.calendar.ViewEventViewContainer
+     " />
+  <grant
+     role="icemac.addressbook.global.Administrator"
+     permissions="
+        icemac.ab.calendar.ViewEventViewContainer
+        icemac.ab.calendar.EditEventViewContainer
+     " />
+
+  <class class=".model.EventViewContainer">
+    <require
+       permission="icemac.ab.calendar.ViewEventViewContainer"
+       interface=".interfaces.IEventViewContainer
+                  zope.container.interfaces.IReadContainer"
+       />
+    <require
+       permission="icemac.ab.calendar.EditEventViewContainer"
+       interface="zope.container.interfaces.IWriteContainer"
+       set_schema=".interfaces.IEventViewContainer"
+      />
+  </class>
+
+
+  <!-- EventViewConfiguration -->
+  <permission
+     id="icemac.ab.calendar.ViewEventViewConfiguration"
+     title="ViewEventViewConfiguration"
+     />
+  <permission
+     id="icemac.ab.calendar.EditEventViewConfiguration"
+     title="EditEventViewConfiguration"
+     />
+  <permission
+     id="icemac.ab.calendar.AddEventViewConfiguration"
+     title="AddEventViewConfiguration"
+     />
+
+  <grant
+     role="icemac.ab.calendar.Editor"
+     permissions="
+        icemac.ab.calendar.ViewEventViewConfiguration
+     " />
+  <grant
+     role="icemac.ab.calendar.Visitor"
+     permissions="
+        icemac.ab.calendar.ViewEventViewConfiguration
+     " />
+  <grant
+     role="icemac.addressbook.global.Administrator"
+     permissions="
+        icemac.ab.calendar.AddEventViewConfiguration
+        icemac.ab.calendar.EditEventViewConfiguration
+        icemac.ab.calendar.ViewEventViewConfiguration
+     " />
+
+  <class class=".model.EventViewConfiguration">
+    <implements
+      interface="zope.annotation.interfaces.IAttributeAnnotatable"
+      />
+    <require
+       permission="icemac.ab.calendar.ViewEventViewConfiguration"
+       interface=".interfaces.IEventViewConfiguration"
+        attributes="__annotations__"
+       />
+    <require
+      permission="icemac.ab.calendar.EditEventViewConfiguration"
+      set_schema=".interfaces.IEventViewConfiguration"
+      set_attributes="__annotations__"
+      />
+  </class>
+
+  <adapter
+      for=".interfaces.IEventViewConfiguration"
+      factory="icemac.addressbook.adapter.obj_dot_title" />
+  <subscriber
+      for=".interfaces.IEventViewConfiguration
+           zope.container.interfaces.IObjectAddedEvent"
+      handler=".model.unique_titles" />
+  <subscriber
+      for=".interfaces.IEventViewConfiguration
+           zope.lifecycleevent.IObjectModifiedEvent"
+      handler=".model.unique_titles" />
+
+</configure>

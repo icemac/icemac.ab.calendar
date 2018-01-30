@@ -1,7 +1,7 @@
 import zope.generations.generations
 
 
-GENERATION = 8
+GENERATION = 9
 
 
 manager = zope.generations.generations.SchemaManager(
