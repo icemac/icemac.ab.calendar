@@ -2,7 +2,6 @@ from gocept.month import Month
 from icemac.ab.calendar.calendar import Calendar, CalendarDisplaySettings
 from icemac.ab.calendar.event import get_event_data_from_recurring_event
 from icemac.ab.calendar.interfaces import ICalendar, ICalendarDisplaySettings
-from icemac.ab.calendar.interfaces import IEvent
 from zope.interface.verify import verifyObject
 import pytest
 import pytz
@@ -179,24 +178,3 @@ def test_calendar__Calendar__get_events__9(
     assert ([False] == [x.deleted
                         for x in address_book.calendar.get_events(
                             Month(5, 2017), 'Europe/Berlin')])
-
-
-def test_calendar__CalendarDisplaySettings___event_additional_fields__1(
-        address_book, FieldFactory):
-    """It stores a string representation of the fields."""
-    field = FieldFactory(address_book, IEvent, 'Int', u'Num')
-    cds = CalendarDisplaySettings()
-    cds.event_additional_fields = [IEvent['text'], field]
-    assert (['IcemacAbCalendarEventEvent###text',
-             'IcemacAbCalendarEventEvent###Field-1'] ==
-            cds._event_additional_fields)
-
-
-def test_calendar__CalendarDisplaySettings__event_additional_fields__1(
-        address_book, FieldFactory):
-    """It returns actual field objects."""
-    field = FieldFactory(address_book, IEvent, 'Int', u'Num')
-    cds = CalendarDisplaySettings()
-    cds._event_additional_fields = ['IcemacAbCalendarEventEvent###text',
-                                    'IcemacAbCalendarEventEvent###Field-1']
-    assert ([IEvent['text'], field] == cds.event_additional_fields)

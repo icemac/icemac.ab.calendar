@@ -4,7 +4,7 @@ from datetime import datetime, time
 import gocept.reference
 import grokcore.annotation as grok
 import icemac.ab.calendar.interfaces
-import icemac.addressbook.fieldsource
+import icemac.ab.calendar.property
 import icemac.addressbook.interfaces
 import itertools
 import pytz
@@ -64,33 +64,12 @@ class CalendarDisplaySettings(grok.Annotation):
 
     person_keyword = gocept.reference.Reference(
         'person_keyword', ensure_integrity=True)
-    _event_additional_fields = []
+    event_additional_fields = icemac.ab.calendar.property.AddressBookField(
+        '_event_additional_fields', multiple=True)
 
     def __init__(self, *args, **kw):
         super(CalendarDisplaySettings, self).__init__(*args, **kw)
         self.person_keyword = None
-
-    @property
-    def event_additional_fields(self):
-        fields = []
-        for value in self._event_additional_fields:
-            try:
-                field = icemac.addressbook.fieldsource.untokenize(value)[1]
-            except KeyError:
-                pass
-            else:
-                fields.append(field)
-        return fields
-
-    @event_additional_fields.setter
-    def event_additional_fields(self, fields):
-        values = []
-        event_entity = icemac.addressbook.interfaces.IEntity(
-            icemac.ab.calendar.interfaces.IEvent)
-        for field in fields:
-            values.append(icemac.addressbook.fieldsource.tokenize(
-                event_entity, field.__name__))
-        self._event_additional_fields = values
 
 
 @grok.adapter(icemac.addressbook.interfaces.IAddressBook)

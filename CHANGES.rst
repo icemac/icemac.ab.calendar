@@ -5,7 +5,7 @@
 2.4 (unreleased)
 ================
 
-- Nothing changed yet.
+- Refactor code.
 
 
 2.3 (2017-12-26)
