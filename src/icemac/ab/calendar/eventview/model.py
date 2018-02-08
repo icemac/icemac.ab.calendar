@@ -1,6 +1,8 @@
-import icemac.ab.calendar.eventview.interfaces
 from icemac.addressbook.i18n import _
+import gocept.reference
+import icemac.ab.calendar.eventview.interfaces
 import icemac.ab.calendar.interfaces
+import icemac.ab.calendar.property
 import icemac.addressbook.utils
 import persistent
 import zope.container.btree
@@ -22,7 +24,16 @@ class EventViewConfiguration(persistent.Persistent,
     """A configuration of an view of events."""
 
     zope.schema.fieldproperty.createFieldProperties(
-        icemac.ab.calendar.eventview.interfaces.IEventViewConfiguration)
+        icemac.ab.calendar.eventview.interfaces.IEventViewConfiguration,
+        omit=['categories', 'fields'])
+    categories = gocept.reference.ReferenceCollection(
+        'categories', ensure_integrity=True)
+    fields = icemac.ab.calendar.property.AddressBookField(
+        '_fields', multiple=True)
+
+    def __init__(self, *args, **kw):
+        super(EventViewConfiguration, self).__init__(*args, **kw)
+        self.categories = set([])
 
     def __repr__(self):
         """Human readable representation of the object."""

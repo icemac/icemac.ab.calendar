@@ -72,19 +72,32 @@ def test_masterdata__Add__3(address_book, browser, login):
 
 
 def test_masterdata__Edit__1(
-        address_book, EventViewConfigurationFactory, browser):
+        address_book, EventViewConfigurationFactory, CategoryFactory, browser):
     """It allows to edit a category."""
     EventViewConfigurationFactory(address_book, u'default')
+    CategoryFactory(address_book, u'foo')
+    CategoryFactory(address_book, u'bar')
     browser.login('mgr')
     browser.open(browser.CALENDAR_MASTERDATA_EVENTVIEW_URL)
     browser.getLink('default').click()
     assert browser.CALENDAR_EVENTVIEW_CONFIGURATION_EDIT_URL == browser.url
     assert 'default' == browser.getControl('title').value
     browser.getControl('title').value = 'alternative'
+    browser.getControl('start date').displayValue = ['3 days in past']
+    browser.getControl('duration').displayValue = ['3 weeks']
+    browser.getControl('categories').displayValue = ['bar']
+    browser.getControl('show fields').displayValue = ['persons']
     browser.getControl('Apply').click()
     assert 'Data successfully updated.' == browser.message
     # The changed category name shows up in the list:
     assert 'alternative' in browser.contents
+    browser.getLink('alternative').click()
+    open('response.html', 'w').write(browser.contents)
+    assert browser.getControl('title').value == 'alternative'
+    assert browser.getControl('start date').displayValue == ['3 days in past']
+    assert browser.getControl('duration').displayValue == ['3 weeks']
+    assert browser.getControl('categories').displayValue == ['bar']
+    assert browser.getControl('show fields').displayValue == ['persons']
 
 
 def test_masterdata__Edit__2(

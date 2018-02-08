@@ -62,7 +62,10 @@ class EventFieldsSource(zc.sourcefactory.basic.BasicSourceFactory):
             self.event_entity, value.__name__)
 
     def getTitle(self, value):
-        return value.title
+        # If we get here it is no security risk to return the title because the
+        # user is allowed to access the value. But we did not register class
+        # types and security assertions for fields.
+        return zope.security.proxy.removeSecurityProxy(value).title
 
 
 event_fields_source = EventFieldsSource()

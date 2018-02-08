@@ -1,5 +1,7 @@
 from icemac.addressbook.i18n import _
 import collections
+import gocept.reference.field
+import icemac.ab.calendar.interfaces
 import icemac.addressbook.sources
 import zope.interface
 
@@ -31,6 +33,20 @@ class StartDateSource(icemac.addressbook.sources.TitleMappingSource):
 start_date_source = StartDateSource()
 
 
+class DurationSource(icemac.addressbook.sources.TitleMappingSource):
+    """Source a number of days to a text."""
+
+    _mapping = collections.OrderedDict((
+        (7, _('1 week')),
+        (14, _('2 weeks')),
+        (21, _('3 weeks')),
+        (28, _('4 weeks')),
+    ))
+
+
+duration_source = DurationSource()
+
+
 class IEventViewConfiguration(zope.interface.Interface):
     """Configuration of an view of events."""
 
@@ -45,3 +61,25 @@ class IEventViewConfiguration(zope.interface.Interface):
             ' current date by the chosen period of time.'),
         source=start_date_source,
     )
+
+    duration = zope.schema.Choice(
+        title=_('duration'),
+        description=_('This number of days is shown in the view.'),
+        source=duration_source,
+    )
+
+    categories = gocept.reference.field.Set(
+        title=_('categories'),
+        description=_(
+            'Show in the view only events having one of these categories.'),
+        required=False,
+        value_type=zope.schema.Choice(
+            title=_('event category'),
+            source=icemac.ab.calendar.interfaces.category_source))
+
+    fields = zope.schema.List(
+        title=_('show fields'),
+        description=_('Additional event fields to be shown in the view.'),
+        required=False,
+        value_type=zope.schema.Choice(
+            source=icemac.ab.calendar.interfaces.event_fields_source))
