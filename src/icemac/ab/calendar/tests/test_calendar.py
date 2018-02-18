@@ -32,30 +32,31 @@ def sample_events(address_book, EventFactory, DateTime):
     return address_book
 
 
-def test_calendar__Calendar__get_events__1(sample_events):
+def test_calendar__Calendar__get_events_for_month__1(sample_events):
     """It returns only events in the given month."""
     assert ([u'start Feb 2013', u'end Feb 2013'] ==
             [x.alternative_title
-             for x in sample_events.calendar.get_events(Month(2, 2013))])
+             for x in sample_events.calendar.get_events_for_month(
+                 Month(2, 2013))])
 
 
-def test_calendar__Calendar__get_events__2(sample_events):
+def test_calendar__Calendar__get_events_for_month__2(sample_events):
     """It respects the given time zone for an eastern time zone."""
     assert ([u'end Feb 2013', u'start Mar 2013'] ==
             [x.alternative_title
-             for x in sample_events.calendar.get_events(
+             for x in sample_events.calendar.get_events_for_month(
                  Month(2, 2013), 'Etc/GMT+1')])
 
 
-def test_calendar__Calendar__get_events__3(sample_events):
+def test_calendar__Calendar__get_events_for_month__3(sample_events):
     """It respects the given time zone for a western time zone."""
     assert ([u'end Jan 2013', u'start Feb 2013'] ==
             [x.alternative_title
-             for x in sample_events.calendar.get_events(
+             for x in sample_events.calendar.get_events_for_month(
                  Month(2, 2013), 'Etc/GMT-1')])
 
 
-def test_calendar__Calendar__get_events__4(
+def test_calendar__Calendar__get_events_for_month__4(
         sample_events, address_book, RecurringEventFactory, CategoryFactory,
         DateTime):
     """It returns the recurring events in the given month."""
@@ -76,11 +77,11 @@ def test_calendar__Calendar__get_events__4(
              (u'each week', '2013-02-15T00:00:00+01:00'),
              (u'each week', '2013-02-22T00:00:00+01:00')] ==
             [(x.alternative_title, x.datetime.isoformat())
-             for x in address_book.calendar.get_events(
+             for x in address_book.calendar.get_events_for_month(
                  Month(2, 2013), 'Etc/GMT-1')])
 
 
-def test_calendar__Calendar__get_events__5(
+def test_calendar__Calendar__get_events_for_month__5(
         address_book, CategoryFactory, RecurringEventFactory, EventFactory,
         DateTime):
     """A customized recurred event hides the original recurred event."""
@@ -98,11 +99,11 @@ def test_calendar__Calendar__get_events__5(
              (u'this week', '2013-03-21'),
              (u'each week', '2013-03-28')] ==
             [(x.alternative_title, x.datetime.date().isoformat())
-             for x in address_book.calendar.get_events(
+             for x in address_book.calendar.get_events_for_month(
                  Month(3, 2013), 'Etc/GMT+1')])
 
 
-def test_calendar__Calendar__get_events__6(
+def test_calendar__Calendar__get_events_for_month__6(
         address_book, CategoryFactory, RecurringEventFactory, DateTime):
     """The recurring event with the higher prio in the category is rendered."""
     category = CategoryFactory(address_book, u'night lunch')
@@ -124,11 +125,11 @@ def test_calendar__Calendar__get_events__6(
              (u'weekly lunch', '2013-03-24'),
              (u'weekly lunch', '2013-03-31')] ==
             [(x.alternative_title, x.datetime.date().isoformat())
-             for x in address_book.calendar.get_events(
+             for x in address_book.calendar.get_events_for_month(
                  Month(3, 2013), 'Etc/GMT+1')])
 
 
-def test_calendar__Calendar__get_events__7(
+def test_calendar__Calendar__get_events_for_month__7(
         sample_events, address_book, EventFactory, DateTime):
     """It does not return deleted events."""
     event = EventFactory(
@@ -138,11 +139,11 @@ def test_calendar__Calendar__get_events__7(
     event.deleted = True
     assert ([u'start Mar 2013'] ==
             [x.alternative_title
-             for x in address_book.calendar.get_events(
+             for x in address_book.calendar.get_events_for_month(
                  Month(3, 2013), 'Etc/GMT')])
 
 
-def test_calendar__Calendar__get_events__8(
+def test_calendar__Calendar__get_events_for_month__8(
         address_book, EventFactory, DateTime):
     """A whole day event does not change the month via timezone."""
     EventFactory(address_book,
@@ -154,15 +155,15 @@ def test_calendar__Calendar__get_events__8(
                  datetime=DateTime(2015, 4, 30, 23))
     assert ([u'whole day', u'day'] ==
             [x.alternative_title
-             for x in address_book.calendar.get_events(
+             for x in address_book.calendar.get_events_for_month(
                  Month(4, 2015), 'Etc/GMT+8')])
     assert ([u'whole day'] ==
             [x.alternative_title
-             for x in address_book.calendar.get_events(
+             for x in address_book.calendar.get_events_for_month(
                  Month(4, 2015), 'Etc/GMT-7')])
 
 
-def test_calendar__Calendar__get_events__9(
+def test_calendar__Calendar__get_events_for_month__9(
         address_book, EventFactory, CategoryFactory, DateTime):
     """Deleted events are depressed in favour of not deleted ones.
 
@@ -176,5 +177,13 @@ def test_calendar__Calendar__get_events__9(
     e1.deleted = True
     EventFactory(address_book, category=category, datetime=date)
     assert ([False] == [x.deleted
-                        for x in address_book.calendar.get_events(
+                        for x in address_book.calendar.get_events_for_month(
                             Month(5, 2017), 'Europe/Berlin')])
+
+
+def test_calendar__Calendar__get_events__1(sample_events, DateTime):
+    """It returns only events in the given time range."""
+    assert ([u'end Jan 2013', u'start Feb 2013', u'end Feb 2013'] ==
+            [x.alternative_title
+             for x in sample_events.calendar.get_events(
+                 DateTime(2013, 1, 30, 0), DateTime(2013, 3, 1, 0))])

@@ -154,7 +154,8 @@ class TabularCalendar(icemac.ab.calendar.browser.base.View):
         return [(
             month,
             [IEventDescription(x)
-             for x in self.context.get_events(month, self.time_zone_name())
+             for x in self.context.get_events_for_month(
+                month, self.time_zone_name())
              if condition(x)]
         ) for month in year]
 
@@ -210,7 +211,7 @@ class MonthCalendar(TabularCalendar):
 
     def get_event_descriptions(self):
         return [IEventDescription(x)
-                for x in self.context.get_events(
+                for x in self.context.get_events_for_month(
                     self.month, self.time_zone_name())]
 
     def render_calendar(self):

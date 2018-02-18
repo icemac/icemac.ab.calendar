@@ -18,17 +18,29 @@ import zope.interface
 class Calendar(zope.container.btree.BTreeContainer):
     """Calendar containing dates."""
 
-    def get_events(self, month, timezone=None):
+    def get_events_for_month(self, month, timezone=None):
         """Get all events which belong to `month`."""
-        if timezone is None:
-            timezone = pytz.utc
-        else:
-            timezone = pytz.timezone(timezone)
+        timezone = self._timezone_name_to_timezone(timezone)
         midnight = time(0, 0, 0)
         start = timezone.localize(
             datetime.combine(month.firstOfMonth(), midnight))
         end = timezone.localize(
             datetime.combine((month + 1).firstOfMonth(), midnight))
+        return self._get_events(start, end, timezone)
+
+    def get_events(self, start, end, timezone=None):
+        """Get all events between `start` and `end` (datetime).
+
+        `start` is part of the interval, but `end` is not.
+        """
+        timezone = self._timezone_name_to_timezone(timezone)
+        return self._get_events(start, end, timezone)
+
+    def _get_events(self, start, end, timezone):
+        """Get all events between `start` and `end`.
+
+        `start` is part of the interval, but `end` is not.
+        """
         recurring_events = zope.component.getUtility(
             icemac.ab.calendar.interfaces.IRecurringEvents).get_events()
         recurred_events = [x.get_events(start, end, timezone)
@@ -54,6 +66,14 @@ class Calendar(zope.container.btree.BTreeContainer):
             key=lambda x: (x.in_timezone(timezone),
                            icemac.addressbook.interfaces.ITitle(
                                x.category, None)))
+
+    def _timezone_name_to_timezone(self, name):
+        """Return a timezone object. If `name` is None, return UTC."""
+        if name is None:
+            timezone = pytz.utc
+        else:
+            timezone = pytz.timezone(name)
+        return timezone
 
 
 class CalendarDisplaySettings(grok.Annotation):

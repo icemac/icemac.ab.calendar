@@ -29,7 +29,7 @@ class ICalendar(ICalendarObject,
                 zope.location.interfaces.ILocation):
     """Calender and storage for dates."""
 
-    def get_events(month, timezone=None):
+    def get_events_for_month(month, timezone=None):
         """Get all events which belong to `month` sorted by datetime.
 
         All events = single events and recurred events in month but no deleted
@@ -37,6 +37,20 @@ class ICalendar(ICalendarObject,
 
         month ... ``gocept.month.Month`` object.
         timezone ... str, None defaults to UTC.
+
+        """
+
+    def get_events(start, end, timezone=None):
+        """Get all events which between `start` and `end` sorted by datetime.
+
+        `start` belongs to the interval but `end` does not.
+        All events = single events and recurred events in month but no deleted
+        events.
+
+        start ... ``datetime.datetime`` object.
+        end ... ``datetime.datetime`` object.
+        timezone ... str, None defaults to UTC.
+
 
         """
 
