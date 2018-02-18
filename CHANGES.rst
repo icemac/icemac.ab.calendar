@@ -2,10 +2,15 @@
  Changelog
 ===========
 
-2.4 (unreleased)
+3.0 (unreleased)
 ================
 
-- Refactor code.
+Backward incompatible changes
+-----------------------------
+
+- ``.calendar.Calendar.get_events()`` now expects two arguments: start and end.
+  The previous functionality of ``get_events()`` is now provided by
+  ``get_events_for_month()``
 
 
 2.3 (2017-12-26)
