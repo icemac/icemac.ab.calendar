@@ -30,7 +30,8 @@
     <tal:months
       tal:condition="view/start"
       tal:repeat="month view/events_per_month">
-      <h3 tal:content="month/month">Februar 2018</h3>
+      <h3 class="mt-1"
+          tal:content="month/month">Februar 2018</h3>
       <div class="calendar">
         <dl class="row">
           <tal:day tal:repeat="day month/days">
