@@ -57,9 +57,7 @@ def test_browser__EventView__3(
 def test_browser__EventView__4(
         address_book, EventViewConfigurationFactory, DateTime, browser):
     """It allows to select a different event view config."""
-    EventViewConfigurationFactory(
-        address_book, '1 week', start=0, duration=7)
-
+    EventViewConfigurationFactory(address_book, '1 week', start=0, duration=7)
     EventViewConfigurationFactory(
         address_book, '2 weeks', start=0, duration=14)
 
