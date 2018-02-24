@@ -78,10 +78,11 @@ class EventView(icemac.ab.calendar.browser.base.View):
         current_day = self.start
         current_event = self.events.pop(default=None)
         while current_day <= self.end:
+            current_week_day = int(current_day.strftime('%w'))
             day = {
                 'day': '{}, {}.'.format(
-                    self.day_names[int(current_day.strftime('%w'))],
-                    current_day.day),
+                    self.day_names[current_week_day], current_day.day),
+                'add_css': '' if current_week_day else ' bg-warning',
                 'events': [],
             }
             next_day = current_day + ONE_DAY

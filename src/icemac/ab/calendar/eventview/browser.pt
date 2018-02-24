@@ -34,8 +34,9 @@
       <div class="calendar">
         <dl class="row">
           <tal:day tal:repeat="day month/days">
-            <dt class="col-sm-3" tal:content="day/day">So, 18. Februar 2018</dt>
-            <dd class="col-sm-9">
+            <dt tal:attributes="class string:col-sm-3${day/add_css}"
+                tal:content="day/day">So, 18.</dt>
+            <dd tal:attributes="class string:col-sm-9${day/add_css}">
               <dl class="row">
                 <tal:events tal:repeat="event day/events">
                   <dt class="col-sm-6">
