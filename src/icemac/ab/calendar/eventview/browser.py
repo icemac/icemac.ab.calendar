@@ -79,13 +79,23 @@ class EventView(icemac.ab.calendar.browser.base.View):
             'days': [],
         }
         current_day = self.start
+        today = datetime.datetime.combine(date.today(), current_day.timetz())
         current_event = self.events.pop(default=None)
         while current_day <= self.end:
             current_week_day = int(current_day.strftime('%w'))
+            add_css_dt = []
+            add_css_dd = ''
+            if not current_week_day:
+                # only add this CSS class on Sunday
+                add_css_dt.append(' bg-warning')
+                add_css_dd = ' bg-warning'
+            if current_day == today:
+                add_css_dt.append(' text-success')
             day = {
                 'day': '{}, {}.'.format(
                     self.day_names[current_week_day], current_day.day),
-                'add_css': '' if current_week_day else ' bg-warning',
+                'add_css_dt': ''.join(add_css_dt),
+                'add_css_dd': add_css_dd,
                 'events': [],
             }
             next_day = current_day + ONE_DAY
