@@ -1,0 +1,61 @@
+<i18n:domain domain="icemac.addressbook">
+  <a class="close"
+     aria-label="close"
+     data-toggle="popover"
+     data-placement="left"
+     data-content="Close the event view and go back to the month view."
+     data-trigger="hover"
+     tal:attributes="href view/close_url"
+     i18n:attributes="aria-label;
+                      data-content">
+    <span aria-hidden="true">&times;</span>
+  </a>
+  <div id="eventview"
+       class="pt-4 pr-4 pl-4"
+       tal:define="title provider:addressbook-title">
+    <div class="row">
+      <h2 class="col-sm-8"
+           tal:content="title">icemac.ab.calendar</h2>
+      <form class="col-sm-4 text-center"
+            tal:attributes="action view/action">
+        <div class="form-group">
+          <select class="form-control"
+                  tal:replace="structure view/views">
+            <option>Vorschau 2 Wochen</option>
+          </select>
+        </div>
+      </form>
+    </div>
+
+    <tal:months
+      tal:condition="view/start"
+      tal:repeat="month view/events_per_month">
+      <h3 tal:content="month/month">Februar 2018</h3>
+      <div class="calendar">
+        <dl class="row">
+          <tal:day tal:repeat="day month/days">
+            <dt class="col-sm-3" tal:content="day/day">So, 18. Februar 2018</dt>
+            <dd class="col-sm-9">
+              <dl class="row">
+                <tal:events tal:repeat="event day/events">
+                  <dt class="col-sm-6">
+                    <span tal:content="structure event/time">10:00 Uhr</span>
+                    <a class="text-dark"
+                       href="#"
+                       tal:content="event/event">Gottesdienst</a>
+                  </dt>
+                  <dd class="col-sm-6">
+                    <ul class="list-unstyled">
+                      <li tal:repeat="info event/data"
+                          tal:content="info">Peter Tester</li>
+                    </ul>
+                  </dd>
+                </tal:events>
+              </dl>
+            </dd>
+          </tal:day>
+        </dl>
+      </div>
+    </tal:months>
+  </div>
+</i18n:domain>

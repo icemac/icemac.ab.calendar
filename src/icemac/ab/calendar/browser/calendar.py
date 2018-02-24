@@ -27,9 +27,12 @@ import zope.interface
 class Dispatcher(icemac.ab.calendar.browser.base.View):
     """Dispatch to month resp. year view."""
 
-    possible_views = {'month': 'month.html',
-                      'month-list': 'month-list.html',
-                      'year': 'year.html'}
+    possible_views = {
+        'month': 'month.html',
+        'month-list': 'month-list.html',
+        'year': 'year.html',
+        'event-view': 'event-view.html',
+    }
 
     def __call__(self):
         target = self.request.get('to', None)

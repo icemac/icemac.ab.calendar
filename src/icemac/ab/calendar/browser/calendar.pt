@@ -26,6 +26,12 @@
              i18n:attributes="title"
              i18n:translate="">Year tabular view</a>
         </li>
+        <li>
+          <a tal:attributes="href python:view.menu_url('event-view')"
+             title="switch to the event views"
+             i18n:attributes="title"
+             i18n:translate="">Event views</a>
+        </li>
       </ul>
       <div class="NW-container">
         <div class="NW"></div>

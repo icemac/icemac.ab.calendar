@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"
+      tal:define="title provider:addressbook-title">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title tal:content="title">icemac.addressbook</title>
+  </head>
+  <body>
+    <div id="container"
+         tal:attributes="lang request/locale/id/language"
+         tal:content="structure provider:pagelet">Page Content</div>
+  </body>
+</html>

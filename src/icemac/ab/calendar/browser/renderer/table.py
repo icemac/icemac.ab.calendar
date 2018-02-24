@@ -20,6 +20,18 @@ SPECIAL_CLASS_MAPPING = {
 }
 
 
+def render_event_time(event_description, request, no_time=''):
+    """Render the time of an `IEventDescription`."""
+    if event_description.whole_day:
+        return no_time
+    formatter = request.locale.dates.getFormatter(
+        'time', 'short')
+    time = formatter.format(event_description.datetime)
+    if request.locale.id.language == 'de':
+        time += ' Uhr'
+    return time
+
+
 class TableEvent(icemac.addressbook.browser.base.BaseView):
     """View to render an event in the table."""
 
@@ -28,14 +40,9 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
     default_text = _('Edit')  # allow at least to edit the entry
 
     def time(self):
-        if self.context.whole_day:
-            return '&#x200b;'  # zero width space to keep printing uniform
-        formatter = self.request.locale.dates.getFormatter(
-            'time', 'short')
-        time = formatter.format(self.context.datetime)
-        if self.request.locale.id.language == 'de':
-            time += ' Uhr'
-        return time
+        zero_width_space = '&#x200b;'  # keep printing uniform
+        return render_event_time(
+            self.context, self.request, no_time=zero_width_space)
 
     def dd_class(self):
         return SPECIAL_CLASS_MAPPING.get(self.context.special_event)
@@ -71,6 +78,15 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
         return self.url(self.context.context)
 
 
+def get_day_names(request):
+    """Return a list of localized week day names starting with Sunday."""
+    locale_calendar = request.locale.dates.calendars['gregorian']
+    day_names = locale_calendar.getDayNames()
+    # Move Sunday to position one
+    day_names.insert(0, day_names.pop(-1))
+    return day_names
+
+
 class Table(Calendar):
     """Tabular display of a calendar."""
 
@@ -93,14 +109,10 @@ class Table(Calendar):
             self.num_of_days += 6 - end_of_month.isoweekday()
 
     def table_head(self):
-        calendar = self.request.locale.dates.calendars['gregorian']
         self.write('<table>')
         self.write('  <thead>')
         self.write('    <tr>')
-        day_names = calendar.getDayNames()
-        # Move Sunday to position one
-        day_names.insert(0, day_names.pop(-1))
-        for index, day_name in enumerate(day_names):
+        for index, day_name in enumerate(get_day_names(self.request)):
             self.write('      <th class="day-%s">%s</th>', index, day_name)
         self.write('    </tr>')
         self.write('  </thead>')

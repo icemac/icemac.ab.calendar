@@ -2,7 +2,10 @@ from icemac.addressbook.i18n import _
 import collections
 import gocept.reference.field
 import icemac.ab.calendar.interfaces
+import icemac.addressbook.interfaces
 import icemac.addressbook.sources
+import zc.sourcefactory.basic
+import zope.component
 import zope.interface
 
 
@@ -83,3 +86,23 @@ class IEventViewConfiguration(zope.interface.Interface):
         required=False,
         value_type=zope.schema.Choice(
             source=icemac.ab.calendar.interfaces.event_fields_source))
+
+
+class EventViewConfigurationSource(zc.sourcefactory.basic.BasicSourceFactory):
+    """Source containing all event view configurations."""
+
+    def getValues(self):
+        container = zope.component.getUtility(IEventViewContainer)
+        return sorted(container.values(), key=lambda x: x.title)
+
+    def getTitle(self, value):
+        return icemac.addressbook.interfaces.ITitle(value)
+
+
+class IEventViews(zope.interface.Interface):
+    """Listing of event view configurations."""
+
+    views = zope.schema.Choice(
+        title=u'known views',
+        source=EventViewConfigurationSource(),
+    )

@@ -1,0 +1,5 @@
+#eventview .calendar dl,
+#eventview .calendar dd,
+#eventview .calendar ul {
+    margin-bottom: 0;
+}

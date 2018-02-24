@@ -1,0 +1,22 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:gocept="http://namespaces.gocept.com/zcml"
+   xmlns:z3c="http://namespaces.zope.org/z3c"
+   i18n_domain="icemac.addressbook">
+
+  <gocept:pagelet
+    name="event-view.html"
+    for="icemac.ab.calendar.interfaces.ICalendar"
+    layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+    template="browser.pt"
+    class=".browser.EventView"
+    permission="icemac.ab.calendar.ViewCalendar"
+    />
+
+  <z3c:layout
+    for=".browser.EventView"
+    layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+    template="browser-layout.pt"
+    />
+
+</configure>

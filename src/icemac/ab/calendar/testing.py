@@ -52,6 +52,8 @@ class Browser(icemac.addressbook.testing.Browser):
     RECURRED_EVENT_VIEW_URL = BASE + '/@@viewRecurredEvent.html'
     RECURRED_EVENT_DELETE_URL = BASE + '/@@delete-recurred-event.html'
 
+    CALENDAR_EVENT_VIEWS_URL = BASE + '/@@event-view.html'
+
 
 class CalendarWebdriverPageObjectBase(
         icemac.addressbook.testing.WebdriverPageObjectBase):
