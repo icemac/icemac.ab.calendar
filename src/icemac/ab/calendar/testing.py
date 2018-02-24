@@ -54,6 +54,11 @@ class Browser(icemac.addressbook.testing.Browser):
 
     CALENDAR_EVENT_VIEWS_URL = BASE + '/@@event-view.html'
 
+    @property
+    def ucontents(self):
+        """Browser contents decoded to unicode."""
+        return self.contents.decode('utf-8')
+
 
 class CalendarWebdriverPageObjectBase(
         icemac.addressbook.testing.WebdriverPageObjectBase):
