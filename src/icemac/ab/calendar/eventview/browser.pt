@@ -42,7 +42,7 @@
                   <dt class="col-sm-6">
                     <span tal:content="structure event/time">10:00 Uhr</span>
                     <a class="text-dark"
-                       href="#"
+                       tal:attributes="href event/url"
                        tal:content="event/event">Gottesdienst</a>
                   </dt>
                   <dd class="col-sm-6">

@@ -95,6 +95,7 @@ class EventView(icemac.ab.calendar.browser.base.View):
                 event_data = {
                     'event': icemac.addressbook.interfaces.ITitle(
                         current_event),
+                    'url': self.url(current_event),
                     'time': render_event_time(ed, self.request),
                     'data': [],
                 }
