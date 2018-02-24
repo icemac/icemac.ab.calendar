@@ -92,7 +92,6 @@ def test_masterdata__Edit__1(
     # The changed category name shows up in the list:
     assert 'alternative' in browser.contents
     browser.getLink('alternative').click()
-    open('response.html', 'w').write(browser.contents)
     assert browser.getControl('title').value == 'alternative'
     assert browser.getControl('start date').displayValue == ['3 days in past']
     assert browser.getControl('duration').displayValue == ['3 weeks']
