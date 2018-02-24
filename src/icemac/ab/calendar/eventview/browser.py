@@ -45,9 +45,12 @@ class EventView(icemac.ab.calendar.browser.base.View):
             # The used select widget is a multi select (which cannot be
             # changed):
             token = self.widget.value[0]
-            self.events = self._get_events(self.widget.terms.getValue(token))
-            self.events = EventList(self.events)
-            self.events.reverse()
+            event_view_config = self.widget.terms.getValue(token)
+        else:
+            source = IEventViews['views'].source.factory
+            event_view_config = source.getValues()[0]
+        self.events = EventList(self._get_events(event_view_config))
+        self.events.reverse()
 
     def close_url(self):
         return self.url(self.context, 'month.html')

@@ -21,8 +21,6 @@ def test_browser__EventView__1(
     browser.open(browser.CALENDAR_OVERVIEW_URL)
     browser.getLink('Event views').click()
     assert browser.CALENDAR_EVENT_VIEWS_URL == browser.url
-    browser.getControl(name='views:list').displayValue = ['-1 day for 1 week']
-    browser.getForm().submit()
     assert '>Party<' in browser.ucontents
     assert '>Lesson<' in browser.ucontents
 
@@ -38,8 +36,6 @@ def test_browser__EventView__2(
         browser.login('cal-visitor')
         browser.lang(b'en')
         browser.open(browser.CALENDAR_EVENT_VIEWS_URL)
-        browser.getControl(name='views:list').displayValue = ['1 week']
-        browser.getForm().submit()
     assert 'February 2018' in browser.ucontents
     assert 'March 2018' not in browser.ucontents
 
@@ -55,6 +51,25 @@ def test_browser__EventView__3(
         browser.login('cal-visitor')
         browser.lang(b'en')
         browser.open(browser.CALENDAR_EVENT_VIEWS_URL)
-        browser.getControl(name='views:list').displayValue = ['1 week']
-        browser.getForm().submit()
     assert ' bg-warning">Sunday, 25.<' in browser.ucontents
+
+
+def test_browser__EventView__4(
+        address_book, EventViewConfigurationFactory, DateTime, browser):
+    """It allows to select a different event view config."""
+    EventViewConfigurationFactory(
+        address_book, '1 week', start=0, duration=7)
+
+    EventViewConfigurationFactory(
+        address_book, '2 weeks', start=0, duration=14)
+
+    with mock.patch('icemac.ab.calendar.eventview.browser.date') as date:
+        date.today.return_value = DateTime(2018, 2, 21).date()
+        browser.login('cal-visitor')
+        browser.lang(b'en')
+        browser.open(browser.CALENDAR_EVENT_VIEWS_URL)
+        assert 'March 2018' not in browser.ucontents
+
+        browser.getControl(name='views:list').displayValue = ['2 weeks']
+        browser.getForm().submit()
+        assert 'March 2018' in browser.ucontents
