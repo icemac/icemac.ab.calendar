@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from .interfaces import DATE_INDEX
+from .interfaces import IEvent
+from .interfaces import IRecurringEvent
 from datetime import datetime, time
+from icemac.addressbook.interfaces import ISchemaName
 import gocept.reference
 import grokcore.annotation as grok
 import icemac.ab.calendar.interfaces
@@ -49,8 +52,13 @@ class Calendar(zope.container.btree.BTreeContainer):
                       for x in itertools.chain(*recurred_events)}
         catalog = zope.component.getUtility(zope.catalog.interfaces.ICatalog)
         # The values for the index are: min, max, min_exclude, max_exclude
-        single_events = catalog.searchResults(
-            **{DATE_INDEX: {'between': (start, end, False, True)}})
+        single_events = catalog.searchResults(**{
+            DATE_INDEX: {'between': (start, end, False, True)},
+            'schema_name': {'any_of': [
+                ISchemaName(IEvent).schema_name,
+                ISchemaName(IRecurringEvent).schema_name,
+            ]},
+        })
         # Sort deleted events first. This way a recurred event can be deleted
         # and later on replaced by a new event of the same category.
         sorted_single_events = sorted(

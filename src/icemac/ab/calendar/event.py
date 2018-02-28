@@ -5,6 +5,7 @@ import gocept.reference
 import grokcore.component as grok
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.entities
+import icemac.addressbook.interfaces
 import icemac.addressbook.utils
 import icemac.recurrence
 import itertools
@@ -42,13 +43,19 @@ class BaseEvent(object):
         return timezone.normalize(self.datetime)
 
 
+event_schema = icemac.ab.calendar.interfaces.IEvent
+
+
 @zope.interface.implementer(
-    icemac.ab.calendar.interfaces.IEvent,
+    event_schema,
+    icemac.addressbook.interfaces.ISchemaProvider,
     zope.annotation.interfaces.IAttributeAnnotatable)
 class Event(persistent.Persistent,
             zope.container.contained.Contained,
             BaseEvent):
     """An event in the calendar."""
+
+    schema = event_schema
 
     zope.schema.fieldproperty.createFieldProperties(
         icemac.ab.calendar.interfaces.IEvent, omit=['category', 'persons'])
@@ -129,10 +136,14 @@ class RecurringEventContainer(zope.container.btree.BTreeContainer):
         return sorted(self.values(), key=lambda x: x.priority)
 
 
-@zope.interface.implementer(icemac.ab.calendar.interfaces.IRecurringEvent)
+recurring_event_schema = icemac.ab.calendar.interfaces.IRecurringEvent
+
+
+@zope.interface.implementer(recurring_event_schema)
 class RecurringEvent(Event):
     """An event which repeats after a defined period."""
 
+    schema = recurring_event_schema
     zope.schema.fieldproperty.createFieldProperties(
         icemac.ab.calendar.interfaces.IRecurringEventAdditionalSchema)
 
