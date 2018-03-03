@@ -26,31 +26,38 @@ class Calendar(zope.container.btree.BTreeContainer):
             datetime.combine(month.firstOfMonth(), midnight))
         end = timezone.localize(
             datetime.combine((month + 1).firstOfMonth(), midnight))
-        return self._get_events(start, end, timezone)
+        return self._get_events(start, end, timezone, categories=[])
 
-    def get_events(self, start, end, timezone=None):
-        """Get all events between `start` and `end` (datetime).
+    def get_events(self, start, end, timezone=None, categories=[]):
+        """Get all events between `start` and `end` with one of `categories`.
 
+        `start` and `end` have to be datetime objects.
         `start` is part of the interval, but `end` is not.
         """
         timezone = self._timezone_name_to_timezone(timezone)
-        return self._get_events(start, end, timezone)
+        return self._get_events(start, end, timezone, categories)
 
-    def _get_events(self, start, end, timezone):
+    def _get_events(self, start, end, timezone, categories):
         """Get all events between `start` and `end`.
 
         `start` is part of the interval, but `end` is not.
+        Only return events of the given `categories`. If `categories` is and
+        empty list do not restrict by category.
         """
         recurring_events = zope.component.getUtility(
-            icemac.ab.calendar.interfaces.IRecurringEvents).get_events()
+            icemac.ab.calendar.interfaces.IRecurringEvents).get_events(
+                categories)
         recurred_events = [x.get_events(start, end, timezone)
                            for x in recurring_events]
         events_map = {(x.category, x.in_timezone(timezone)): x
                       for x in itertools.chain(*recurred_events)}
         catalog = zope.component.getUtility(zope.catalog.interfaces.ICatalog)
+        query = {DATE_INDEX: {'between': (start, end, False, True)}}
+        if categories:
+            query['keywords'] = {'any_of': categories}
+
         # The values for the index are: min, max, min_exclude, max_exclude
-        single_events = catalog.searchResults(
-            **{DATE_INDEX: {'between': (start, end, False, True)}})
+        single_events = catalog.searchResults(**query)
         # Sort deleted events first. This way a recurred event can be deleted
         # and later on replaced by a new event of the same category.
         sorted_single_events = sorted(

@@ -134,5 +134,6 @@ class EventView(icemac.ab.calendar.browser.base.View):
             midnight)
         self.end = self.start + datetime.timedelta(
             days=event_view_config.duration)
+        categories = [x.title for x in event_view_config.categories]
         return self.context.get_events(
-            self.start, self.end, get_time_zone_name())
+            self.start, self.end, get_time_zone_name(), categories)

@@ -128,7 +128,7 @@ def test_event__RecurringEventContainer__get_events__1(
         period='nth weekday of month')
     recurring_events = zope.component.getUtility(IRecurringEvents)
     assert ([u'weekly', u'biweekly', u'nth weekday of month', u'yearly'] ==
-            [x.alternative_title for x in recurring_events.get_events()])
+            [x.alternative_title for x in recurring_events.get_events([])])
 
 
 def test_event__RecurringEvent__1(zcmlS, DateTime):

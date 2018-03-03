@@ -18,16 +18,21 @@ def test_calendar__CalendarDisplaySettings__1():
 
 
 @pytest.fixture('function')
-def sample_events(address_book, EventFactory, DateTime):
+def sample_events(address_book, CategoryFactory, EventFactory, DateTime):
     """Fixture providing some example events for tests."""
+    foo = CategoryFactory(address_book, u'foo')
+    bar = CategoryFactory(address_book, u'bar')
     # The order of creation is important to test that the results are sorted:
     EventFactory(address_book, alternative_title=u'start Mar 2013',
+                 category=foo,
                  datetime=DateTime(2013, 3, 1, 0))
     EventFactory(address_book, alternative_title=u'start Feb 2013',
+                 category=bar,
                  datetime=DateTime(2013, 2, 1, 0))
     EventFactory(address_book, alternative_title=u'end Jan 2013',
                  datetime=DateTime(2013, 1, 31, 23, 59))
     EventFactory(address_book, alternative_title=u'end Feb 2013',
+                 category=foo,
                  datetime=DateTime(2013, 2, 28, 23, 59))
     return address_book
 
@@ -187,3 +192,42 @@ def test_calendar__Calendar__get_events__1(sample_events, DateTime):
             [x.alternative_title
              for x in sample_events.calendar.get_events(
                  DateTime(2013, 1, 30, 0), DateTime(2013, 3, 1, 0))])
+
+
+def test_calendar__Calendar__get_events__2(sample_events, DateTime):
+    """It returns only events for the given categories. (single category)"""
+    assert ([u'end Feb 2013', u'start Mar 2013'] ==
+            [x.alternative_title
+             for x in sample_events.calendar.get_events(
+                 DateTime(2013, 1, 1, 0), DateTime(2013, 3, 31, 0),
+                 categories=['foo'])
+             ])
+
+
+def test_calendar__Calendar__get_events__3(
+        sample_events, CategoryFactory, RecurringEventFactory, DateTime):
+    """It returns only events for the given categories. (many categories)"""
+    RecurringEventFactory(
+        sample_events,
+        category=CategoryFactory(sample_events, u'month'),
+        alternative_title=u'each month',
+        datetime=DateTime(2013, 2, 14, 23, 0),
+        period=u'nth weekday of month')
+
+    RecurringEventFactory(
+        sample_events,
+        category=CategoryFactory(sample_events, u'week'),
+        alternative_title=u'each week',
+        datetime=DateTime(2013, 1, 14, 23, 0),
+        period=u'weekly')
+
+    requested_categories = ['foo', 'bar', 'month']
+    assert ([u'start Feb 2013',
+             u'each month',
+             u'end Feb 2013',
+             u'start Mar 2013',
+             u'each month',
+             ] == [x.alternative_title
+                   for x in sample_events.calendar.get_events(
+                       DateTime(2013, 1, 1, 0), DateTime(2013, 3, 31, 0),
+                       categories=requested_categories)])

@@ -220,8 +220,11 @@ class IEventDateTime(zope.interface.Interface):
 class IRecurringEvents(ICalendarObject):
     """Container for recurring events."""
 
-    def get_events():
-        """Return the events sorted by priority (ascending)."""
+    def get_events(categories):
+        """Return the events of categories sorted by priority (ascending).
+
+        categories ... list of category titles or `[]` for all events
+        """
 
 
 class RecurrencePeriodSource(icemac.addressbook.sources.TitleMappingSource):

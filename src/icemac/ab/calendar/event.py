@@ -125,8 +125,11 @@ class EventDateTime(grok.Adapter):
 class RecurringEventContainer(zope.container.btree.BTreeContainer):
     """A container for recurring events."""
 
-    def get_events(self):
-        return sorted(self.values(), key=lambda x: x.priority)
+    def get_events(self, categories):
+        events = self.values()
+        if categories:
+            events = [x for x in events if x.category.title in categories]
+        return sorted(events, key=lambda x: x.priority)
 
 
 @zope.interface.implementer(icemac.ab.calendar.interfaces.IRecurringEvent)
@@ -247,3 +250,16 @@ class RecurredEvent(BaseEvent):
 @grok.implementer(icemac.addressbook.interfaces.ITitle)
 def recurred_event_title(event):
     return event_title(event)
+
+
+@grok.implementer(icemac.addressbook.interfaces.IKeywordTitles)
+class EventKeywords(grok.Adapter):
+    """Event categories to be stored in the `keywords` index in the catalog."""
+
+    grok.context(icemac.ab.calendar.interfaces.IBaseEvent)
+
+    def __init__(self, context):
+        self.context = context
+
+    def get_titles(self):
+        return [icemac.addressbook.interfaces.ITitle(self.context.category)]

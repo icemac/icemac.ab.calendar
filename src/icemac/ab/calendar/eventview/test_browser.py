@@ -83,5 +83,24 @@ def test_browser__EventView__5(
         browser.login('cal-visitor')
         browser.lang(b'en')
         browser.open(browser.CALENDAR_EVENT_VIEWS_URL)
-        open('response.html', 'w').write(browser.contents)
         assert 'text-success">Wednesday, 21.<' in browser.ucontents
+
+
+def test_browser__EventView__6(
+        address_book, EventViewConfigurationFactory, EventFactory,
+        CategoryFactory, RecurringEventFactory, DateTime, browser):
+    """It filters the events by the selected categories."""
+    party = CategoryFactory(address_book, 'Party')
+    EventFactory(address_book, category=party, datetime=DateTime.now)
+    RecurringEventFactory(
+        address_book, category=CategoryFactory(address_book, 'Lesson'),
+        datetime=DateTime.add(DateTime.now, days=3),
+        period='weekly')
+    EventViewConfigurationFactory(
+        address_book, '-1 day for 1 week', start=-1, duration=7,
+        categories=set([party]))
+
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_EVENT_VIEWS_URL)
+    assert '>Party<' in browser.ucontents
+    assert '>Lesson<' not in browser.ucontents
