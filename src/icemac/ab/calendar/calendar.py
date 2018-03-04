@@ -32,6 +32,7 @@ class Calendar(zope.container.btree.BTreeContainer):
         """Get all events between `start` and `end` with one of `categories`.
 
         `start` and `end` have to be datetime objects.
+        `categories` is a list of category titles.
         `start` is part of the interval, but `end` is not.
         """
         timezone = self._timezone_name_to_timezone(timezone)
@@ -41,8 +42,9 @@ class Calendar(zope.container.btree.BTreeContainer):
         """Get all events between `start` and `end`.
 
         `start` is part of the interval, but `end` is not.
-        Only return events of the given `categories`. If `categories` is and
-        empty list do not restrict by category.
+        `categories` is a list of category titles.
+        Only return events of the given `categories`.
+        If `categories` is an empty list, do not restrict by category.
         """
         recurring_events = zope.component.getUtility(
             icemac.ab.calendar.interfaces.IRecurringEvents).get_events(
