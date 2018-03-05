@@ -3,7 +3,7 @@ from mock import Mock, patch
 from datetime import timedelta, date
 from icemac.ab.calendar.browser.calendar import EventDescription, hyphenated
 from icemac.ab.calendar.browser.calendar import TabularCalendar
-from icemac.ab.calendar.browser.renderer.interfaces import IEventDescription
+from icemac.ab.calendar.browser.interfaces import IEventDescription
 from icemac.ab.calendar.browser.renderer.interfaces import UnknownLanguageError
 from icemac.ab.calendar.interfaces import ICalendarDisplaySettings, ICalendar
 from icemac.ab.calendar.interfaces import IEvent, IRecurringEvent

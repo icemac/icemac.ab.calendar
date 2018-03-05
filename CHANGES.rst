@@ -12,6 +12,10 @@ Backward incompatible changes
   The previous functionality of ``get_events()`` is now provided by
   ``get_events_for_month()``
 
+- Move ``.browser.renderer.interfaces.IEventDescription`` to
+  ``.browser.interfaces``.
+
+
 Other changes
 -------------
 
