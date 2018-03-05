@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from datetime import date  # be able to mock date.today() in tests
-from icemac.ab.calendar.browser.renderer.interfaces import IEventDescription
+from icemac.ab.calendar.browser.interfaces import IEventDescription
 from icemac.ab.calendar.browser.renderer.table import get_day_names
 from icemac.ab.calendar.browser.renderer.table import render_event_time
 from icemac.ab.calendar.browser.resource import eventview
