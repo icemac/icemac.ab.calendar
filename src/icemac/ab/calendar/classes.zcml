@@ -82,7 +82,9 @@
     <implements interface="zope.annotation.interfaces.IAttributeAnnotatable" />
     <require
        permission="icemac.ab.calendar.ViewEvent"
-       interface=".interfaces.IEvent"
+       interface=".interfaces.IEvent
+                  icemac.addressbook.interfaces.ISchemaProvider
+                 "
        attributes="__annotations__"
        />
     <require
@@ -118,7 +120,9 @@
     <implements interface="zope.annotation.interfaces.IAttributeAnnotatable" />
     <require
        permission="icemac.ab.calendar.ViewRecurringEvent"
-       interface=".interfaces.IRecurringEvent"
+       interface=".interfaces.IRecurringEvent
+                  icemac.addressbook.interfaces.ISchemaProvider
+                 "
        attributes="__annotations__"
        />
     <require

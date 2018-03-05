@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from .base import Calendar
-from .interfaces import AUSFALL, INTERN, UnknownLanguageError
+from ..interfaces import UnknownLanguageError
 from icemac.addressbook.browser.base import can_access_uri_part
 from icemac.addressbook.i18n import _
 import datetime
@@ -15,8 +15,6 @@ import zope.component
 
 SPECIAL_CLASS_MAPPING = {
     True: 'red',
-    AUSFALL: 'gray',
-    INTERN: '',
 }
 
 

@@ -1,7 +1,7 @@
 from datetime import date
-from icemac.ab.calendar.browser.renderer.interfaces import IEventDescription
+from icemac.ab.calendar.browser.interfaces import IEventDescription
+from icemac.ab.calendar.browser.interfaces import UnknownLanguageError
 from icemac.ab.calendar.browser.renderer.interfaces import IRenderer
-from icemac.ab.calendar.browser.renderer.interfaces import UnknownLanguageError
 from icemac.ab.calendar.browser.renderer.table import Table, TableEvent
 from icemac.ab.calendar.interfaces import ICalendarDisplaySettings, IEvent
 from icemac.addressbook.interfaces import IEntity

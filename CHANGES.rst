@@ -12,6 +12,16 @@ Backward incompatible changes
   The previous functionality of ``get_events()`` is now provided by
   ``get_events_for_month()``
 
+- Move ``.browser.renderer.interfaces.IEventDescription`` and
+  ``.browser.renderer.interfaces.UnknownLanguageError`` to
+  ``.browser.interfaces``.
+
+
+Other changes
+-------------
+
+- Adapt code to `icemac.addressbook >= 6.0`.
+
 
 2.3 (2017-12-26)
 ================

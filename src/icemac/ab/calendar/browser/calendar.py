@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-import zope.cachedescriptors.property
-from .renderer.interfaces import UnknownLanguageError, IEventDescription
+from .interfaces import IEventDescription
+from .interfaces import UnknownLanguageError
 from datetime import date
 from icemac.addressbook.i18n import _
 import cgi
+import zope.cachedescriptors.property
 import copy
 import decorator
 import gocept.month
@@ -328,8 +329,7 @@ class EventDescription(grok.Adapter):
     """Adapter from Event to EventDescription needed by renderer."""
 
     grok.context(icemac.ab.calendar.interfaces.IBaseEvent)
-    grok.implements(
-        icemac.ab.calendar.browser.renderer.interfaces.IEventDescription)
+    grok.implements(IEventDescription)
 
     def __init__(self, context):
         super(EventDescription, self).__init__(context)
@@ -392,14 +392,14 @@ class EventDescription(grok.Adapter):
         return info
 
 
-@grok.adapter(icemac.ab.calendar.browser.renderer.interfaces.IEventDescription)
+@grok.adapter(IEventDescription)
 @grok.implementer(icemac.ab.calendar.interfaces.IEvent)
 def event_for_event_description(ed):
     """Get the event an event description was created from."""
     return ed.context
 
 
-@grok.adapter(icemac.ab.calendar.browser.renderer.interfaces.IEventDescription)
+@grok.adapter(IEventDescription)
 @grok.implementer(icemac.ab.calendar.interfaces.ICalendar)
 def calendar_for_event_description(ed):
     """Get the calendar an event description belongs to."""

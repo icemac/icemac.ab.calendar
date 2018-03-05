@@ -6,7 +6,7 @@ from icemac.ab.calendar.event import get_event_data_from_recurring_event
 from icemac.ab.calendar.interfaces import IEvent, IEventDateTime, ICalendar
 from icemac.ab.calendar.interfaces import IRecurredEvent, DATE_INDEX
 from icemac.ab.calendar.interfaces import IRecurringEvent, IRecurringEvents
-from icemac.addressbook.interfaces import IEntity, ITitle
+from icemac.addressbook.interfaces import IEntity, ITitle, ISchemaName
 import pytz
 import zope.catalog.interfaces
 import zope.component
@@ -98,6 +98,11 @@ def test_event__Event____repr____1(zcmlS, DateTime):
         "deleted=False>" == repr(event))
 
 
+def test_event__Event__schema__1(zcmlS):
+    """It can be adapted to ``ISchemaName``."""
+    assert 'IEvent' == ISchemaName(Event()).schema_name
+
+
 def test_event__RecurringEventContainer__1():
     """It implements the `IRecurringEvents` interface."""
     assert verifyObject(IRecurringEvents, RecurringEventContainer())
@@ -147,6 +152,11 @@ def test_event__RecurringEvent____repr____1(zcmlS, DateTime):
     assert (
         "<RecurringEvent datetime='2016-04-06 16:00:00+00:00' "
         "title=u'my-rec-title', deleted=False>" == repr(event))
+
+
+def test_event__RecurringEvent__schema__1(zcmlS):
+    """It can be adapted to ``ISchemaName``."""
+    assert 'IRecurringEvent' == ISchemaName(RecurringEvent()).schema_name
 
 
 def test_event__RecurringEvent__get_events__1(
