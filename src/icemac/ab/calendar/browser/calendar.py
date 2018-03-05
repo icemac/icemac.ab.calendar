@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from .interfaces import IEventDescription
-from .renderer.interfaces import UnknownLanguageError
+from .interfaces import UnknownLanguageError
 from datetime import date
 from icemac.addressbook.i18n import _
 import cgi

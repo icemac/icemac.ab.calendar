@@ -65,3 +65,7 @@ class IEventDescription(zope.interface.Interface):
         The contents of the list are defined in master data of calendar.
 
         """
+
+
+class UnknownLanguageError(LookupError):
+    """Error indicating an unknown laguage."""

@@ -6,7 +6,3 @@ class IRenderer(zope.interface.Interface):
 
     def __call__():
         """Return the rendered calendar."""
-
-
-class UnknownLanguageError(LookupError):
-    """Error indicating an unknown laguage."""
