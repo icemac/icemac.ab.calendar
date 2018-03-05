@@ -5,12 +5,10 @@ import zope.schema
 
 
 class ICalendarLayer(z3c.layer.pagelet.IPageletBrowserLayer):
-
     """Calendar browser layer."""
 
 
 class IDatetime(zope.interface.Interface):
-
     """Object interface to edit datetime data."""
 
     whole_day_event = zope.schema.Bool(
@@ -28,7 +26,6 @@ class IDatetime(zope.interface.Interface):
 
 
 class IEventDatetime(zope.interface.Interface):
-
     """Interface to edit event's date and time."""
 
     datetime = zope.schema.Object(title=_('datetime'), schema=IDatetime)
