@@ -16,6 +16,12 @@ Backward incompatible changes
   ``.browser.renderer.interfaces.UnknownLanguageError`` to
   ``.browser.interfaces``.
 
+Features
+--------
+
+- Add configurable event views instead of the fix month list view.
+  (See Master data > Calendar > Event views for the configuration.)
+
 
 Other changes
 -------------
