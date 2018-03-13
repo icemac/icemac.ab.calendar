@@ -325,15 +325,14 @@ def hyphenated(func, context, lang=None):
     return text
 
 
-class EventDescription(grok.Adapter):
-    """Adapter from Event to EventDescription needed by renderer."""
+class EventDescriptionBase(grok.Adapter):
+    """Base class for event adapters."""
 
     grok.context(icemac.ab.calendar.interfaces.IBaseEvent)
-    grok.implements(IEventDescription)
+    grok.baseclass()
 
     def __init__(self, context):
-        super(EventDescription, self).__init__(context)
-        self.kind = context.category
+        super(EventDescriptionBase, self).__init__(context)
         timezone = pytz.timezone(
             icemac.addressbook.preferences.utils.get_time_zone_name())
         if context.datetime is None:
@@ -343,32 +342,13 @@ class EventDescription(grok.Adapter):
         self.prio = 0
         self.whole_day = context.whole_day_event
         self.special_event = None
-        self._text = context.alternative_title
+        self._text = icemac.addressbook.interfaces.ITitle(context)
         self.persons = u', '.join(context.listPersons())
-        calendar = icemac.ab.calendar.interfaces.ICalendar(context)
-        # Without the following line we get a ForbidenError for
-        # `__getitem__` when accessing the annotations where
-        # `ICalendarDisplaySettings` are stored. As only authorized users
-        # are able to access this adapter, this is no security hole.
-        unsave_calendar = zope.security.proxy.getObject(calendar)
-        # Making a copy so changing is not possible:
-        self.info_fields = copy.copy(
-            icemac.ab.calendar.interfaces.ICalendarDisplaySettings(
-                unsave_calendar).event_additional_fields)
 
-    @hyphenated
-    def getText(self, lang=None):
-        text = u''
-        if self._text:
-            text = self._text
-        elif self.kind:
-            text = self.kind.title
-        return text
-
-    @hyphenated
-    def getInfo(self, lang=None):
+    def _get_info_from_fields(self, fields):
+        """Convert a list of entitiy fields to a list of data."""
         info = []
-        for field in self.info_fields:
+        for field in fields:
             if field is icemac.ab.calendar.interfaces.IEvent['persons']:
                 value = self.persons
             else:
@@ -390,6 +370,36 @@ class EventDescription(grok.Adapter):
                 else:
                     info.append(value)
         return info
+
+
+class EventDescription(EventDescriptionBase):
+    """Adapter from IEvent to IEventDescription needed by renderer."""
+
+    grok.implements(IEventDescription)
+
+    def __init__(self, context):
+        super(EventDescription, self).__init__(context)
+        self.prio = 0
+        self.whole_day = context.whole_day_event
+        self.special_event = None
+        calendar = icemac.ab.calendar.interfaces.ICalendar(context)
+        # Without the following line we get a ForbidenError for
+        # `__getitem__` when accessing the annotations where
+        # `ICalendarDisplaySettings` are stored. As only authorized users
+        # are able to access this adapter, this is no security hole.
+        unsave_calendar = zope.security.proxy.getObject(calendar)
+        # Making a copy so changing is not possible:
+        self._info_fields = copy.copy(
+            icemac.ab.calendar.interfaces.ICalendarDisplaySettings(
+                unsave_calendar).event_additional_fields)
+
+    @hyphenated
+    def getText(self, lang=None):
+        return self._text
+
+    @hyphenated
+    def getInfo(self, lang=None):
+        return self._get_info_from_fields(self._info_fields)
 
 
 @grok.adapter(IEventDescription)

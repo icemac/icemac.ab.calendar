@@ -4,18 +4,14 @@ import pytest
 
 
 @pytest.fixture('session')
-def EventDescriptionFactory(DateTime):
+def EventDescriptionFactory(DateTime, zcmlS):
     """Create an EventDescription object."""
-    def get_event_description(event=None, **kw):
+    def get_event_description(event, **kw):
         """Get an icemac.ab.calendar.browser.calendar.EventDescription.
 
         time_tuple ... `now` if empty.
         **kw ... attributes to be set on the event(!).
-        Does not actually create an event.
-
         """
-        if event is None:
-            event = mock.MagicMock()
         event.datetime = DateTime.now
         for key, value in kw.items():
             setattr(event, key, value)

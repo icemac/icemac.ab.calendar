@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
-from mock import Mock, patch
 from datetime import timedelta, date
 from icemac.ab.calendar.browser.calendar import EventDescription, hyphenated
 from icemac.ab.calendar.browser.calendar import TabularCalendar
 from icemac.ab.calendar.browser.interfaces import IEventDescription
 from icemac.ab.calendar.browser.interfaces import UnknownLanguageError
+from icemac.ab.calendar.event import Event
 from icemac.ab.calendar.interfaces import ICalendarDisplaySettings, ICalendar
 from icemac.ab.calendar.interfaces import IEvent, IRecurringEvent
 from icemac.ab.calendar.testing import get_recurred_event
 from icemac.addressbook.interfaces import IEntity
-from zope.testbrowser.browser import LinkNotFoundError
+from mock import Mock, patch
 from zope.interface.verify import verifyObject
 from zope.preference.interfaces import IDefaultPreferenceProvider
 from zope.security.interfaces import Unauthorized
+from zope.testbrowser.browser import LinkNotFoundError
 import pytest
 import pytz
 import zope.component
@@ -359,7 +360,7 @@ def test_calendar_js__3_webdriver(address_book, webdriver):
 
 def test_calendar__EventDescription__1(EventDescriptionFactory):
     """It fulfills the `IEventDescription` interface."""
-    event_description = EventDescriptionFactory()
+    event_description = EventDescriptionFactory(Event())
     assert isinstance(event_description, EventDescription)
     assert verifyObject(IEventDescription, event_description)
 
@@ -379,7 +380,7 @@ def test_calendar__EventDescription__persons__1(
 
 def test_calendar__EventDescription__persons__2(EventDescriptionFactory):
     """It is an empty string if there are no persons assigned to the event."""
-    assert u'' == EventDescriptionFactory().persons
+    assert u'' == EventDescriptionFactory(Event()).persons
 
 
 @pytest.fixture('function')
@@ -499,7 +500,7 @@ def test_calendar__EventDescription__getInfo__9(
 def test_calendar__EventDescription__getText__1(EventDescriptionFactory):
     """It returns the alternative title if it is set."""
     ed = EventDescriptionFactory(
-        category_name=u'birthday', alternative_title=u'foo bar')
+        Event(), category_name=u'birthday', alternative_title=u'foo bar')
     assert u'foo bar' == ed.getText()
 
 
@@ -507,33 +508,34 @@ def test_calendar__EventDescription__getText__2(
         address_book, EventDescriptionFactory, CategoryFactory):
     """It returns the category title if the alternative title is not set."""
     ed = EventDescriptionFactory(
-        category=CategoryFactory(address_book, u'foo'), alternative_title=None)
+        Event(), category=CategoryFactory(address_book, u'foo'),
+        alternative_title=None)
     assert u'foo' == ed.getText()
 
 
 def test_calendar__EventDescription__getText__3(EventDescriptionFactory):
-    """returns_empty_if_neither_alternative_title_nor_category_is_set."""
+    """It returns 'event' if neither alternative title nor category is set."""
     ed = EventDescriptionFactory(
-        category=None, alternative_title=None)
-    assert u'' == ed.getText()
+        Event(), category=None, alternative_title=None)
+    assert u'event' == ed.getText()
 
 
 def test_calendar__EventDescription__getText__4(EventDescriptionFactory):
     """It returns not hyphenated text by default."""
-    ed = EventDescriptionFactory(alternative_title=u'birthday')
+    ed = EventDescriptionFactory(Event(), alternative_title=u'birthday')
     assert u'birthday' == ed.getText()
 
 
 def test_calendar__EventDescription__getText__5(EventDescriptionFactory):
     """It raises `UnknownLanguageError` for an unknown language."""
-    ed = EventDescriptionFactory()
+    ed = EventDescriptionFactory(Event())
     with pytest.raises(UnknownLanguageError):
         ed.getText(lang='Clingon')
 
 
 def test_calendar__EventDescription__getText__6(EventDescriptionFactory):
     """getText_returns_hyphenated_respecting_set_language."""
-    ed = EventDescriptionFactory(alternative_title=u'Geburtstag')
+    ed = EventDescriptionFactory(Event(), alternative_title=u'Geburtstag')
     assert u'Ge&shy;burts&shy;tag' == ed.getText(lang='de')
 
 
@@ -559,7 +561,7 @@ def test_calendar__hyphenated__2():
 def test_calendar__calendar_for_event_description__1(
         address_book, EventFactory, EventDescriptionFactory):
     """It adapts IEventDescription to ICalendar."""
-    ed = EventDescriptionFactory(event=EventFactory(address_book))
+    ed = EventDescriptionFactory(EventFactory(address_book))
     assert address_book.calendar == ICalendar(ed)
 
 
@@ -567,5 +569,5 @@ def test_calendar__event_for_event_description__1(
         address_book, EventFactory, EventDescriptionFactory):
     """It adapts IEventDescription to IEvent."""
     event = EventFactory(address_book)
-    ed = EventDescriptionFactory(event=event)
+    ed = EventDescriptionFactory(event)
     assert event == IEvent(ed)

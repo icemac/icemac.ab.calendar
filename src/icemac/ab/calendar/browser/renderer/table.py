@@ -18,13 +18,13 @@ SPECIAL_CLASS_MAPPING = {
 }
 
 
-def render_event_time(event_description, request, no_time=''):
-    """Render the time of an `IEventDescription`."""
-    if event_description.whole_day:
+def render_event_time(datetime, whole_day, request, no_time=''):
+    """Render time of event human readable and localized to locale of user."""
+    if whole_day:
         return no_time
     formatter = request.locale.dates.getFormatter(
         'time', 'short')
-    time = formatter.format(event_description.datetime)
+    time = formatter.format(datetime)
     if request.locale.id.language == 'de':
         time += ' Uhr'
     return time
@@ -40,7 +40,8 @@ class TableEvent(icemac.addressbook.browser.base.BaseView):
     def time(self):
         zero_width_space = '&#x200b;'  # keep printing uniform
         return render_event_time(
-            self.context, self.request, no_time=zero_width_space)
+            self.context.datetime, self.context.whole_day, self.request,
+            no_time=zero_width_space)
 
     def dd_class(self):
         return SPECIAL_CLASS_MAPPING.get(self.context.special_event)

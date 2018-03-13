@@ -32,11 +32,10 @@ class IEventDatetime(zope.interface.Interface):
 
 
 class IEventDescription(zope.interface.Interface):
-    """Description of a single event which can be rendered."""
+    """Description of a single event which can be rendered in the calender."""
 
     context = zope.interface.Attribute('IEvent this description is based on.')
 
-    kind = zope.interface.Attribute('event kind')
     datetime = zope.interface.Attribute('datetime.datetime object')
     prio = zope.interface.Attribute(
         'Event descriptions for the same `datetime` and `kind` with a higher '

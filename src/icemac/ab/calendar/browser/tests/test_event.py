@@ -48,7 +48,7 @@ def test_event__Edit__1(
     EventFactory(address_book, datetime=dt)
     browser.login('cal-editor')
     browser.open(browser.CALENDAR_MONTH_OVERVIEW_URL)
-    browser.getLink('Edit').click()
+    browser.getLink('event', index=1).click()
     assert browser.EVENT_EDIT_URL == browser.url
     assert DateTime.format_date(dt) == browser.getControl('date').value
     assert dt.strftime('%H:%M') == browser.getControl('time').value
