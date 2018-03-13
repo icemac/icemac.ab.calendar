@@ -5,6 +5,7 @@ from datetime import date
 from icemac.addressbook.i18n import _
 import cgi
 import zope.cachedescriptors.property
+import collections
 import copy
 import decorator
 import gocept.month
@@ -28,12 +29,12 @@ import zope.interface
 class Dispatcher(icemac.ab.calendar.browser.base.View):
     """Dispatch to month resp. year view."""
 
-    possible_views = {
-        'month': 'month.html',
-        'month-list': 'month-list.html',
-        'year': 'year.html',
-        'event-view': 'event-view.html',
-    }
+    possible_views = collections.defaultdict(
+        lambda: 'month.html', {
+            'month': 'month.html',
+            'year': 'year.html',
+            'event-view': 'event-view.html',
+        })
 
     def __call__(self):
         target = self.request.get('to', None)
@@ -222,13 +223,6 @@ class MonthCalendar(TabularCalendar):
         return u'<h2 class="no-screen">{month} {year}</h2>\n{cal}'.format(
             month=self.get_month_name(self.month), year=self.month.year,
             cal=self.renderer())
-
-
-class MonthListCalendar(MonthCalendar):
-    """List display of a month calendar. (like the print style)"""
-
-    css_class = 'month-list'
-    title = _('Month list view')
 
 
 class IYearSelector(zope.interface.Interface):

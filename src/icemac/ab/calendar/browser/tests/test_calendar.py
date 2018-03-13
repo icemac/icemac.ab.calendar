@@ -282,17 +282,6 @@ def test_calendar__MonthCalendar__7_webdriver(address_book, webdriver):
     assert 2026 == cal.year
 
 
-def test_calendar__MonthListCalendar__1(address_book, browser, DateTime):
-    """It works alike the MonthCalendar."""
-    browser.login('cal-visitor')
-    browser.open(browser.CALENDAR_MONTH_OVERVIEW_URL)
-    browser.getLink('Month list view').click()
-    assert browser.CALENDAR_MONTH_LIST_VIEW_URL == browser.url
-    current_month = DateTime.now.strftime('%B')
-    current_year = str(DateTime.now.year)
-    assert "{} {}".format(current_month, current_year)
-
-
 def test_calendar__YearCalendar__1(
         address_book, EventFactory, DateTime, browser):
     """It shows the events belonging to the selected year."""

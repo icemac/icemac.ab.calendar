@@ -27,7 +27,6 @@ class CalendarMenuItemSelectedChecker(
     CALENDAR_VIEW_NAMES = (
         'addEvent.html',
         'addFromRecurredEvent.html',
-        'month-list.html',
         'month.html',
         'year.html',
     )

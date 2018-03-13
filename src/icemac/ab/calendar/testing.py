@@ -11,7 +11,6 @@ class Browser(icemac.addressbook.testing.Browser):
     BASE = 'http://localhost/ab/++attribute++calendar'
     CALENDAR_OVERVIEW_URL = BASE
     CALENDAR_MONTH_OVERVIEW_URL = BASE + '/@@month.html'
-    CALENDAR_MONTH_LIST_VIEW_URL = BASE + '/@@month-list.html'
     CALENDAR_YEAR_OVERVIEW_URL = BASE + '/@@year.html'
 
     CALENDAR_MASTERDATA_URL = 'http://localhost/ab/@@calendar-masterdata.html'

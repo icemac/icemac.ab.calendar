@@ -70,8 +70,7 @@
         font-weight: bold;
     }
 
-    #calendar table td .weekday,
-    #calendar.month-list table td .weekday {
+    #calendar table td .weekday {
         width: 25px;
     }
 
@@ -113,31 +112,5 @@
         display: inline;
         margin-left: 3px;
     }
-
-    #calendar.month-list table .day-0 .number,
-    #calendar.month-list table td.day-0 .weekday,
-    #calendar.month-list table td.today .number,
-    #calendar.month-list table td.today .weekday {
-        color: #000;
-    }
-
-    #calendar.month-list table {
-        margin: 0;
-    }
-
-    #calendar.month-list table td a,
-    #calendar.month-list table td dl,
-    #calendar.month-list table td dt,
-    #calendar.month-list table td dd,
-    #calendar.month-list table td dd ul,
-    #calendar.month-list table td dd ul li,
-    #calendar.month-list table td .weekday {
-        font-size: inherit;
-    }
-
-    #calendar.month-list table td dl dd ul.info li {
-        margin-left: 20px;
-    }
-
 
 }
