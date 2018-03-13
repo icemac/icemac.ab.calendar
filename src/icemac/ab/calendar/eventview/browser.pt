@@ -11,7 +11,7 @@
     <span aria-hidden="true">&times;</span>
   </a>
   <div id="eventview"
-       class="pt-4 pr-4 pl-4"
+       class="pt-1 pr-4 pl-4"
        tal:define="title provider:addressbook-title">
     <div class="row">
       <h2 class="col-sm-8"
@@ -35,9 +35,9 @@
       <div class="calendar">
         <dl class="row">
           <tal:day tal:repeat="day month/days">
-            <dt tal:attributes="class string:col-sm-3${day/add_css_dt}"
+            <dt tal:attributes="class string:col-sm-2${day/add_css_dt}"
                 tal:content="day/day">So, 18.</dt>
-            <dd tal:attributes="class string:col-sm-9${day/add_css_dd}">
+            <dd tal:attributes="class string:col-sm-10${day/add_css_dd}">
               <dl class="row">
                 <tal:events tal:repeat="event day/events">
                   <dt class="col-sm-6">
