@@ -325,14 +325,11 @@ def hyphenated(func, context, lang=None):
     return text
 
 
-class EventDescriptionBase(grok.Adapter):
+class EventDescriptionBase(object):
     """Base class for event adapters."""
 
-    grok.context(icemac.ab.calendar.interfaces.IBaseEvent)
-    grok.baseclass()
-
     def __init__(self, context):
-        super(EventDescriptionBase, self).__init__(context)
+        self.context = context
         timezone = pytz.timezone(
             icemac.addressbook.preferences.utils.get_time_zone_name())
         if context.datetime is None:
@@ -370,9 +367,10 @@ class EventDescriptionBase(grok.Adapter):
         return info
 
 
-class EventDescription(EventDescriptionBase):
+class EventDescription(EventDescriptionBase, grok.Adapter):
     """Adapter from IEvent to IEventDescription needed by renderer."""
 
+    grok.context(icemac.ab.calendar.interfaces.IBaseEvent)
     grok.implements(IEventDescription)
 
     def __init__(self, context):
