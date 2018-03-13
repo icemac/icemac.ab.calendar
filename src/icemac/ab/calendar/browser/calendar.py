@@ -339,9 +339,7 @@ class EventDescriptionBase(grok.Adapter):
             self.datetime = None
         else:
             self.datetime = context.in_timezone(timezone)
-        self.prio = 0
         self.whole_day = context.whole_day_event
-        self.special_event = None
         self._text = icemac.addressbook.interfaces.ITitle(context)
         self.persons = u', '.join(context.listPersons())
 
