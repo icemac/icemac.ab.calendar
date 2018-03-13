@@ -45,7 +45,7 @@ class IEventDescription(zope.interface.Interface):
         'Event is the whole day, so do not display time.')
 
     persons = zope.interface.Attribute(
-        'Komma separated list of person names belonging to the event.')
+        'Comma separated list of person names belonging to the event.')
 
     def getText(lang=None):
         """Textual description of the event.
