@@ -1,4 +1,6 @@
 from __future__ import unicode_literals
+from icemac.ab.calendar.interfaces import IEvent
+from icemac.addressbook.interfaces import IEntity
 import mock
 
 
@@ -104,3 +106,28 @@ def test_browser__EventView__6(
     browser.open(browser.CALENDAR_EVENT_VIEWS_URL)
     assert '>Party<' in browser.ucontents
     assert '>Lesson<' not in browser.ucontents
+
+
+def test_browser__EventView__7(
+        address_book, EventViewConfigurationFactory, EventFactory,
+        FieldFactory, PersonFactory, DateTime, browser):
+    """It renders the selected fields."""
+    field_name = FieldFactory(address_book, IEvent, 'Int', 'seats').__name__
+    EventFactory(address_book, **{
+        'datetime': DateTime.now,
+        field_name: 42,
+        'external_persons': ['Berta Vimladil'],
+        'persons': set([PersonFactory(address_book, 'Tester')]),
+        'text': 'to be canceled',
+    })
+    event_entity = IEntity(IEvent)
+    EventViewConfigurationFactory(
+        address_book, '-1 day for 1 week', start=-1, duration=7,
+        fields=[event_entity.getRawField('persons'),
+                event_entity.getRawField(field_name)])
+
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_EVENT_VIEWS_URL)
+    assert '>Berta Vimladil, Tester<' in browser.ucontents
+    assert '>42<' in browser.ucontents
+    assert 'to be canceled' not in browser.ucontents

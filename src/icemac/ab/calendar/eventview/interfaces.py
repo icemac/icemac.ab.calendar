@@ -106,3 +106,18 @@ class IEventViews(zope.interface.Interface):
         title=u'known views',
         source=EventViewConfigurationSource(),
     )
+
+
+class IEventData(zope.interface.Interface):
+    """Date of a single event which can be rendered in the event view."""
+
+    datetime = zope.interface.Attribute('datetime.datetime object')
+
+    whole_day = zope.interface.Attribute(
+        'Event is the whole day, so do not display time.')
+
+    title = zope.interface.Attribute(
+        'Category resp. alternative title of the event.')
+
+    fields = zope.interface.Attribute(
+        'List of values of the fields selected in the event view config.')

@@ -1,13 +1,16 @@
 from __future__ import unicode_literals
 from datetime import date  # be able to mock date.today() in tests
-from icemac.ab.calendar.browser.interfaces import IEventDescription
 from icemac.ab.calendar.browser.renderer.table import get_day_names
 from icemac.ab.calendar.browser.renderer.table import render_event_time
 from icemac.ab.calendar.browser.resource import eventview
 from icemac.ab.calendar.eventview.interfaces import IEventViews
+from icemac.ab.calendar.eventview.interfaces import IEventViewConfiguration
 from icemac.addressbook.preferences.utils import get_time_zone_name
+import copy
 import datetime
+import grokcore.component as grok
 import icemac.ab.calendar.browser.base
+import icemac.ab.calendar.browser.calendar
 import icemac.ab.calendar.eventview.interfaces
 import pytz
 import z3c.form.interfaces
@@ -16,6 +19,22 @@ import zope.component
 
 
 ONE_DAY = datetime.timedelta(days=1)
+
+
+class EventData(icemac.ab.calendar.browser.calendar.EventDescriptionBase,
+                grok.MultiAdapter):
+    """Adapter from Event to IEventData needed by renderer."""
+
+    grok.adapts(icemac.ab.calendar.interfaces.IBaseEvent,
+                IEventViewConfiguration)
+    grok.implements(icemac.ab.calendar.eventview.interfaces.IEventData)
+
+    def __init__(self, event, config):
+        super(EventData, self).__init__(event)
+        self.config = config
+        self.title = self._text
+        additional_event_fields = copy.copy(config.fields)
+        self.fields = self._get_info_from_fields(additional_event_fields)
 
 
 class EventList(list):
@@ -45,11 +64,11 @@ class EventView(icemac.ab.calendar.browser.base.View):
             # The used select widget is a multi select (which cannot be
             # changed):
             token = self.widget.value[0]
-            event_view_config = self.widget.terms.getValue(token)
+            self.event_view_config = self.widget.terms.getValue(token)
         else:
             source = IEventViews['views'].source.factory
-            event_view_config = source.getValues()[0]
-        self.events = EventList(self._get_events(event_view_config))
+            self.event_view_config = source.getValues()[0]
+        self.events = EventList(self._get_events(self.event_view_config))
         self.events.reverse()
 
     def close_url(self):
@@ -101,13 +120,15 @@ class EventView(icemac.ab.calendar.browser.base.View):
             next_day = current_day + ONE_DAY
             while (current_event is not None
                    and current_event.datetime < next_day):
-                ed = IEventDescription(current_event)
+                ed = zope.component.getMultiAdapter(
+                    (current_event, self.event_view_config),
+                    icemac.ab.calendar.eventview.interfaces.IEventData)
                 event_data = {
-                    'event': icemac.addressbook.interfaces.ITitle(
-                        current_event),
+                    'event': ed.title,
                     'url': self.url(current_event),
-                    'time': render_event_time(ed, self.request),
-                    'data': [],
+                    'time': render_event_time(
+                        ed.datetime, ed.whole_day, self.request),
+                    'data': ed.fields,
                 }
                 day['events'].append(event_data)
 
