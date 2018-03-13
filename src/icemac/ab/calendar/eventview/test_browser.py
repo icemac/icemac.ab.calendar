@@ -25,9 +25,17 @@ def test_browser__EventView__1(
     assert browser.CALENDAR_EVENT_VIEWS_URL == browser.url
     assert '>Party<' in browser.ucontents
     assert '>Lesson<' in browser.ucontents
+    assert 'Please create an "Event view"' not in browser.ucontents
 
 
-def test_browser__EventView__2(
+def test_browser__EventView__2(address_book, browser):
+    """It renders a hint if there is no event view defined in master data."""
+    browser.login('cal-visitor')
+    browser.open(browser.CALENDAR_EVENT_VIEWS_URL)
+    assert 'Please create an "Event view"' in browser.ucontents
+
+
+def test_browser__EventView__3(
         address_book, EventViewConfigurationFactory, DateTime, browser):
     """It renders a month headline only if days in this month are rendered."""
     EventViewConfigurationFactory(
@@ -42,7 +50,7 @@ def test_browser__EventView__2(
     assert 'March 2018' not in browser.ucontents
 
 
-def test_browser__EventView__3(
+def test_browser__EventView__4(
         address_book, EventViewConfigurationFactory, DateTime, browser):
     """It renders sundays with a special css class."""
     EventViewConfigurationFactory(
@@ -56,7 +64,7 @@ def test_browser__EventView__3(
     assert ' bg-warning">Sunday, 25.<' in browser.ucontents
 
 
-def test_browser__EventView__4(
+def test_browser__EventView__5(
         address_book, EventViewConfigurationFactory, DateTime, browser):
     """It allows to select a different event view config."""
     EventViewConfigurationFactory(address_book, '1 week', start=0, duration=7)
@@ -75,7 +83,7 @@ def test_browser__EventView__4(
         assert 'March 2018' in browser.ucontents
 
 
-def test_browser__EventView__5(
+def test_browser__EventView__6(
         address_book, EventViewConfigurationFactory, DateTime, browser):
     """It renders the current day specially."""
     EventViewConfigurationFactory(address_book, '1 week', start=-1, duration=7)
@@ -88,7 +96,7 @@ def test_browser__EventView__5(
         assert 'text-success">Wednesday, 21.<' in browser.ucontents
 
 
-def test_browser__EventView__6(
+def test_browser__EventView__7(
         address_book, EventViewConfigurationFactory, EventFactory,
         CategoryFactory, RecurringEventFactory, DateTime, browser):
     """It filters the events by the selected categories."""
@@ -108,7 +116,7 @@ def test_browser__EventView__6(
     assert '>Lesson<' not in browser.ucontents
 
 
-def test_browser__EventView__7(
+def test_browser__EventView__8(
         address_book, EventViewConfigurationFactory, EventFactory,
         FieldFactory, PersonFactory, DateTime, browser):
     """It renders the selected fields."""

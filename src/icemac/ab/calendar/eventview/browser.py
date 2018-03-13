@@ -67,7 +67,11 @@ class EventView(icemac.ab.calendar.browser.base.View):
             self.event_view_config = self.widget.terms.getValue(token)
         else:
             source = IEventViews['views'].source.factory
-            self.event_view_config = source.getValues()[0]
+            possible_event_view_configs = source.getValues()
+            if possible_event_view_configs:
+                self.event_view_config = possible_event_view_configs[0]
+            else:
+                self.event_view_config = None
         self.events = EventList(self._get_events(self.event_view_config))
         self.events.reverse()
 
@@ -148,6 +152,8 @@ class EventView(icemac.ab.calendar.browser.base.View):
 
     def _get_events(self, event_view_config):
         """Get events between `start` and `duration` of EventViewConfig."""
+        if not event_view_config:
+            return []
         midnight = datetime.time(0, 0, 0, tzinfo=pytz.UTC)
         today = date.today()
         self.start = datetime.datetime.combine(

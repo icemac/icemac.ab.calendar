@@ -17,6 +17,7 @@
       <h2 class="col-sm-8"
            tal:content="title">icemac.ab.calendar</h2>
       <form class="col-sm-4 text-center"
+            tal:condition="view/event_view_config"
             tal:attributes="action view/action">
         <div class="form-group">
           <select class="form-control"
@@ -25,6 +26,12 @@
           </select>
         </div>
       </form>
+    </div>
+    <div class="row"
+         tal:condition="not:view/event_view_config">
+      <div i18n:translate="">
+        Please create an "Event view" in Master data > Calendar first.
+      </div>
     </div>
 
     <tal:months
