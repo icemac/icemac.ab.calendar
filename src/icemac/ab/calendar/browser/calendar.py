@@ -4,7 +4,6 @@ from .interfaces import UnknownLanguageError
 from datetime import date
 from icemac.addressbook.i18n import _
 import cgi
-import zope.cachedescriptors.property
 import collections
 import copy
 import decorator
@@ -21,6 +20,7 @@ import pytz
 import z3c.form.field
 import z3c.formui.form
 import zc.sourcefactory.basic
+import zope.cachedescriptors.property
 import zope.component
 import zope.globalrequest
 import zope.interface

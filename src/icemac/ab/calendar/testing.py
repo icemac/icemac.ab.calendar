@@ -12,6 +12,7 @@ class Browser(icemac.addressbook.testing.Browser):
     CALENDAR_OVERVIEW_URL = BASE
     CALENDAR_MONTH_OVERVIEW_URL = BASE + '/@@month.html'
     CALENDAR_YEAR_OVERVIEW_URL = BASE + '/@@year.html'
+    CALENDAR_EVENT_VIEWS_URL = BASE + '/@@event-view.html'
 
     CALENDAR_MASTERDATA_URL = 'http://localhost/ab/@@calendar-masterdata.html'
     CALENDAR_MASTERDATA_EDIT_DISPLAY_URL = BASE + '/@@edit-display.html'
@@ -50,8 +51,6 @@ class Browser(icemac.addressbook.testing.Browser):
     RECURRED_EVENT_ADD_URL = BASE + '/@@addFromRecurredEvent.html'
     RECURRED_EVENT_VIEW_URL = BASE + '/@@viewRecurredEvent.html'
     RECURRED_EVENT_DELETE_URL = BASE + '/@@delete-recurred-event.html'
-
-    CALENDAR_EVENT_VIEWS_URL = BASE + '/@@event-view.html'
 
     @property
     def ucontents(self):
