@@ -57,7 +57,7 @@ setuptools.setup(
         'icemac.addressbook >= 6.0.dev0',
         'icemac.recurrence >= 1.3.1.dev0',
         'js.classy',
-        'js.bootstrap',
+        'js.bootstrap4',
         'setuptools',
         'z3c.form >= 3.3',
         'zope.cachedescriptors',

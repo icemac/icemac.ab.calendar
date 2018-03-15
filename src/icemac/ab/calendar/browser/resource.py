@@ -2,7 +2,7 @@ from icemac.addressbook.browser.resource import base_css, form
 import fanstatic
 import icemac.ab.calendar.browser.interfaces
 import icemac.addressbook.browser.favicon
-import js.bootstrap
+import js.bootstrap4
 import js.classy
 import js.jquery
 import zope.viewlet.viewlet
@@ -21,7 +21,7 @@ calendar_js = fanstatic.Resource(
 
 eventview_css = fanstatic.Resource(lib, 'eventview.css')
 eventview_js = fanstatic.Resource(
-    lib, 'eventview.js', depends=[js.bootstrap.bootstrap])
+    lib, 'eventview.js', depends=[js.bootstrap4.bootstrap])
 eventview = fanstatic.Group([
     eventview_css,
     eventview_js
