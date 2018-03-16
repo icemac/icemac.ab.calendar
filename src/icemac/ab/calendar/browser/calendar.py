@@ -34,10 +34,11 @@ class Dispatcher(icemac.ab.calendar.browser.base.View):
             'year': 'year.html',
             'event-view': 'event-view.html',
         })
+    known_targets = tuple(possible_views.keys()) + ('month',)
 
     def __call__(self):
         target = self.request.get('to', None)
-        if target in self.possible_views:
+        if target in self.known_targets:
             self.session['calendar_view'] = target
         else:
             target = self.session.get('calendar_view', 'month')
