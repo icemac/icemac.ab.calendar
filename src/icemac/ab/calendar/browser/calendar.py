@@ -31,7 +31,6 @@ class Dispatcher(icemac.ab.calendar.browser.base.View):
 
     possible_views = collections.defaultdict(
         lambda: 'month.html', {
-            'month': 'month.html',
             'year': 'year.html',
             'event-view': 'event-view.html',
         })
