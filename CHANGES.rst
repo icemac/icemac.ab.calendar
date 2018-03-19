@@ -5,7 +5,7 @@
 3.0.1 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Improve readability ans usability of list views.
 
 
 3.0 (2018-03-16)
@@ -25,8 +25,8 @@ Backward incompatible changes
 Features
 --------
 
-- Add configurable event views instead of the fix month list view.
-  (See Master data > Calendar > Event views for the configuration.)
+- Add configurable list views instead of the fix month list view.
+  (See Master data > Calendar > List views for the configuration.)
 
 
 Other changes
