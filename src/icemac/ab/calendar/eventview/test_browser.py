@@ -61,7 +61,7 @@ def test_browser__EventView__4(
         browser.login('cal-visitor')
         browser.lang(b'en')
         browser.open(browser.CALENDAR_EVENT_VIEWS_URL)
-    assert ' bg-warning">Sunday, 25.<' in browser.ucontents
+    assert ' bg-info text-white">Sunday, 25.<' in browser.ucontents
 
 
 def test_browser__EventView__5(
@@ -81,19 +81,6 @@ def test_browser__EventView__5(
         browser.getControl(name='views:list').displayValue = ['2 weeks']
         browser.getForm().submit()
         assert 'March 2018' in browser.ucontents
-
-
-def test_browser__EventView__6(
-        address_book, EventViewConfigurationFactory, DateTime, browser):
-    """It renders the current day specially."""
-    EventViewConfigurationFactory(address_book, '1 week', start=-1, duration=7)
-
-    with mock.patch('icemac.ab.calendar.eventview.browser.date') as date:
-        date.today.return_value = DateTime(2018, 2, 21).date()
-        browser.login('cal-visitor')
-        browser.lang(b'en')
-        browser.open(browser.CALENDAR_EVENT_VIEWS_URL)
-        assert 'text-success">Wednesday, 21.<' in browser.ucontents
 
 
 def test_browser__EventView__7(
