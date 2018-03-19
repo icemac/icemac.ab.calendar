@@ -49,8 +49,8 @@
                 <tal:events tal:repeat="event day/events">
                   <dt class="col-sm-6">
                     <span tal:content="structure event/time">10:00 Uhr</span>
-                    <a class="text-dark"
-                       tal:attributes="href event/url"
+                    <a tal:attributes="class day/css_a;
+                                       href event/url"
                        tal:content="event/event">Gottesdienst</a>
                   </dt>
                   <dd class="col-sm-6">
