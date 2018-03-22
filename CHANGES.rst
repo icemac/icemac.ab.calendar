@@ -6,6 +6,8 @@
 ================
 
 - Improve readability ans usability of list views.
+- Adapt configuration to `icemac.addressbook >= 6.1`.
+
 
 
 3.0 (2018-03-16)

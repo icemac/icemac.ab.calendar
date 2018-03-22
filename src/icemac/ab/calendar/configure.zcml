@@ -14,7 +14,6 @@
   <include package="zope.security" file="meta.zcml" />
   <include package="zope.component" file="meta.zcml" />
   <include package="gocept.month" />
-  <include package="gocept.month.browser" />
   <include package="icemac.recurrence" />
 
   <include file="permissions.zcml" />
