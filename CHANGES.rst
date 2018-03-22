@@ -5,7 +5,10 @@
 3.0.1 (unreleased)
 ==================
 
-- Improve readability ans usability of list views.
+- Improve readability and usability of list views.
+
+- List views now also return the events of the last displayed day.
+
 
 
 3.0 (2018-03-16)
