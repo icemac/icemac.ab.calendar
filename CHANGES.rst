@@ -5,7 +5,10 @@
 3.1 (unreleased)
 ================
 
-- Improve readability ans usability of list views.
+- Improve readability and usability of list views.
+
+- List views now also return the events of the last displayed day.
+
 - Adapt configuration to `icemac.addressbook >= 6.1`.
 
 

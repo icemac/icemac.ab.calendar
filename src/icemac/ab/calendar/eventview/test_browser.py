@@ -1,7 +1,10 @@
 from __future__ import unicode_literals
+
+from .browser import EventView
 from icemac.ab.calendar.interfaces import IEvent
 from icemac.addressbook.interfaces import IEntity
 import mock
+import zope.publisher.testing
 
 
 def test_browser__EventView__1(
@@ -126,3 +129,23 @@ def test_browser__EventView__8(
     assert '>Berta Vimladil, Tester<' in browser.ucontents
     assert '>42<' in browser.ucontents
     assert 'to be canceled' not in browser.ucontents
+
+
+def test_browser__EventView___get_events__1(
+        address_book, EventViewConfigurationFactory, EventFactory,
+        CategoryFactory, DateTime):
+    """It returns all events in the configured interval."""
+    cat = CategoryFactory(address_book, 'foo')
+    EventFactory(
+        address_book, category=cat, alternative_title='1',
+        datetime=DateTime.now)
+    EventFactory(
+        address_book, category=cat, alternative_title='7',
+        datetime=DateTime.add(DateTime.now, days=7))
+    evc = EventViewConfigurationFactory(
+        address_book, 'evc', start=0, duration=7, categories=set([cat]))
+    view = EventView()
+    view.context = address_book.calendar
+    with zope.publisher.testing.interaction('zope.mgr'):
+        events = view._get_events(evc)
+    assert ['1', '7'] == [x.alternative_title for x in events]
