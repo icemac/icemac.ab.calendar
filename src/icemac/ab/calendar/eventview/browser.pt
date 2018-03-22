@@ -14,7 +14,7 @@
        class="pt-1 pr-4 pl-4"
        tal:define="title provider:addressbook-title">
     <div class="row">
-      <h2 class="col-sm-8"
+      <h2 class="col-sm-8 h4"
            tal:content="title">icemac.ab.calendar</h2>
       <form class="col-sm-4 text-center"
             tal:condition="view/event_view_config"
@@ -37,8 +37,9 @@
     <tal:months
       tal:condition="view/start"
       tal:repeat="month view/events_per_month">
-      <h3 class="mt-1"
-          tal:content="month/month">Februar 2018</h3>
+      <h3 class="mt-1 h4">
+        <mark tal:content="month/month">Februar 2018</mark>
+      </h3>
       <div class="calendar">
         <dl class="row">
           <tal:day tal:repeat="day month/days">
