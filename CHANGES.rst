@@ -2,7 +2,7 @@
  Changelog
 ===========
 
-3.0.1 (unreleased)
+3.0.1 (2018-03-22)
 ==================
 
 - Improve readability and usability of list views.
