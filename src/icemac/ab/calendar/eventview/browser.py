@@ -76,7 +76,7 @@ class EventView(icemac.ab.calendar.browser.base.View):
         self.events.reverse()
 
     def close_url(self):
-        return self.url(self.context, 'month.html')
+        return self.url(self.context, to='month')
 
     def action(self):
         return self.url(self.context, self.__name__)

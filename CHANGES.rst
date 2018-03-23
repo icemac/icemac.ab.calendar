@@ -11,6 +11,7 @@
 
 - Adapt configuration to `icemac.addressbook >= 6.1`.
 
+- Fix the close URL of the list views so it does not stick to the list views.
 
 
 3.0 (2018-03-16)
