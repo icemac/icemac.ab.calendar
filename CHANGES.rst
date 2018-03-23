@@ -5,7 +5,7 @@
 3.0.2 (unreleased)
 ==================
 
-- Nothing changed yet.
+- Fix the close URL of the list views so it does not stick to the list views.
 
 
 3.0.1 (2018-03-22)
@@ -14,7 +14,6 @@
 - Improve readability and usability of list views.
 
 - List views now also return the events of the last displayed day.
-
 
 
 3.0 (2018-03-16)
