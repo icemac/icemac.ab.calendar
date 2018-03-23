@@ -2,7 +2,7 @@
  Changelog
 ===========
 
-3.0.2 (unreleased)
+3.0.2 (2018-03-23)
 ==================
 
 - Fix the close URL of the list views so it does not stick to the list views.
