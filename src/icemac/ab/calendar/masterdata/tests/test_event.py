@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from ..event import StartColumn
 from icemac.ab.calendar.event import BaseEvent
-from zope.testbrowser.browser import LinkNotFoundError, HTTPError
+from zope.testbrowser.browser import LinkNotFoundError
 from zope.security.interfaces import Unauthorized
 import pytest
 import pytz
@@ -90,9 +90,7 @@ def test_event__Add__1(address_book, CategoryFactory, DateTime, browser):
 def test_event__Add__2(address_book, browser):
     """It is not accessible for a calendar visitor."""
     browser.login('cal-visitor')
-    with pytest.raises(HTTPError) as err:
-        browser.open(browser.CALENDAR_RECURRING_EVENT_ADD_URL)
-    assert 'HTTP Error 403: Forbidden' == str(err.value)
+    browser.assert_forbidden(browser.CALENDAR_RECURRING_EVENT_ADD_URL)
 
 
 def test_event__Edit__1(
@@ -153,6 +151,4 @@ def test_category__Delete__2(
     RecurringEventFactory(
         address_book, alternative_title='birthday', datetime=DateTime.now)
     browser.login('cal-visitor')
-    with pytest.raises(HTTPError) as err:
-        browser.open(browser.CALENDAR_RECURRING_EVENT_DELETE_URL)
-    assert 'HTTP Error 403: Forbidden' == str(err.value)
+    browser.assert_forbidden(browser.CALENDAR_RECURRING_EVENT_DELETE_URL)

@@ -1,6 +1,6 @@
 from icemac.ab.calendar.interfaces import IEvent
 from icemac.addressbook.interfaces import IEntity
-from zope.testbrowser.browser import LinkNotFoundError, HTTPError
+from zope.testbrowser.browser import LinkNotFoundError
 import pytest
 import zope.component.hooks
 
@@ -45,6 +45,4 @@ def test_calendar__CalendarView__2(address_book, browser):
 def test_calendar__CalendarView__3(address_book, browser):
     """It is not accessible for a calendar visitor."""
     browser.login('cal-visitor')
-    with pytest.raises(HTTPError) as err:
-        browser.open(browser.CALENDAR_MASTERDATA_EDIT_DISPLAY_URL)
-    assert 'HTTP Error 403: Forbidden' == str(err.value)
+    browser.assert_forbidden(browser.CALENDAR_MASTERDATA_EDIT_DISPLAY_URL)

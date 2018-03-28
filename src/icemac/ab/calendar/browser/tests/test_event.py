@@ -4,7 +4,6 @@ from icemac.ab.calendar.interfaces import IEvent, IRecurringEvent
 from icemac.ab.calendar.testing import CalendarWebdriverPageObjectBase
 from icemac.ab.calendar.testing import get_recurred_event
 from icemac.addressbook.testing import Webdriver
-from zope.testbrowser.browser import HTTPError
 from zope.traversing.browser import absoluteURL
 import calendar
 import pytest
@@ -35,9 +34,7 @@ def test_event__Add__1(address_book, CategoryFactory, DateTime, browser):
 def test_event__Add__2(address_book, browser):
     """It is not accessible for a calendar visitor."""
     browser.login('cal-visitor')
-    with pytest.raises(HTTPError) as err:
-        browser.open(browser.EVENT_ADD_URL)
-    assert 'HTTP Error 403: Forbidden' == str(err.value)
+    browser.assert_forbidden(browser.EVENT_ADD_URL)
 
 
 def test_event__Edit__1(
@@ -148,9 +145,7 @@ def test_event__Delete__3(address_book, EventFactory, DateTime, browser):
     """It is not accessible for a calendar visitor."""
     EventFactory(address_book, datetime=DateTime.today_8_32_am)
     browser.login('cal-visitor')
-    with pytest.raises(HTTPError) as err:
-        browser.open(browser.EVENT_DELETE_URL)
-    assert 'HTTP Error 403: Forbidden' == str(err.value)
+    browser.assert_forbidden(browser.EVENT_DELETE_URL)
 
 
 def test_event__Clone__1(address_book, EventFactory, DateTime, browser):
@@ -172,9 +167,7 @@ def test_event__Clone__2(address_book, EventFactory, DateTime, browser):
     """It is not accessible for a calendar visitor."""
     EventFactory(address_book, datetime=DateTime.today_8_32_am)
     browser.login('cal-visitor')
-    with pytest.raises(HTTPError) as err:
-        browser.open(browser.EVENT_CLONE_URL)
-    assert 'HTTP Error 403: Forbidden' == str(err.value)
+    browser.assert_forbidden(browser.EVENT_CLONE_URL)
 
 
 @pytest.fixture('function')
@@ -292,9 +285,7 @@ def test_event__AddFromRecurredEvent__3(
 def test_event__AddFromRecurredEvent__4(address_book, browser):
     """It is not accessible for a calendar visitor."""
     browser.login('cal-visitor')
-    with pytest.raises(HTTPError) as err:
-        browser.open(browser.RECURRED_EVENT_ADD_URL)
-    assert 'HTTP Error 403: Forbidden' == str(err.value)
+    browser.assert_forbidden(browser.RECURRED_EVENT_ADD_URL)
 
 
 def days_in_month(date):
@@ -349,9 +340,7 @@ def test_event__DeleteRecurredEvent__2(
 def test_event__DeleteRecurredEvent__3(address_book, browser):
     """It is not accessible for a calendar visitor."""
     browser.login('cal-visitor')
-    with pytest.raises(HTTPError) as err:
-        browser.open(browser.RECURRED_EVENT_DELETE_URL)
-    assert 'HTTP Error 403: Forbidden' == str(err.value)
+    browser.assert_forbidden(browser.RECURRED_EVENT_DELETE_URL)
 
 
 @pytest.fixture('function')

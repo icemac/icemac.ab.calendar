@@ -9,7 +9,7 @@
 
 - List views now also return the events of the last displayed day.
 
-- Adapt configuration to `icemac.addressbook >= 6.1`.
+- Adapt configuration and tests to `icemac.addressbook >= 7.0`.
 
 - Fix the close URL of the list views so it does not stick to the list views.
 

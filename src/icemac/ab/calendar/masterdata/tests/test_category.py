@@ -1,4 +1,4 @@
-from zope.testbrowser.browser import LinkNotFoundError, HTTPError
+from zope.testbrowser.browser import LinkNotFoundError
 from zope.security.interfaces import Unauthorized
 import pytest
 
@@ -63,9 +63,7 @@ def test_category__Add__2(address_book, CategoryFactory, browser):
 def test_category__Add__3(address_book, browser):
     """It is not accessible for a calendar visitor."""
     browser.login('cal-visitor')
-    with pytest.raises(HTTPError) as err:
-        browser.open(browser.CALENDAR_CATEGORY_ADD_URL)
-    assert 'HTTP Error 403: Forbidden' == str(err.value)
+    browser.assert_forbidden(browser.CALENDAR_CATEGORY_ADD_URL)
 
 
 def test_category__Edit__1(address_book, CategoryFactory, browser):
@@ -136,6 +134,4 @@ def test_category__Delete__3(address_book, CategoryFactory, browser):
     """It is not accessible for a calendar visitor."""
     CategoryFactory(address_book, u'foo')
     browser.login('cal-visitor')
-    with pytest.raises(HTTPError) as err:
-        browser.open(browser.CALENDAR_CATEGORY_DELETE_URL)
-    assert 'HTTP Error 403: Forbidden' == str(err.value)
+    browser.assert_forbidden(browser.CALENDAR_CATEGORY_DELETE_URL)

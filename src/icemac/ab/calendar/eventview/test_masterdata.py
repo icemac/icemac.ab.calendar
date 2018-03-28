@@ -1,5 +1,4 @@
 from zope.security.interfaces import Unauthorized
-from zope.testbrowser.browser import HTTPError
 from zope.testbrowser.browser import LinkNotFoundError
 import pytest
 
@@ -66,9 +65,7 @@ def test_masterdata__Add__2(
 def test_masterdata__Add__3(address_book, browser, login):
     """It is not accessible for any calendar user."""
     browser.login(login)
-    with pytest.raises(HTTPError) as err:
-        browser.open(browser.CALENDAR_EVENTVIEW_CONFIGURATION_ADD_URL)
-    assert 'HTTP Error 403: Forbidden' == str(err.value)
+    browser.assert_forbidden(browser.CALENDAR_EVENTVIEW_CONFIGURATION_ADD_URL)
 
 
 def test_masterdata__Edit__1(
@@ -147,6 +144,5 @@ def test_masterdata__Delete__2(
     """It is not accessible for any calendar user."""
     EventViewConfigurationFactory(address_book, u'foo')
     browser.login(login)
-    with pytest.raises(HTTPError) as err:
-        browser.open(browser.CALENDAR_EVENTVIEW_CONFIGURATION_DELETE_URL)
-    assert 'HTTP Error 403: Forbidden' == str(err.value)
+    browser.assert_forbidden(
+        browser.CALENDAR_EVENTVIEW_CONFIGURATION_DELETE_URL)
