@@ -11,7 +11,8 @@ def calendar_menu(address_book, browser, sitemenu):
 
 def test_menu__calendar_menu__1(calendar_menu):
     """Asserting that the menu with the index 0 is `Calendar`."""
-    calendar_menu.assert_correct_menu_item_is_tested()
+    assert (calendar_menu.menu_item_title
+            == calendar_menu.get_menu_item_title_under_test())
 
 
 def test_menu__calendar_menu__2(calendar_menu):

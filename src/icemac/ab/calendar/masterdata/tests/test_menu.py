@@ -12,7 +12,8 @@ def master_data_menu(address_book, browser, sitemenu):
 
 def test_menu__master_data_menu__1(master_data_menu):
     """Asserting that the menu with the index 4 is calendar master data."""
-    master_data_menu.assert_correct_menu_item_is_tested()
+    assert (master_data_menu.menu_item_title
+            == master_data_menu.get_menu_item_title_under_test())
 
 
 def test_menu__master_data_menu__2(master_data_menu):
