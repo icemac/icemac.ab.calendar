@@ -10,7 +10,7 @@
     // Change width of drop downs in month select on calendar back to "normal"
     // width:
     $('form#calendar-select-form select.choice-field').select2({
-        width: "auto",
+        width: "element",
     });
 
     var WidgetToggle = Class.$extend({
