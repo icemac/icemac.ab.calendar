@@ -7,6 +7,9 @@
         $('#calendar #calendar-select-form #form-buttons-apply').click();
     });
 
+    // Hide the submit button as we have auto submit.
+    $('#calendar #calendar-select-form #form-buttons-apply').hide();
+
     // Change width of drop downs in month select on calendar back to "normal"
     // width:
     $('form#calendar-select-form select.choice-field').select2({

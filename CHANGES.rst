@@ -13,6 +13,9 @@
 
 - Fix the close URL of the list views so it does not stick to the list views.
 
+- No longer render the submit button in the calendar list view as the drop
+  downs have auto-submit.
+
 
 3.0 (2018-03-16)
 ================
