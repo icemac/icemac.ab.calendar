@@ -11,6 +11,7 @@ pipelines:
           - curl https://bitbucket.org/icemac/icemac.addressbook/raw/tip/profiles/versions.cfg > versions.cfg
           - pip install setuptools==`grep 'setuptools' versions.cfg | cut -d"=" -f2 | tr -d '[:blank:]'`
           - pip install zc.buildout==`grep 'zc.buildout' versions.cfg | cut -d"=" -f2 | tr -d '[:blank:]'`
+          - buildout annotate
           - buildout -n buildout:eggs-directory=../eggs
           - bin/py.test -k "not webdriver"
 
