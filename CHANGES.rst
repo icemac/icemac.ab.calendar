@@ -91,4 +91,4 @@ Older versions
 
 See `OLD_CHANGES.rst`_.
 
-.. _`OLD_CHANGES.rst` : https://bitbucket.org/icemac/icemac.ab.calendar/raw/tip/OLD_CHANGES.rst
+.. _`OLD_CHANGES.rst` : https://bitbucket.org/icemac/icemac.ab.calendar/raw/default/OLD_CHANGES.rst
