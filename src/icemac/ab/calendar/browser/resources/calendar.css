@@ -171,6 +171,21 @@ body.main {
     display: none;
 }
 
+#calendar #calendar-select-form .buttons {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: lightGrey;
+    opacity: 0.85;
+    padding: 0;
+    width: 100%;
+    border-radius: 0;
+}
+
+#calendar #calendar-select-form .buttons input {
+    margin: 5px 0 5px 10px;
+}
+
 /* year tabular view */
 
 #calendar.year h2 {
