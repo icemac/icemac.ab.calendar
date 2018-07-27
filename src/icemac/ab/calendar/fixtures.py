@@ -13,16 +13,6 @@ import zope.publisher.browser
 # Fixtures to create objects:
 
 
-@pytest.fixture('function')
-def RequestFactory():
-    """Get a request object on the right skin layer."""
-    def get_request(**kw):
-        return zope.publisher.browser.TestRequest(
-            skin=icemac.addressbook.browser.interfaces.IAddressBookLayer,
-            **kw)
-    return get_request
-
-
 @pytest.fixture(scope='session')
 def CategoryFactory():
     """Create an event category in the calendar."""

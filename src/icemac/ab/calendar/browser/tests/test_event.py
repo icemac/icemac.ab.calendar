@@ -4,6 +4,8 @@ from icemac.ab.calendar.interfaces import IEvent, IRecurringEvent
 from icemac.ab.calendar.testing import CalendarWebdriverPageObjectBase
 from icemac.ab.calendar.testing import get_recurred_event
 from icemac.addressbook.testing import Webdriver
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.wait import WebDriverWait
 from zope.traversing.browser import absoluteURL
 import calendar
 import pytest
@@ -358,17 +360,31 @@ class POEvent(CalendarWebdriverPageObjectBase):
 
     # property setter!
     def set_whole_day_event(self, value):
-        self._selenium.click(
-            'id=form-widgets-datetime-widgets-whole_day_event-{}'.format(
-                int(not(value))))
+        self._selenium.find_element_by_id(
+            'form-widgets-datetime-widgets-whole_day_event-{}'.format(
+                int(not(value)))).click()
 
     whole_day_event = property(None, set_whole_day_event)
 
+    def _assert_element_hidden(self, el):
+        assert not el.is_displayed()
+
+    def _assert_element_shown(self, el):
+        assert el.is_displayed()
+
+    def _wait_for_element_hidden(self, el):
+        WebDriverWait(self._selenium, 3).until_not(
+            expected_conditions.visibility_of(el))
+
+    def _wait_for_element_shown(self, el):
+        WebDriverWait(self._selenium, 3).until(
+            expected_conditions.visibility_of(el))
+
     status_attr_map = {
-        'hidden': 'assertNotVisible',
-        'shown': 'assertVisible',
-        'wait-for-hidden': 'waitForNotVisible',
-        'wait-for-shown': 'waitForVisible',
+        'hidden': _assert_element_hidden,
+        'shown': _assert_element_shown,
+        'wait-for-hidden': _wait_for_element_hidden,
+        'wait-for-shown': _wait_for_element_shown,
     }
 
     def assert_time(self, status):
@@ -376,8 +392,9 @@ class POEvent(CalendarWebdriverPageObjectBase):
 
         Possible status see keys of `status_attr_map`.
         """
-        getattr(self._selenium, self.status_attr_map[status])(
-            'id=form-widgets-datetime-widgets-time')
+        el = self._selenium.find_element_by_id(
+            'form-widgets-datetime-widgets-time')
+        return self.status_attr_map[status](self, el)
 
 
 Webdriver.attach(POEvent, 'event')

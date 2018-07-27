@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 import datetime
 import icemac.addressbook.testing
 import icemac.recurrence.conftest
@@ -75,29 +78,33 @@ class POCalendar(CalendarWebdriverPageObjectBase):
 
     @property
     def month(self):
-        return self._selenium.getSelectedLabel(
-            'id=form-widgets-calendar_month')
+        return self.get_drop_down_selection('form-widgets-calendar_month-row')
 
     @month.setter
     def month(self, month):
-        self._selenium.select(
-            'id=form-widgets-calendar_month', 'label={}'.format(month))
+        self.select_from_drop_down(month, id='form-widgets-calendar_month-row')
+        self._wait_for_info_message()
 
     def switch_to_previous_month(self):
-        self._selenium.click(u"link=◄")
+        self._selenium.find_element_by_link_text(u"◄").click()
 
     def switch_to_next_month(self):
-        self._selenium.click(u"link=►")
+        self._selenium.find_element_by_link_text(u"►").click()
 
     @property
     def year(self):
-        return int(self._selenium.getSelectedLabel(
-            'id=form-widgets-calendar_year'))
+        return int(
+            self.get_drop_down_selection('form-widgets-calendar_year-row'))
 
     @year.setter
     def year(self, year):
-        self._selenium.select(
-            'id=form-widgets-calendar_year', 'label={}'.format(year))
+        self.select_from_drop_down(year, id='form-widgets-calendar_year-row')
+        self._wait_for_info_message()
+
+    def _wait_for_info_message(self):
+        WebDriverWait(self._selenium, 10).until(
+            EC.invisibility_of_element_located((By.ID, 'info-messages')))
+
 
 
 icemac.addressbook.testing.Webdriver.attach(POCalendar, 'calendar')
