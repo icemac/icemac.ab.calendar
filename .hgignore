@@ -12,6 +12,7 @@ syntax: glob
 bin/
 cache/*.py
 develop-eggs/
+geckodriver.log
 htmlcov/
 my-buildout.cfg
 parts/
