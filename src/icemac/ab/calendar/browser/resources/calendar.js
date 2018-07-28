@@ -10,10 +10,13 @@
     // Hide the submit button as we have auto submit.
     $('#calendar #calendar-select-form #form-buttons-apply').hide();
 
-    // Change width of drop downs in month select on calendar back to "normal"
-    // width:
-    $('form#calendar-select-form select.choice-field').select2({
-        width: "element",
+    // Change width of drop downs in month select on calendar to fix values to
+    // prevent that an ellipsis is used:
+    $('#form-widgets-calendar_month-row select.choice-field').select2({
+        width: "150px",
+    });
+    $('#form-widgets-calendar_year-row select.choice-field').select2({
+        width: "65px",
     });
 
     var WidgetToggle = Class.$extend({
