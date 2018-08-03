@@ -106,6 +106,7 @@ class POCalendar(CalendarWebdriverPageObjectBase):
             expected_conditions.invisibility_of_element_located(
                 (By.ID, 'info-messages')))
 
+
 icemac.addressbook.testing.Webdriver.attach(POCalendar, 'calendar')
 
 
