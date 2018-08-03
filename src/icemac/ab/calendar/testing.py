@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 import datetime
 import icemac.addressbook.testing
@@ -103,9 +103,8 @@ class POCalendar(CalendarWebdriverPageObjectBase):
 
     def _wait_for_info_message(self):
         WebDriverWait(self._selenium, 10).until(
-            EC.invisibility_of_element_located((By.ID, 'info-messages')))
-
-
+            expected_conditions.invisibility_of_element_located(
+                (By.ID, 'info-messages')))
 
 icemac.addressbook.testing.Webdriver.attach(POCalendar, 'calendar')
 
