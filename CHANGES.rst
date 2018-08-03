@@ -16,6 +16,8 @@
 - No longer render the submit button in the calendar list view as the drop
   downs have auto-submit.
 
+- Change license from ZPL to MIT.
+
 
 3.0 (2018-03-16)
 ================
