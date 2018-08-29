@@ -6,7 +6,7 @@ from icemac.addressbook.i18n import _
 import cgi
 import collections
 import copy
-import decorator
+import functools
 import gocept.month
 import grokcore.component as grok
 import icemac.ab.calendar.browser.base
@@ -290,8 +290,7 @@ def hyphenate(text, dic):
     return escaped.replace(SOFT_HYPHEN, SOFT_HYPHEN_HTML)
 
 
-@decorator.decorator
-def hyphenated(func, context, lang=None):
+def hyphenated(func):
     """Decorator for methods those return value should be hyphenated.
 
     Usage:
@@ -303,20 +302,23 @@ def hyphenated(func, context, lang=None):
     Call it using: self.method(lang='de')
 
     """
-    if lang is None:
-        dic = None
-    else:
-        try:
-            dic = pyphen.Pyphen(lang=lang)
-        except KeyError:
-            # Fail early if we cannot hyphen the desired language:
-            raise UnknownLanguageError()
-    text = func(context)
-    if isinstance(text, list):
-        text = [hyphenate(x, dic) for x in text]
-    else:
-        text = hyphenate(text, dic)
-    return text
+    @functools.wraps(func)
+    def hyphenated(context, lang=None):
+        if lang is None:
+            dic = None
+        else:
+            try:
+                dic = pyphen.Pyphen(lang=lang)
+            except KeyError:
+                # Fail early if we cannot hyphen the desired language:
+                raise UnknownLanguageError()
+        text = func(context)
+        if isinstance(text, list):
+            text = [hyphenate(x, dic) for x in text]
+        else:
+            text = hyphenate(text, dic)
+        return text
+    return hyphenated
 
 
 class EventDescriptionBase(object):

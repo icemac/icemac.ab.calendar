@@ -44,7 +44,6 @@ setuptools.setup(
     zip_safe=False,
     install_requires=[
         'Pyphen',
-        'decorator',
         'gocept.month >= 1.2',
         'grokcore.annotation',
         'grokcore.component >= 2.5.1.dev1',

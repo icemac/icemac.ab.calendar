@@ -5,7 +5,7 @@
 3.2 (unreleased)
 ================
 
-- Nothing changed yet.
+- Drop dependency on `decorator` package.
 
 
 3.1 (2018-08-03)
