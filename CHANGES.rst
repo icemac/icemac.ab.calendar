@@ -7,6 +7,7 @@
 
 - Drop dependency on `decorator` package.
 
+- Update to changes in test infrastructure in `icemac.addressbook >= 8.0`.
 
 3.1 (2018-08-03)
 ================

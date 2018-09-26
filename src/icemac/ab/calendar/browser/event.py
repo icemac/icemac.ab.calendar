@@ -264,7 +264,7 @@ class AddFromRecurredEvent(icemac.ab.calendar.browser.base.View,
     handlers = z3c.form.button.Handlers()
 
     # Rename `Add` button to `Apply`.
-    @z3c.form.button.buttonAndHandler(_('Apply'), name='add')
+    @z3c.form.button.buttonAndHandler(_('Save'), name='add')
     def handleAdd(self, action):
         super(AddFromRecurredEvent, self).handleAdd(self, action)
 

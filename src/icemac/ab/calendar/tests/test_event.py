@@ -84,7 +84,7 @@ def test_event__Event__3(address_book, CategoryFactory, DateTime, browser):
     browser.open(browser.EVENT_EDIT_URL)
     assert '42' == browser.getControl('Number of reservations').value
     browser.getControl('Number of reservations').value = '41'
-    browser.getControl('Apply').click()
+    browser.getControl('Save').click()
     assert 'Data successfully updated.' == browser.message
 
 

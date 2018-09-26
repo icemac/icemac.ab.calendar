@@ -42,7 +42,7 @@ def test_category__changed__1(
     browser.login('mgr')
     browser.open(browser.CALENDAR_CATEGORY_EDIT_URL)
     browser.getControl('event category').value = 'bar'
-    browser.getControl('Apply').click()
+    browser.getControl('Save').click()
 
     with zope.component.hooks.site(address_book):
         event_titles = [

@@ -75,7 +75,7 @@ def test_category__Edit__1(address_book, CategoryFactory, browser):
     assert browser.CALENDAR_CATEGORY_EDIT_URL == browser.url
     assert 'birthday' == browser.getControl('event category').value
     browser.getControl('event category').value = 'wedding day'
-    browser.getControl('Apply').click()
+    browser.getControl('Save').click()
     assert 'Data successfully updated.' == browser.message
     # The changed category name shows up in the list:
     assert 'wedding day' in browser.contents
@@ -88,7 +88,7 @@ def test_category__Edit__2(address_book, CategoryFactory, browser):
     browser.login('cal-editor')
     browser.open(browser.CALENDAR_CATEGORY_EDIT_URL)
     browser.getControl('event category').value = 'wedding day'
-    browser.getControl('Apply').click()
+    browser.getControl('Save').click()
     assert 'There were some errors.' in browser.contents
     assert 'This category already exists.' in browser.contents
 

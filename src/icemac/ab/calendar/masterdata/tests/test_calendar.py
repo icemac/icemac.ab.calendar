@@ -17,7 +17,7 @@ def test_calendar__CalendarView__1(address_book, FieldFactory, browser):
         'persons',
         'reservations',
     ]
-    browser.getControl('Apply').click()
+    browser.getControl('Save').click()
     assert 'Data successfully updated.' == browser.message
     browser.open(browser.CALENDAR_MASTERDATA_EDIT_DISPLAY_URL)
     assert browser.getControl('Additional event fields').displayValue == [

@@ -58,7 +58,7 @@ def test_calendar__TabularCalendar__2(address_book, browser):
     browser.getLink('UTC').click()
     assert browser.PREFS_TIMEZONE_URL.startswith(browser.url)
     browser.getControl('Time zone').displayValue = ['Indian/Christmas']
-    browser.getControl('Apply').click()
+    browser.getControl('Save').click()
     assert 'Data successfully updated.' == browser.message
 
 
@@ -313,7 +313,6 @@ def test_calendar__YearCalendar__2(
     browser.lang('en')
     browser.open(browser.CALENDAR_YEAR_OVERVIEW_URL)
     browser.getControl('year').getControl('2014').selected = True
-    browser.handleErrors = False
     browser.getControl('Apply').click()
     assert 'Year changed.' == browser.message
     # The time stays the same even there is a DST switch in between:

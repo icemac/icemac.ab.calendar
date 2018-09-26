@@ -108,7 +108,7 @@ def test_event__Edit__1(
     assert 'wedding day' == browser.getControl('alternative title').value
     browser.getControl('alternative title').value = ''
     browser.getControl('event category').getControl('birthday').selected = True
-    browser.getControl('Apply').click()
+    browser.getControl('Save').click()
     assert 'Data successfully updated.' == browser.message
     # The changed event name shows up in the list:
     assert 'birthday' in browser.contents

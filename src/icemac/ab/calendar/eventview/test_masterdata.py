@@ -84,7 +84,7 @@ def test_masterdata__Edit__1(
     browser.getControl('duration').displayValue = ['3 weeks']
     browser.getControl('categories').displayValue = ['bar']
     browser.getControl('show fields').displayValue = ['persons']
-    browser.getControl('Apply').click()
+    browser.getControl('Save').click()
     assert 'Data successfully updated.' == browser.message
     # The changed category name shows up in the list:
     assert 'alternative' in browser.contents
@@ -104,7 +104,7 @@ def test_masterdata__Edit__2(
     browser.login('mgr')
     browser.open(browser.CALENDAR_EVENTVIEW_CONFIGURATION_EDIT_URL)
     browser.getControl('title').value = 'alternative'
-    browser.getControl('Apply').click()
+    browser.getControl('Save').click()
     assert 'There were some errors.' in browser.contents
     assert 'This title is already used for an ' in browser.contents
 

@@ -52,7 +52,7 @@ def test_event__Edit__1(
     assert DateTime.format_date(dt) == browser.getControl('date').value
     assert dt.strftime('%H:%M') == browser.getControl('time').value
     browser.getControl('event category').displayValue = ['wedding day']
-    browser.getControl('Apply').click()
+    browser.getControl('Save').click()
     assert 'Data successfully updated.' == browser.message
     assert browser.CALENDAR_MONTH_OVERVIEW_URL == browser.url
     browser.getLink('wedding day').click()
@@ -101,7 +101,7 @@ def test_event__Edit__4(
     browser.open(browser.EVENT_EDIT_URL)
     assert ['Tester'] == browser.getControl('persons').displayValue
     browser.getControl('notes').value = 'Force save'
-    browser.getControl('Apply').click()
+    browser.getControl('Save').click()
     assert 'Data successfully updated.' == browser.message
     kw = KeywordFactory(address_book, u'foo')
     with zope.component.hooks.site(address_book):
@@ -110,12 +110,12 @@ def test_event__Edit__4(
     assert ['Missing: Tester'] == browser.getControl('persons').displayValue
     browser.getControl('notes').value = 'Force save, second time'
     browser.handleErrors = False
-    browser.getControl('Apply').click()
+    browser.getControl('Save').click()
     assert 'There were some errors.' in browser.contents
     assert ('Please deselect the persons prefixed with "Missing:"' in
             browser.contents)
     browser.getControl('persons').displayValue = []
-    browser.getControl('Apply').click()
+    browser.getControl('Save').click()
     assert 'Data successfully updated.' == browser.message
 
 
@@ -248,7 +248,7 @@ def test_event__AddFromRecurredEvent__2(
     browser.login('cal-editor')
     browser.open(sample_recurred_event_url)
     browser.getControl('alternative title to category').value = 'birthday'
-    browser.getControl('Apply').click()
+    browser.getControl('Save').click()
     assert '"birthday" added.' == browser.message
     browser.open(browser.EVENT_EDIT_URL)
     assert 'birthday' == browser.getControl('alternative').value
