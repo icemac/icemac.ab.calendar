@@ -187,7 +187,7 @@ class Edit(EventFields, icemac.addressbook.browser.base.GroupEditForm):
         self.redirect_to_next_url('object', 'clone.html')
 
     @z3c.form.button.buttonAndHandler(
-        _(u'Delete'), name='delete',
+        _(u'Delete event'), name='delete',
         condition=icemac.addressbook.browser.base.can_access('@@delete.html'))
     def handleDelete(self, action):
         self.redirect_to_next_url('object', 'delete.html')
@@ -268,7 +268,7 @@ class AddFromRecurredEvent(icemac.ab.calendar.browser.base.View,
     def handleAdd(self, action):
         super(AddFromRecurredEvent, self).handleAdd(self, action)
 
-    @z3c.form.button.buttonAndHandler(_('Delete'), name='delete')
+    @z3c.form.button.buttonAndHandler(_('Delete event'), name='delete')
     def handleDelete(self, action):
         self.request.response.redirect(
             self.url(self.context, 'delete-recurred-event.html'))

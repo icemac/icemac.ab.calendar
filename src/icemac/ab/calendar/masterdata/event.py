@@ -121,7 +121,7 @@ class Add(EventFields, icemac.addressbook.browser.base.BaseAddForm):
 class Edit(EventFields, icemac.addressbook.browser.base.GroupEditForm):
     """Edit form for recurring event."""
 
-    title = _(u'Edit recurring event')
+    title = _(u'Edit')
     groups = (icemac.addressbook.browser.metadata.MetadataGroup,)
     interface = icemac.ab.calendar.interfaces.IRecurringEvent
     next_url = 'parent'
@@ -137,7 +137,7 @@ class Edit(EventFields, icemac.addressbook.browser.base.GroupEditForm):
             self, data)
 
     @z3c.form.button.buttonAndHandler(
-        _(u'Delete'), name='delete',
+        _(u'Delete event'), name='delete',
         condition=icemac.addressbook.browser.base.can_access('@@delete.html'))
     def handleDelete(self, action):
         self.redirect_to_next_url('object', 'delete.html')
