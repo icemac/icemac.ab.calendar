@@ -27,6 +27,7 @@ Running the tests
 
 To run the tests yourself call::
 
-  $ python2.7 bootstrap.py
+  $ virtualenv-2.7 .
+  $ bin/pip install zc.buildout
   $ bin/buildout -n
   $ bin/py.test
