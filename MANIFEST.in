@@ -1,8 +1,6 @@
 include *.TXT
 include *.py
 include *.rst
-include pytest.ini
-include .coveragerc
 
 exclude *.cfg
 include buildout.cfg
