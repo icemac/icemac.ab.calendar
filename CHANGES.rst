@@ -2,7 +2,7 @@
  Changelog
 ===========
 
-3.2 (unreleased)
+3.2 (2018-10-13)
 ================
 
 - Drop dependency on `decorator` package.
