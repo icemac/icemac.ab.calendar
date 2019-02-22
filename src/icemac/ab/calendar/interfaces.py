@@ -4,6 +4,7 @@ from icemac.recurrence.interfaces import IRecurringDateTime
 import collections
 import datetime
 import gocept.reference.field
+import icemac.addressbook.entities
 import icemac.addressbook.fieldsource
 import icemac.addressbook.interfaces
 import icemac.addressbook.sources
@@ -79,7 +80,8 @@ class EventFieldsSource(zc.sourcefactory.basic.BasicSourceFactory):
         # If we get here it is no security risk to return the title because the
         # user is allowed to access the value. But we did not register class
         # types and security assertions for fields.
-        return zope.security.proxy.removeSecurityProxy(value).title
+        field = zope.security.proxy.removeSecurityProxy(value)
+        return icemac.addressbook.entities.get_field_label(field)
 
 
 event_fields_source = EventFieldsSource()
@@ -256,7 +258,19 @@ class IRecurringEventAdditionalSchema(IRecurrence):
     end = zope.schema.Date(title=_('recurrence end'), required=False)
 
 
-class IRecurringEvent(IBaseEvent, IRecurringEventAdditionalSchema):
+class IRecurringEventBase(IBaseEvent):
+    """Base class for IRecurringEvent.
+
+    Needed for copying the schema field so we do not get the customizations of
+    IEvent.
+    """
+
+
+# Copy schema fields, reason see above.
+icemac.addressbook.utils.copy_schema_fields(IBaseEvent, IRecurringEventBase)
+
+
+class IRecurringEvent(IRecurringEventBase, IRecurringEventAdditionalSchema):
     """An event recurring after a defined period."""
 
     priority = zope.interface.Attribute(

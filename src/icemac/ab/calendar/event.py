@@ -49,7 +49,8 @@ event_schema = icemac.ab.calendar.interfaces.IEvent
 @zope.interface.implementer(
     event_schema,
     icemac.addressbook.interfaces.ISchemaProvider,
-    zope.annotation.interfaces.IAttributeAnnotatable)
+    zope.annotation.interfaces.IAttributeAnnotatable,
+    icemac.addressbook.interfaces.IMayHaveCustomizedPredfinedFields)
 class Event(persistent.Persistent,
             zope.container.contained.Contained,
             BaseEvent):

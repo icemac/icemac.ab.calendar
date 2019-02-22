@@ -5,7 +5,7 @@
 3.3 (unreleased)
 ================
 
-- Nothing changed yet.
+- Consider customization of pre-defined fields in forms.
 
 
 3.2 (2018-10-13)

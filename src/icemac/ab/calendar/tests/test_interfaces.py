@@ -1,5 +1,8 @@
 from ..interfaces import PersonSource, ICalendarDisplaySettings, ICalendar
+from ..interfaces import IBaseEvent
+from ..interfaces import EventFieldsSource
 from icemac.addressbook.interfaces import ITitle, IKeywords
+from icemac.addressbook.interfaces import IFieldCustomization
 import zope.component
 
 
@@ -20,3 +23,12 @@ def test_interfaces__PersonSource__getValue__2(address_book, search_data):
     ICalendarDisplaySettings(ICalendar(search_data)).person_keyword = kw
     assert ([u'Koch', u'Velleuer', u'Liebig'] ==
             [ITitle(x) for x in PersonSource().factory.getValues()])
+
+
+def test_interfaces__EventFieldsSource__getTitle__1(address_book):
+    """It respects customized labels of pre-defined fields."""
+    field = IBaseEvent['persons']
+    customization = IFieldCustomization(address_book)
+    customization.set_value(field, u'label', u'Responsible')
+
+    assert 'Responsible' == EventFieldsSource().factory.getTitle(field)
