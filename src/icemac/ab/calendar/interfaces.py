@@ -1,4 +1,3 @@
-import zope.catalog.interfaces
 from icemac.addressbook.i18n import _
 from icemac.recurrence.interfaces import IRecurringDateTime
 import collections
@@ -10,6 +9,7 @@ import icemac.addressbook.interfaces
 import icemac.addressbook.sources
 import zc.sourcefactory.basic
 import zope.cachedescriptors.property
+import zope.catalog.interfaces
 import zope.component
 import zope.interface
 
