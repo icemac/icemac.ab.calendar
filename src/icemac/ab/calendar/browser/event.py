@@ -318,6 +318,7 @@ class DeleteRecurredEvent(icemac.ab.calendar.browser.base.View,
             datetime=content['datetime'].datetime,
             whole_day_event=content['datetime'].whole_day_event,
             deleted=True)
+        return True
 
 
 class RecurredEventAbsoluteURL(zope.traversing.browser.AbsoluteURL,
