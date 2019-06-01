@@ -7,7 +7,7 @@ import pytest
 def master_data_menu(address_book, browser, sitemenu):
     """Fixture to test the calendar master data menu."""
     browser.login('mgr')
-    return sitemenu(browser, 4, 'Master data', browser.CALENDAR_MASTERDATA_URL)
+    return sitemenu(browser, 5, 'Master data', browser.CALENDAR_MASTERDATA_URL)
 
 
 def test_menu__master_data_menu__1(master_data_menu):

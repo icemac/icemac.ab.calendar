@@ -7,6 +7,8 @@
 
 - Consider customization of pre-defined fields in forms.
 
+- Update the ZCML configuration to changes in `icemac.addressbook >= 9`.
+
 
 3.2 (2018-10-13)
 ================
