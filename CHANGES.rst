@@ -39,33 +39,6 @@
 - Change license from ZPL to MIT.
 
 
-3.0 (2018-03-16)
-================
-
-Backward incompatible changes
------------------------------
-
-- ``.calendar.Calendar.get_events()`` now expects two arguments: start and end.
-  The previous functionality of ``get_events()`` is now provided by
-  ``get_events_for_month()``
-
-- Move ``.browser.renderer.interfaces.IEventDescription`` and
-  ``.browser.renderer.interfaces.UnknownLanguageError`` to
-  ``.browser.interfaces``.
-
-Features
---------
-
-- Add configurable list views instead of the fix month list view.
-  (See Master data > Calendar > List views for the configuration.)
-
-
-Other changes
--------------
-
-- Adapt code to `icemac.addressbook >= 6.0`.
-
-
 Older versions
 ==============
 
