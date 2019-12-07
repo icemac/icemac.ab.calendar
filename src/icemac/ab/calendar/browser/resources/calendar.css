@@ -335,3 +335,156 @@ div#content #calendar table td:last-child {
 #content #form-widgets-external_persons-row div.error div.error {
     display: none;
 }
+
+/* A smartphone gets a list instead of a table as it does not render there
+   well.
+*/
+@media (max-width: 699px) {
+
+    div#content #calendar table {
+        width: 100%;
+    }
+
+    #calendar .header .NW,
+    #calendar .header .NO,
+    #calendar .body .W,
+    #calendar .body .O,
+    #calendar .footer,
+    #calendar table td:empty,
+    #content .body thead {
+        display: none;
+    }
+
+    #calendar .header .NNW,
+    #calendar .header .center,
+    #calendar .header .NNO {
+        background: none;
+        width: auto;
+        height: auto;
+        float: none;
+        min-width: inherit;
+    }
+    #calendar .header .NNW,
+    #calendar .header .NNO,
+    #calendar .header .center {
+        margin: 5px;
+        overflow: inherit;
+    }
+    #calendar .header .NW-container,
+    #calendar .header .NO-container {
+        margin: 0;
+        width: auto;
+        height: auto;
+        margin-top: 3px;
+    }
+    #calendar .header .NNW .previous,
+    #calendar .header .NNO .next {
+        float: none;
+    }
+
+    #calendar #calendar-select-form {
+        padding-top: 5px;
+        text-align: center;
+    }
+    #calendar #calendar-select-form .buttons {
+        background-color: transparent;
+        width: inherit;
+    }
+
+    div#content #calendar table {
+        background: #f6f6f6 none;
+    }
+
+    #timezone {
+        float: right;
+        position: fixed;
+        right: 6px;
+        bottom: 7px;
+        margin-top: 0px;
+    }
+
+    #calendar.year .table h2 {
+        position: inherit;
+        float: right;
+    }
+
+    #calendar.year .table .month {
+        page-break-inside: avoid;
+    }
+
+    #calendar table td,
+    #calendar table th {
+        display: list-item;
+        border: 0px;
+        height: inherit;
+        min-height: 20px;
+        max-width: inherit;
+        width: 100%;
+        clear: left;
+        list-style: outside none none;
+    }
+
+    #calendar table td .wrapper,
+    #calendar table td dt,
+    #calendar table td dd,
+    #calendar table td dd a,
+    #calendar table td dd ul,
+    #calendar table td dd ul li,
+    #calendar table td .weekday {
+        float: left;
+    }
+
+    #calendar table td .number {
+        text-align: right;
+    }
+
+    #calendar table td.day-0 .weekday {
+        font-weight: bold;
+    }
+
+    #calendar table td .weekday {
+        width: 25px;
+    }
+
+    #calendar table td .number {
+        width: 20px;
+        text-align: right;
+    }
+
+    #calendar table td dt {
+        clear: left;
+        margin-left: 5px;
+    }
+
+    #calendar table td dt:first-child {
+        clear: none;
+    }
+
+    #calendar table td dl {
+        float: left;
+    }
+
+    #calendar table td dl dd,
+    div#content td ul {
+        margin-left: 5px;
+        padding-left: 0px;
+    }
+    #calendar table td dl dd ul.info li {
+        margin-left: 20px;
+    }
+
+    #calendar table td span.number {
+        float: left;
+        font-size: inherit;
+        width: 1.5em;
+    }
+
+    #calendar table td dl dd span.info {
+        display: inline;
+        margin-left: 3px;
+    }
+
+    #calendar .weekday.no-screen {
+        display: block;
+    }
+}

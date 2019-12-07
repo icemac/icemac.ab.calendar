@@ -5,8 +5,13 @@
 3.4 (unreleased)
 ================
 
-- Nothing changed yet.
+- On mobile devices:
 
+    + fix rendering of the calendar by replacing the tabular rendering by a
+      vertical one like the print version.
+
+    + replace secondary horizontal menu with a vertical one hidden behind a
+      burger icon.
 
 3.3 (2019-10-01)
 ================
