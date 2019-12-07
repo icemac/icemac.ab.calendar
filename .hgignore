@@ -3,6 +3,7 @@ syntax: glob
 *.egg-info
 *.pyc
 .DS_Store
+.Python
 .cache/
 .coverage
 .coverage.*
@@ -14,5 +15,7 @@ cache/*.py
 develop-eggs/
 geckodriver.log
 htmlcov/
+include/
+lib/
 my-buildout.cfg
 parts/
