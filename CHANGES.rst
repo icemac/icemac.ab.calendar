@@ -2,7 +2,7 @@
  Changelog
 ===========
 
-3.4 (unreleased)
+3.4 (2019-12-30)
 ================
 
 - On mobile devices:
