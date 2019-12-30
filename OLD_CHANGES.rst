@@ -4,6 +4,23 @@
 
 Changelog of releases more than 2 minor versions behind current version.
 
+3.1 (2018-08-03)
+================
+
+- Improve readability and usability of list views.
+
+- List views now also return the events of the last displayed day.
+
+- Adapt configuration, CSS and tests to `icemac.addressbook >= 7.0`.
+
+- Fix the close URL of the list views so it does not stick to the list views.
+
+- No longer render the submit button in the calendar list view as the drop
+  downs have auto-submit.
+
+- Change license from ZPL to MIT.
+
+
 3.0 (2018-03-16)
 ================
 
