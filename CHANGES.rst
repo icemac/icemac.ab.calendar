@@ -5,7 +5,8 @@
 3.5 (unreleased)
 ================
 
-- Nothing changed yet.
+- Prevent dates before 1900 from being entered as they cannot be rendered
+  afterwards.
 
 
 3.4 (2019-12-30)

@@ -1,4 +1,5 @@
 from icemac.addressbook.i18n import _
+from icemac.addressbook.interfaces import MIN_SUPPORTED_DATE
 from icemac.recurrence.interfaces import IRecurringDateTime
 import collections
 import datetime
@@ -7,6 +8,7 @@ import icemac.addressbook.entities
 import icemac.addressbook.fieldsource
 import icemac.addressbook.interfaces
 import icemac.addressbook.sources
+import pytz
 import zc.sourcefactory.basic
 import zope.cachedescriptors.property
 import zope.catalog.interfaces
@@ -16,6 +18,7 @@ import zope.interface
 
 PACKAGE_ID = 'icemac.ab.calendar'
 DATE_INDEX = 'icemac.ab.calendar.event.date'
+MIN_SUPPORTED_DATETIME = datetime.datetime(1900, 1, 1, 0, tzinfo=pytz.UTC)
 
 
 class ICalendarObject(zope.interface.Interface):
@@ -177,7 +180,9 @@ class IBaseEvent(zope.interface.Interface):
 
     category = zope.schema.Choice(
         title=_('event category'), source=category_source)
-    datetime = zope.schema.Datetime(title=_('datetime'), required=True)
+    datetime = zope.schema.Datetime(
+        title=_('datetime'), required=True,
+        min=MIN_SUPPORTED_DATETIME)
     whole_day_event = zope.schema.Bool(
         title=_('whole day event?'), default=False)
     whole_day_event.setTaggedValue('omit-from-field-list', True)
@@ -255,7 +260,9 @@ class IRecurrence(zope.interface.Interface):
 class IRecurringEventAdditionalSchema(IRecurrence):
     """Additional schema fields for IRecurringEvent."""
 
-    end = zope.schema.Date(title=_('recurrence end'), required=False)
+    end = zope.schema.Date(
+        title=_('recurrence end'), required=False,
+        min=MIN_SUPPORTED_DATE)
 
 
 class IRecurringEventBase(IBaseEvent):

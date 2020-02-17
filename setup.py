@@ -48,7 +48,7 @@ setuptools.setup(
         'grokcore.annotation',
         'grokcore.component >= 2.5.1.dev1',
         'icemac.ab.locales >= 2.16',
-        'icemac.addressbook >= 9.2.dev0',
+        'icemac.addressbook >= 9.3.dev0',
         'icemac.recurrence >= 1.3.1.dev0',
         'js.classy',
         'js.bootstrap4',

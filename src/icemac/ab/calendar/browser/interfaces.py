@@ -1,4 +1,5 @@
 from icemac.addressbook.i18n import _
+from icemac.addressbook.interfaces import MIN_SUPPORTED_DATE
 import z3c.layer.pagelet
 import zope.interface
 import zope.schema
@@ -13,7 +14,8 @@ class IDatetime(zope.interface.Interface):
 
     whole_day_event = zope.schema.Bool(
         title=_('whole day event?'), default=False)
-    date = zope.schema.Date(title=_('date'), required=True)
+    date = zope.schema.Date(
+        title=_('date'), required=True, min=MIN_SUPPORTED_DATE)
     time = zope.schema.Time(title=_('time'), required=False)
     datetime = zope.interface.Attribute(
         '`date` and `time` combined to a datetime.')
