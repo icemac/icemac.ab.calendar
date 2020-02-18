@@ -207,16 +207,16 @@ def test_calendar__MonthCalendar__4(
     default_prefs.getDefaultPreferenceGroup(
         'ab.timeZone').time_zone = 'America/Los_Angeles'
     EventFactory(address_book, alternative_title=u'1st of april utc',
-                 datetime=DateTime(2014, 4, 1, 0))
+                 datetime=DateTime(2019, 4, 1, 0))
     EventFactory(address_book, alternative_title=u'2nd of april utc',
-                 datetime=DateTime(2014, 4, 2, 0))
+                 datetime=DateTime(2019, 4, 2, 0))
     browser.login('cal-visitor')
     # We need to explicitly set the language here because otherwise the month
     # name is not displayed:
     browser.lang('en')
     browser.open(browser.CALENDAR_MONTH_OVERVIEW_URL)
     browser.getControl('month').getControl('April').selected = True
-    browser.getControl('year').getControl('2014').selected = True
+    browser.getControl('year').getControl('2019').selected = True
     browser.getControl('Apply').click()
     assert 'Month changed.' == browser.message
     # 1st of april 0:00 UTC is in march for Los Angeles timezone, so it
@@ -303,8 +303,8 @@ def test_calendar__YearCalendar__2(
     RecurringEventFactory(
         address_book,
         datetime=DateTime(
-            2014, 3, 11, 8, tzinfo=pytz.timezone('Europe/Berlin')),
-        end=DateTime(2014, 5, 2).date(),
+            2019, 3, 11, 8, tzinfo=pytz.timezone('Europe/Berlin')),
+        end=DateTime(2019, 5, 2).date(),
         category=CategoryFactory(address_book, u'my cat'),
         period='nth weekday of month')
     browser.login('cal-visitor')
@@ -312,7 +312,7 @@ def test_calendar__YearCalendar__2(
     # name is not displayed:
     browser.lang('en')
     browser.open(browser.CALENDAR_YEAR_OVERVIEW_URL)
-    browser.getControl('year').getControl('2014').selected = True
+    browser.getControl('year').getControl('2019').selected = True
     browser.getControl('Apply').click()
     assert 'Year changed.' == browser.message
     # The time stays the same even there is a DST switch in between:
