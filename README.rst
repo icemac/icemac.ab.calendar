@@ -32,7 +32,7 @@ Source code
 
 Get the source code::
 
-   $ hg clone https://github.com/icemac/icemac.ab.calendar
+   $ git clone https://github.com/icemac/icemac.ab.calendar
 
 or fork me at: https://github.com/icemac/icemac.ab.calendar
 
