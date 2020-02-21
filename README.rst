@@ -1,3 +1,17 @@
+.. image:: https://travis-ci.com/icemac/icemac.ab.calendar.svg?branch=master
+   :target: https://travis-ci.com/icemac/icemac.ab.calendar
+
+.. image:: https://coveralls.io/repos/github/icemac/icemac.ab.calendar/badge.svg
+   :target: https://coveralls.io/github/icemac/icemac.ab.calendar
+
+.. image:: https://img.shields.io/pypi/v/icemac.ab.calendar.svg
+   :target: https://pypi.python.org/pypi/icemac.ab.calendar/
+   :alt: Latest release
+
+.. image:: https://img.shields.io/pypi/pyversions/icemac.ab.calendar.svg
+   :target: https://pypi.org/project/icemac.ab.calendar/
+   :alt: Supported Python versions
+
 This package provides a calendar feature for `icemac.addressbook`_.
 
 .. _`icemac.addressbook` : https://pypi.org/project/icemac.addressbook/
@@ -18,9 +32,9 @@ Source code
 
 Get the source code::
 
-   $ hg clone https://bitbucket.org/icemac/icemac.ab.calendar
+   $ hg clone https://github.com/icemac/icemac.ab.calendar
 
-or fork me on: https://bitbucket.org/icemac/icemac.ab.calendar
+or fork me at: https://github.com/icemac/icemac.ab.calendar
 
 Running the tests
 =================

@@ -8,6 +8,9 @@
 - Prevent dates before 1900 from being entered as they cannot be rendered
   afterwards.
 
+- Move source code repository to
+  https://github.com/icemac/icemac.ab.calendar.
+
 
 3.4 (2019-12-30)
 ================
@@ -45,4 +48,4 @@ Older versions
 
 See `OLD_CHANGES.rst`_.
 
-.. _`OLD_CHANGES.rst` : https://bitbucket.org/icemac/icemac.ab.calendar/raw/default/OLD_CHANGES.rst
+.. _`OLD_CHANGES.rst` : https://github.com/icemac/icemac.ab.calendar/blob/master/OLD_CHANGES.rst

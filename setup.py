@@ -23,7 +23,7 @@ setuptools.setup(
     author='Michael Howitz',
     author_email='icemac@gmx.net',
     download_url='https://pypi.org/project/icemac.ab.calendar',
-    url='https://bitbucket.org/icemac/icemac.ab.calendar',
+    url='https://github.com/icemac/icemac.ab.calendar',
     license='MIT',
     classifiers=[
         'Development Status :: 5 - Production/Stable',

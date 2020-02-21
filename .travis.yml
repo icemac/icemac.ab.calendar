@@ -1,8 +1,4 @@
+version: ~> 1.0
 language: python
-python:
-  - 2.7
-install:
-  - pip install zc.buildout
-  - buildout -c .travis.cfg
-script:
-  - bin/test -vv --ndiff
+import:
+  - source: icemac/icemac.addressbook:.travis-blueprint.yml
