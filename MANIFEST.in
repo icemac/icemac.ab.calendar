@@ -10,11 +10,8 @@ exclude MANIFEST.in
 include *.yml
 exclude *.yml
 
-include .hgignore
-exclude .hgignore
-
-include .hgtags
-exclude .hgtags
+include .gitignore
+exclude .gitignore
 
 recursive-include cache *.txt
 recursive-include src *.pt

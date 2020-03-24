@@ -4,6 +4,18 @@
 
 Changelog of releases more than 2 minor versions behind current version.
 
+
+3.2 (2018-10-13)
+================
+
+- Drop dependency on `decorator` package.
+
+- Update to changes in test infrastructure in `icemac.addressbook >= 8.0`.
+
+- Change installation procedure from `bootstrap.py` to `virtualenv`,
+  see `README.txt`.
+
+
 3.1 (2018-08-03)
 ================
 
