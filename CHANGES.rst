@@ -2,7 +2,7 @@
  Changelog
 ===========
 
-3.5 (unreleased)
+3.5 (2020-03-24)
 ================
 
 - Prevent dates before 1900 from being entered as they cannot be rendered
