@@ -5,7 +5,7 @@
 3.6 (unreleased)
 ================
 
-- Nothing changed yet.
+- Allow to select up to 10 years into past instead of 5.
 
 
 3.5 (2020-03-24)

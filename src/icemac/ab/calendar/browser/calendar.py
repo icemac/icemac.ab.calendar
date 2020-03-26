@@ -67,7 +67,7 @@ class YearSource(zc.sourcefactory.basic.BasicSourceFactory):
 
     def getValues(self):
         current_year = date.today().year
-        return range(current_year - 5, current_year + 11)
+        return range(current_year - 10, current_year + 11)
 
 
 year_source = YearSource()
