@@ -2,7 +2,7 @@
  Changelog
 ===========
 
-3.6 (unreleased)
+3.6 (2020-04-13)
 ================
 
 - Listen the number of events per year in master data, so the admin can see if
