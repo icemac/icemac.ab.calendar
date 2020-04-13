@@ -57,6 +57,24 @@
       class=".calendar.CalendarView"
       permission="icemac.ab.calendar.EditCalendar" />
 
+   <z3c:siteMenuItem
+     manager="icemac.ab.calendar.masterdata.interfaces.ICalendarMasterData"
+     layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+     name="EventCounts"
+     title="Event counts"
+     permission="icemac.ab.calendar.ViewEventViewContainer"
+     viewName="++attribute++calendar/@@calendar-counts.html"
+     weight="100"
+     />
+
+  <gocept:pagelet
+      for="icemac.ab.calendar.interfaces.ICalendar"
+      layer="icemac.addressbook.browser.interfaces.IAddressBookLayer"
+      name="calendar-counts.html"
+      class=".calendar.CalendarCounts"
+      permission="icemac.ab.calendar.ViewEventViewContainer"
+      />
+
 
   <include file="category.zcml" />
   <include file="event.zcml" />

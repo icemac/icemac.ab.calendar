@@ -19,6 +19,7 @@ class Browser(icemac.addressbook.testing.Browser):
 
     CALENDAR_MASTERDATA_URL = 'http://localhost/ab/@@calendar-masterdata.html'
     CALENDAR_MASTERDATA_EDIT_DISPLAY_URL = BASE + '/@@edit-display.html'
+    CALENDAR_EVENTCOUNTS = BASE + '/@@calendar-counts.html'
 
     EV_BASE = BASE + '_eventviews'
     CALENDAR_MASTERDATA_EVENTVIEW_URL = EV_BASE

@@ -5,7 +5,8 @@
 3.6 (unreleased)
 ================
 
-- Nothing changed yet.
+- Listen the number of events per year in master data, so the admin can see if
+  the calendar is used at all.
 
 
 3.5.1 (2020-03-26)

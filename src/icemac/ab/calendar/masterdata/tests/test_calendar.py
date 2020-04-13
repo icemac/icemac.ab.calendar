@@ -46,3 +46,47 @@ def test_calendar__CalendarView__3(address_book, browser):
     """It is not accessible for a calendar visitor."""
     browser.login('cal-visitor')
     browser.assert_forbidden(browser.CALENDAR_MASTERDATA_EDIT_DISPLAY_URL)
+
+
+def test_calendar__CalendarCounts__1(address_book, browser):
+    """It is accessible via calendar master data."""
+    browser.login('cal-editor')
+    browser.open(browser.CALENDAR_MASTERDATA_URL)
+    browser.getLink('Event counts').click()
+    assert browser.url == browser.CALENDAR_EVENTCOUNTS
+
+
+def test_calendar__CalendarCounts__2(address_book, browser):
+    """It renders a message if there are no events in the calendar at all."""
+    browser.login('cal-editor')
+    browser.open(browser.CALENDAR_EVENTCOUNTS)
+    assert 'No event events created in any year.' in browser.contents
+
+
+def test_calendar__CalendarCounts__3(
+        address_book, browser, RecurringEventFactory):
+    """It renders the number of created recurring events."""
+    RecurringEventFactory(address_book)
+    RecurringEventFactory(address_book)
+    browser.login('cal-editor')
+    browser.open(browser.CALENDAR_EVENTCOUNTS)
+
+    assert '>recurring event<' in browser.contents
+    assert '>(all years)<' in browser.contents
+    assert '<td>2</td>' in browser.contents
+
+
+def test_calendar__CalendarCounts__4(
+        address_book, browser, EventFactory, DateTime):
+    """It renders the number of created events per year."""
+    EventFactory(address_book, datetime=DateTime(2020, 4, 13, 17))
+    EventFactory(address_book, datetime=DateTime(2020, 2, 29, 17))
+    EventFactory(address_book, datetime=DateTime(2019, 12, 31, 17))
+    browser.login('cal-editor')
+    browser.open(browser.CALENDAR_EVENTCOUNTS)
+
+    assert '>event<' in browser.contents
+    assert '>2020<' in browser.contents
+    assert '>2<' in browser.contents
+    assert '>2019<' in browser.contents
+    assert '>1<' in browser.contents

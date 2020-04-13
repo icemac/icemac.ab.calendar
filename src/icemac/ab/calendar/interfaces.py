@@ -55,8 +55,10 @@ class ICalendar(ICalendarObject,
         end ... ``datetime.datetime`` object.
         timezone ... str, None defaults to UTC.
 
-
         """
+
+    def query_single_events(start, end, categories=[]):
+        """Query the single (not recurring) events from catalog."""
 
 
 class EventFieldsSource(zc.sourcefactory.basic.BasicSourceFactory):

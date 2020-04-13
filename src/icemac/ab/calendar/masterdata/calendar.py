@@ -1,4 +1,6 @@
 from icemac.addressbook.i18n import _
+import collections
+import datetime
 import grokcore.component as grok
 import icemac.ab.calendar.interfaces
 import icemac.ab.calendar.masterdata.breadcrumb
@@ -8,6 +10,7 @@ import icemac.addressbook.browser.datamanager
 import icemac.addressbook.browser.metadata
 import icemac.addressbook.metadata.interfaces
 import z3c.form.field
+import zope.component
 import zope.dublincore.interfaces
 import zope.schema.interfaces
 
@@ -72,3 +75,48 @@ class AnnotationField(icemac.addressbook.browser.datamanager.AnnotationField,
         interfaces = [x[1] for x in zope.component.getUtilitiesFor(
             icemac.ab.calendar.interfaces.INoSecurityProxyType)]
         return interfaces
+
+
+class CalendarCounts(icemac.addressbook.browser.table.Table):
+    """List calendar entries per year."""
+
+    title = _('Counts of events per year')
+    no_rows_message = _(u'No event events created in any year.')
+
+    def setUpColumns(self):
+        return [
+            z3c.table.column.addColumn(
+                self, z3c.table.column.GetItemColumn, 'type', idx='type',
+                header=_(u'type')),
+            z3c.table.column.addColumn(
+                self, z3c.table.column.GetItemColumn, 'year', idx='year',
+                header=_(u'year')),
+            z3c.table.column.addColumn(
+                self, z3c.table.column.GetItemColumn, 'count', idx='count',
+                header=_(u'count'))
+        ]
+
+    @property
+    def values(self):
+        """The values are stored on the context."""
+        MAX_DATETIME = datetime.datetime(2100, 12, 31, 23, 59, 59)
+        events = self.context.query_single_events(
+            icemac.ab.calendar.interfaces.MIN_SUPPORTED_DATETIME,
+            MAX_DATETIME)
+
+        events_by_year = collections.Counter([x.datetime.year for x in events])
+        result = [{
+            'type': _('event'),
+            'year': year,
+            'count': count}
+            for year, count in sorted(events_by_year.items())]
+
+        recurring_events = zope.component.getUtility(
+            icemac.ab.calendar.interfaces.IRecurringEvents)
+        count_recurring_events = len(recurring_events)
+        if count_recurring_events:
+            result.append({
+                'type': _('recurring event'),
+                'year': _('(all years)'),
+                'count': len(recurring_events)})
+        return result
