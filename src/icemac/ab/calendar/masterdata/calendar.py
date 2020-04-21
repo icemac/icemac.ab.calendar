@@ -12,6 +12,7 @@ import icemac.addressbook.metadata.interfaces
 import z3c.form.field
 import zope.component
 import zope.dublincore.interfaces
+import zope.i18n
 import zope.schema.interfaces
 
 
@@ -77,6 +78,13 @@ class AnnotationField(icemac.addressbook.browser.datamanager.AnnotationField,
         return interfaces
 
 
+class I18nGetItemColumn(z3c.table.column.GetItemColumn):
+    """GetItemColumn which translates its content."""
+
+    def renderCell(self, item):
+        return zope.i18n.translate(self.getValue(item), context=self.request)
+
+
 class CalendarCounts(icemac.addressbook.browser.table.Table):
     """List calendar entries per year."""
 
@@ -86,14 +94,11 @@ class CalendarCounts(icemac.addressbook.browser.table.Table):
     def setUpColumns(self):
         return [
             z3c.table.column.addColumn(
-                self, z3c.table.column.GetItemColumn, 'type', idx='type',
-                header=_(u'type')),
+                self, I18nGetItemColumn, 't', idx='type', header=_(u'type')),
             z3c.table.column.addColumn(
-                self, z3c.table.column.GetItemColumn, 'year', idx='year',
-                header=_(u'year')),
+                self, I18nGetItemColumn, 'y', idx='year', header=_(u'year')),
             z3c.table.column.addColumn(
-                self, z3c.table.column.GetItemColumn, 'count', idx='count',
-                header=_(u'count'))
+                self, I18nGetItemColumn, 'c', idx='count', header=_(u'count')),
         ]
 
     @property

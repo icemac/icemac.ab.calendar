@@ -5,7 +5,7 @@
 3.7 (unreleased)
 ================
 
-- Nothing changed yet.
+- Fix list feature added in 3.6 so texts get translated.
 
 
 3.6 (2020-04-13)
