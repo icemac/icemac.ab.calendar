@@ -42,14 +42,6 @@
     + replace secondary horizontal menu with a vertical one hidden behind a
       burger icon.
 
-3.3 (2019-10-01)
-================
-
-- Consider customization of pre-defined fields in forms.
-
-- Update the ZCML configuration and CSS to changes in
-  `icemac.addressbook >= 9`.
-
 
 Older versions
 ==============

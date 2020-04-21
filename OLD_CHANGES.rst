@@ -5,6 +5,15 @@
 Changelog of releases more than 2 minor versions behind current version.
 
 
+3.3 (2019-10-01)
+================
+
+- Consider customization of pre-defined fields in forms.
+
+- Update the ZCML configuration and CSS to changes in
+  `icemac.addressbook >= 9`.
+
+
 3.2 (2018-10-13)
 ================
 
