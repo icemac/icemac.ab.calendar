@@ -8,12 +8,6 @@ import icemac.recurrence.conftest
 import pytest
 
 
-pytest_plugins = (
-    'icemac.addressbook.fixtures',
-    'icemac.ab.calendar.fixtures',
-)
-
-
 # Fixtures to set-up infrastructure which are usable in tests:
 
 
