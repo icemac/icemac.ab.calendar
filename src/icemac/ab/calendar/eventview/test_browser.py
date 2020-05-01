@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from .browser import EventView
 from icemac.ab.calendar.interfaces import IEvent
 from icemac.addressbook.interfaces import IEntity
@@ -12,17 +10,17 @@ def test_browser__EventView__1(
         CategoryFactory, RecurringEventFactory, DateTime, browser):
     """It renders a listing of event views."""
     EventFactory(
-        address_book, category=CategoryFactory(address_book, 'Party'),
+        address_book, category=CategoryFactory(address_book, u'Party'),
         datetime=DateTime.now)
     RecurringEventFactory(
-        address_book, category=CategoryFactory(address_book, 'Lesson'),
+        address_book, category=CategoryFactory(address_book, u'Lesson'),
         datetime=DateTime.add(DateTime.now, days=3),
         period='weekly')
     EventViewConfigurationFactory(
-        address_book, '-1 day for 1 week', start=-1, duration=7)
+        address_book, u'-1 day for 1 week', start=-1, duration=7)
 
     browser.login('cal-visitor')
-    browser.lang(b'en')
+    browser.lang('en')
     browser.open(browser.CALENDAR_OVERVIEW_URL)
     browser.getLink('Event views').click()
     assert browser.CALENDAR_EVENT_VIEWS_URL == browser.url
@@ -42,12 +40,12 @@ def test_browser__EventView__3(
         address_book, EventViewConfigurationFactory, DateTime, browser):
     """It renders a month headline only if days in this month are rendered."""
     EventViewConfigurationFactory(
-        address_book, '1 week', start=0, duration=7)
+        address_book, u'1 week', start=0, duration=7)
 
     with mock.patch('icemac.ab.calendar.eventview.browser.date') as date:
         date.today.return_value = DateTime(2018, 2, 21).date()
         browser.login('cal-visitor')
-        browser.lang(b'en')
+        browser.lang('en')
         browser.open(browser.CALENDAR_EVENT_VIEWS_URL)
     assert 'February 2018' in browser.ucontents
     assert 'March 2018' not in browser.ucontents
@@ -57,12 +55,12 @@ def test_browser__EventView__4(
         address_book, EventViewConfigurationFactory, DateTime, browser):
     """It renders sundays with a special css class."""
     EventViewConfigurationFactory(
-        address_book, '1 week', start=0, duration=7)
+        address_book, u'1 week', start=0, duration=7)
 
     with mock.patch('icemac.ab.calendar.eventview.browser.date') as date:
         date.today.return_value = DateTime(2018, 2, 21).date()
         browser.login('cal-visitor')
-        browser.lang(b'en')
+        browser.lang('en')
         browser.open(browser.CALENDAR_EVENT_VIEWS_URL)
     assert ' bg-info text-white">Sunday, 25.<' in browser.ucontents
 
@@ -70,14 +68,14 @@ def test_browser__EventView__4(
 def test_browser__EventView__5(
         address_book, EventViewConfigurationFactory, DateTime, browser):
     """It allows to select a different event view config."""
-    EventViewConfigurationFactory(address_book, '1 week', start=0, duration=7)
+    EventViewConfigurationFactory(address_book, u'1 week', start=0, duration=7)
     EventViewConfigurationFactory(
-        address_book, '2 weeks', start=0, duration=14)
+        address_book, u'2 weeks', start=0, duration=14)
 
     with mock.patch('icemac.ab.calendar.eventview.browser.date') as date:
         date.today.return_value = DateTime(2018, 2, 21).date()
         browser.login('cal-visitor')
-        browser.lang(b'en')
+        browser.lang('en')
         browser.open(browser.CALENDAR_EVENT_VIEWS_URL)
         assert 'March 2018' not in browser.ucontents
 
@@ -90,14 +88,14 @@ def test_browser__EventView__7(
         address_book, EventViewConfigurationFactory, EventFactory,
         CategoryFactory, RecurringEventFactory, DateTime, browser):
     """It filters the events by the selected categories."""
-    party = CategoryFactory(address_book, 'Party')
+    party = CategoryFactory(address_book, u'Party')
     EventFactory(address_book, category=party, datetime=DateTime.now)
     RecurringEventFactory(
-        address_book, category=CategoryFactory(address_book, 'Lesson'),
+        address_book, category=CategoryFactory(address_book, u'Lesson'),
         datetime=DateTime.add(DateTime.now, days=3),
         period='weekly')
     EventViewConfigurationFactory(
-        address_book, '-1 day for 1 week', start=-1, duration=7,
+        address_book, u'-1 day for 1 week', start=-1, duration=7,
         categories=set([party]))
 
     browser.login('cal-visitor')
@@ -110,17 +108,17 @@ def test_browser__EventView__8(
         address_book, EventViewConfigurationFactory, EventFactory,
         FieldFactory, PersonFactory, DateTime, browser):
     """It renders the selected fields."""
-    field_name = FieldFactory(address_book, IEvent, 'Int', 'seats').__name__
+    field_name = FieldFactory(address_book, IEvent, 'Int', u'seats').__name__
     EventFactory(address_book, **{
         'datetime': DateTime.now,
         field_name: 42,
-        'external_persons': ['Berta Vimladil'],
-        'persons': set([PersonFactory(address_book, 'Tester')]),
-        'text': 'to be canceled',
+        'external_persons': [u'Berta Vimladil'],
+        'persons': set([PersonFactory(address_book, u'Tester')]),
+        'text': u'to be canceled',
     })
     event_entity = IEntity(IEvent)
     EventViewConfigurationFactory(
-        address_book, '-1 day for 1 week', start=-1, duration=7,
+        address_book, u'-1 day for 1 week', start=-1, duration=7,
         fields=[event_entity.getRawField('persons'),
                 event_entity.getRawField(field_name)])
 
@@ -135,15 +133,15 @@ def test_browser__EventView___get_events__1(
         address_book, EventViewConfigurationFactory, EventFactory,
         CategoryFactory, DateTime):
     """It returns all events in the configured interval."""
-    cat = CategoryFactory(address_book, 'foo')
+    cat = CategoryFactory(address_book, u'foo')
     EventFactory(
-        address_book, category=cat, alternative_title='1',
+        address_book, category=cat, alternative_title=u'1',
         datetime=DateTime.now)
     EventFactory(
-        address_book, category=cat, alternative_title='7',
+        address_book, category=cat, alternative_title=u'7',
         datetime=DateTime.add(DateTime.now, days=7))
     evc = EventViewConfigurationFactory(
-        address_book, 'evc', start=0, duration=7, categories=set([cat]))
+        address_book, u'evc', start=0, duration=7, categories=set([cat]))
     view = EventView()
     view.context = address_book.calendar
     with zope.publisher.testing.interaction('zope.mgr'):

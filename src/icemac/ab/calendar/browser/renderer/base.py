@@ -1,4 +1,4 @@
-from cStringIO import StringIO
+from io import StringIO
 import gocept.month
 import grokcore.component as grok
 import icemac.ab.calendar.browser.base
@@ -27,15 +27,13 @@ class Calendar(grok.MultiAdapter,
     def write(self, string, *args, **kw):
         """Store a string which might contain % marks which get replaced."""
         text = string % args
-        # We have to encode the text here as the used cStringIO does not
-        # support unicode characters outside ASCII:
-        self._fd.write(text.encode('utf-8'))
+        self._fd.write(text)
         if kw.pop('newline', True):
-            self._fd.write('\n')
+            self._fd.write(u'\n')
 
     def read(self):
         """Get the stored information back as unicode."""
-        return self._fd.getvalue().decode('utf-8')
+        return self._fd.getvalue()
 
     def update(self):
         pass

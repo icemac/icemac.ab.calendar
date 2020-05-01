@@ -2,3 +2,7 @@ version: ~> 1.0
 language: python
 import:
   - source: icemac/icemac.addressbook:.travis-blueprint.yml
+    mode: merge
+python:
+  - 2.7
+  - 3.8

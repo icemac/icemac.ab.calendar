@@ -263,8 +263,8 @@ def test_event__AddFromRecurredEvent__2_5(
         category=CategoryFactory(address_book, u'bar'),
         datetime=DateTime(2016, 3, 24, 12),
         period=u'weekly')
-    recurred_event = recurring_event.get_events(
-        DateTime(2016, 3, 27, 0), DateTime(2016, 4, 1, 0), pytz.utc).next()
+    recurred_event = next(recurring_event.get_events(
+        DateTime(2016, 3, 27, 0), DateTime(2016, 4, 1, 0), pytz.utc))
     url = get_recurred_event_url(recurred_event, RequestFactory())
     TimeZonePrefFactory('Europe/Berlin')
     browser.login('cal-editor')

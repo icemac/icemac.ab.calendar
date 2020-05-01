@@ -5,7 +5,7 @@
 3.7 (unreleased)
 ================
 
-- Nothing changed yet.
+- Add support for Python 3.8.
 
 
 3.6.1 (2020-04-21)

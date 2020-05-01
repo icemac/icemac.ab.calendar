@@ -11,6 +11,7 @@ import icemac.ab.calendar.interfaces
 import icemac.addressbook.browser.base
 import icemac.addressbook.interfaces
 import zope.component
+from six.moves import range
 
 
 SPECIAL_CLASS_MAPPING = {
@@ -126,7 +127,7 @@ class Table(Calendar):
         today = datetime.date.today()
         events = self.events
         add_event_for_day_url = self.get_add_event_for_day_url()
-        for delta in xrange(self.num_of_days):
+        for delta in range(self.num_of_days):
             if delta % 7 == 0:
                 # week start
                 self.write('    <tr>')

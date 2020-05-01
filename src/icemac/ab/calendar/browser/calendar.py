@@ -3,7 +3,6 @@ from .interfaces import IEventDescription
 from .interfaces import UnknownLanguageError
 from datetime import date
 from icemac.addressbook.i18n import _
-import cgi
 import collections
 import copy
 import functools
@@ -24,6 +23,14 @@ import zope.cachedescriptors.property
 import zope.component
 import zope.globalrequest
 import zope.interface
+import six
+from six.moves import range
+
+
+if six.PY2:  # pragma: PY2
+    from cgi import escape as html_escape
+else:  # pragma: PY3
+    from html import escape as html_escape
 
 
 class Dispatcher(icemac.ab.calendar.browser.base.View):
@@ -286,7 +293,7 @@ def hyphenate(text, dic):
         words = text.split(u' ')
         hyphenated = u' '.join(
             [dic.inserted(word, SOFT_HYPHEN) for word in words])
-    escaped = cgi.escape(hyphenated)
+    escaped = html_escape(hyphenated)
     return escaped.replace(SOFT_HYPHEN, SOFT_HYPHEN_HTML)
 
 
@@ -354,7 +361,7 @@ class EventDescriptionBase(object):
                     # it does not exist on the RecurredEvent.
                     value = None
                 if value is not None:
-                    value = unicode(value)
+                    value = six.text_type(value)
             if value:
                 if field is icemac.ab.calendar.interfaces.IEvent['text']:
                     info.extend(value.split('\n'))

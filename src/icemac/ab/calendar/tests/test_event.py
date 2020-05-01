@@ -8,6 +8,7 @@ from icemac.ab.calendar.interfaces import IRecurredEvent, DATE_INDEX
 from icemac.ab.calendar.interfaces import IRecurringEvent, IRecurringEvents
 from icemac.addressbook.interfaces import IEntity, ITitle, ISchemaName
 import pytz
+import six
 import zope.catalog.interfaces
 import zope.component
 
@@ -93,9 +94,14 @@ def test_event__Event____repr____1(zcmlS, DateTime):
     event = Event()
     event.datetime = DateTime(2016, 4, 6, 16)
     event.alternative_title = u'my-title'
-    assert (
-        "<Event datetime='2016-04-06 16:00:00+00:00' title=u'my-title', "
-        "deleted=False>" == repr(event))
+    if six.PY2:  # pragma: PY2
+        assert (
+            "<Event datetime='2016-04-06 16:00:00+00:00' title=u'my-title', "
+            "deleted=False>" == repr(event))
+    else:  # pragma: PY3
+        assert (
+            "<Event datetime='2016-04-06 16:00:00+00:00' title='my-title', "
+            "deleted=False>" == repr(event))
 
 
 def test_event__Event__schema__1(zcmlS):
@@ -149,9 +155,14 @@ def test_event__RecurringEvent____repr____1(zcmlS, DateTime):
     event = RecurringEvent()
     event.datetime = DateTime(2016, 4, 6, 16)
     event.alternative_title = u'my-rec-title'
-    assert (
-        "<RecurringEvent datetime='2016-04-06 16:00:00+00:00' "
-        "title=u'my-rec-title', deleted=False>" == repr(event))
+    if six.PY2:  # pragma: PY2
+        assert (
+            "<RecurringEvent datetime='2016-04-06 16:00:00+00:00' "
+            "title=u'my-rec-title', deleted=False>" == repr(event))
+    else:  # pragma: PY3
+        assert (
+            "<RecurringEvent datetime='2016-04-06 16:00:00+00:00' "
+            "title='my-rec-title', deleted=False>" == repr(event))
 
 
 def test_event__RecurringEvent__schema__1(zcmlS):
@@ -278,8 +289,12 @@ def test_event__RecurredEvent____repr____1(
         DateTime(2014, 5, 1, 0), DateTime(2014, 5, 8, 0), pytz.utc))
     recurred_event = events[0]
     assert isinstance(recurred_event, RecurredEvent)
-    assert ("<RecurredEvent datetime='2014-05-02 12:00:00+00:00' "
-            "title=u'birthday'>" == repr(recurred_event))
+    if six.PY2:  # pragma: PY2
+        assert ("<RecurredEvent datetime='2014-05-02 12:00:00+00:00' "
+                "title=u'birthday'>" == repr(recurred_event))
+    else:  # pragma: PY3
+        assert ("<RecurredEvent datetime='2014-05-02 12:00:00+00:00' "
+                "title='birthday'>" == repr(recurred_event))
 
 
 def test_event__EventDateTime__1(address_book, EventFactory, DateTime):

@@ -2,6 +2,7 @@
 from icemac.ab.calendar.category import Category, CategoryContainer
 from icemac.ab.calendar.interfaces import ICategory, ICategories
 from zope.interface.verify import verifyObject
+import six
 import zope.component.hooks
 
 
@@ -14,8 +15,11 @@ def test_category__Category____repr____1():
     """It returns a readable representation."""
     category = Category()
     category.title = u'Füchschen'
-    # repr() has to be ASCII, so everything else is replaced:
-    assert "<Category title='F?chschen'>" == repr(category)
+    if six.PY2:  # pragma: PY2
+        # repr() has to be ASCII, so everything else is replaced:
+        assert "<Category title='F?chschen'>" == repr(category)
+    else:  # pragma: PY3
+        assert "<Category title='Füchschen'>" == repr(category)
 
 
 def test_category__CategoryContainer__1():

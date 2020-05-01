@@ -6,6 +6,7 @@ import datetime
 import icemac.addressbook.testing
 import icemac.recurrence.conftest
 import pytz
+import six
 
 
 class Browser(icemac.addressbook.testing.Browser):
@@ -59,7 +60,10 @@ class Browser(icemac.addressbook.testing.Browser):
     @property
     def ucontents(self):
         """Browser contents decoded to unicode."""
-        return self.contents.decode('utf-8')
+        if six.PY2:  # pragma: PY2
+            return self.contents.decode('utf-8')
+        else:  # pragma: PY3
+            return self.contents
 
 
 class CalendarWebdriverPageObjectBase(
@@ -116,10 +120,10 @@ def get_recurred_event(recurring_event, DateTime):
 
     DateTime ... the DateTime fixture instance.
     """
-    return recurring_event.get_events(
+    return next(recurring_event.get_events(
         DateTime.today_8_32_am,
         DateTime.add(DateTime.today_8_32_am, days=1),
-        pytz.utc).next()
+        pytz.utc))
 
 
 # Fixture helpers

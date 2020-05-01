@@ -69,7 +69,7 @@ class Calendar(zope.container.btree.BTreeContainer):
         events_map.update(single_events_map)
         # Filter out deleted recurred events and sort:
         return sorted(
-            filter(lambda x: not x.deleted, events_map.values()),
+            (x for x in events_map.values() if not x.deleted),
             key=lambda x: (x.in_timezone(timezone),
                            icemac.addressbook.interfaces.ITitle(
                                x.category, None)))

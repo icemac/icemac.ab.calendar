@@ -3,6 +3,7 @@ import grokcore.component as grok
 import icemac.ab.calendar.interfaces
 import icemac.addressbook.utils
 import persistent
+import six
 import zope.catalog.interfaces
 import zope.container.btree
 import zope.container.contained
@@ -26,8 +27,11 @@ class Category(persistent.Persistent,
 
     def __repr__(self):
         """Human readable representation of the object."""
-        return '<Category title={0!r}>'.format(
-            self.title.encode('ascii', 'replace'))
+        if six.PY2:  # pragma: PY2
+            title = self.title.encode('ascii', 'replace')
+        else:  # pragma: PY3
+            title = self.title
+        return '<Category title={0!r}>'.format(title)
 
 
 unique_titles = icemac.addressbook.utils.unique_by_attr_factory(

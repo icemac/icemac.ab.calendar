@@ -17,6 +17,7 @@ from zope.testbrowser.browser import LinkNotFoundError
 import pytest
 import pytz
 import zope.component
+import six
 
 
 MONTH_FOR_TEST = 'November' if date.today().month == 5 else 'May'
@@ -542,7 +543,7 @@ def test_calendar__hyphenated__2():
         return u'Gebürtstag<>'
 
     res = func(any, lang='de')
-    assert isinstance(res, unicode)
+    assert isinstance(res, six.text_type)
     assert u'Ge&shy;bürts&shy;tag&lt;&gt;' == res
 
 

@@ -39,9 +39,9 @@ or fork me at: https://github.com/icemac/icemac.ab.calendar
 Running the tests
 =================
 
-To run the tests yourself call::
+To run the tests yourself call in the directory of the checkout::
 
-  $ virtualenv-2.7 .
+  $ python3 -m venv .
   $ bin/pip install zc.buildout
   $ bin/buildout -n
   $ bin/py.test
